@@ -77,6 +77,14 @@ document.body.firstChild.innerHTML //-> "<h1>Hello, Amazed</h1>"
 ```
 
 
+## Setup
+
+Install from npm:
+
+```
+npm i react-to-webcomponent
+```
+
 ## API
 
 `reactToWebComponent(ReactComponent, React, ReactDOM)` takes the following:

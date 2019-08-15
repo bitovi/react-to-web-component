@@ -9,10 +9,14 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "steal": "^2.2.2",
-    "steal-qunit": "^2.0.0"
+    "steal-qunit": "^2.0.0",
+    "steal-tools": "^2.2.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node build.js",
+    "preversion": "npm test && npm run build",
+    "version": "git commit -am \"Update version number\" && git checkout -b release && git add -f dist/",
+    "postpublish": "git push --tags && git checkout master && git branch -D release && git push"
   },
   "repository": {
     "type": "git",
