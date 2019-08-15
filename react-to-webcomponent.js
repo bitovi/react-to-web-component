@@ -19,7 +19,7 @@ var define = {
 	}
 }
 
-module.exports = function(ReactComponent, React, ReactDOM) {
+export default function(ReactComponent, React, ReactDOM) {
 
 	// Create the web component "class"
 	var WebComponent = function() {

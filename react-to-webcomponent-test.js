@@ -46,7 +46,7 @@ QUnit.test("works with attributes set with propTypes", function(assert){
       name: PropTypes.string.isRequired
     };
 
-    class MyGreeting extends reactToWebComponent(Greeting,React, ReactDOM) {}
+    var MyGreeting = reactToWebComponent(Greeting,React, ReactDOM)
 
     customElements.define("my-greeting", MyGreeting);
 
