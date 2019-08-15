@@ -2,6 +2,11 @@
 
 `react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share react components as native elements that __don't__ require being through React.
 
+`react-to-webcomponent`:
+
+- Should work in all modern browsers. (I haven't tested yet).
+- Is `1.11KB` minified and gzipped.
+
 ## Basic Use
 
 Given a react component like:
@@ -79,11 +84,17 @@ document.body.firstChild.innerHTML //-> "<h1>Hello, Amazed</h1>"
 
 ## Setup
 
-Install from npm:
+#### From NPM
+
+To install from npm:
 
 ```
 npm i react-to-webcomponent
 ```
+
+#### CodePen
+
+[Greeting example in a CodePen](https://codepen.io/justinbmeyer/pen/gOYrQax?editors=1010)
 
 ## API
 
