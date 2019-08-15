@@ -1,0 +1,32 @@
+{
+  "name": "react-to-webcomponent",
+  "version": "1.0.0",
+  "description": "Convert react components to native Web Components.",
+  "main": "react-to-webcomponent",
+  "dependencies": {},
+  "devDependencies": {
+    "prop-types": "^15.7.2",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "steal": "^2.2.2",
+    "steal-qunit": "^2.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitovi/react-to-webcomponent.git"
+  },
+  "keywords": [
+    "React",
+    "Preact",
+    "WebComponents"
+  ],
+  "author": "Bitovi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bitovi/react-to-webcomponent/issues"
+  },
+  "homepage": "https://github.com/bitovi/react-to-webcomponent#readme"
+}
