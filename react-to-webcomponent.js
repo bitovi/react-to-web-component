@@ -34,6 +34,10 @@ export default function(ReactComponent, React, ReactDOM) {
 
 	// But have that prototype be wrapped in a proxy.
 	var proxyPrototype = new Proxy(targetPrototype, {
+		has: function (target, key) {
+			return key in ReactComponent.propTypes;
+		},
+
 		// when any undefined property is set, create a getter/setter that re-renders
 		set: function(target, key, value, receiver) {
 			if (typeof key === "symbol" || key === "_reactRootContainer" || key in target) {
@@ -68,7 +72,16 @@ export default function(ReactComponent, React, ReactDOM) {
 		targetPrototype.attributeChangedCallback = function(name, oldValue, newValue) {
 			// TODO: handle type conversion
 			this[name] = newValue;
-		}
+		};
+
+		var setAttribute = targetPrototype.setAttribute;
+		targetPrototype.setAttribute = function (name, val) {
+			if (typeof val === "string") {
+				setAttribute.apply(this, arguments);
+			} else {
+				targetPrototype.attributeChangedCallback.call(this, name, undefined, val);
+			}
+		};
 	}
 
 	return WebComponent;
