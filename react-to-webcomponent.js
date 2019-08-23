@@ -20,7 +20,8 @@ var define = {
 }
 
 export default function(ReactComponent, React, ReactDOM) {
-
+	var renderAddedProperties = {};
+	var rendering = false;
 	// Create the web component "class"
 	var WebComponent = function() {
 		var self = Reflect.construct(HTMLElement, arguments, this.constructor);
@@ -35,17 +36,33 @@ export default function(ReactComponent, React, ReactDOM) {
 	// But have that prototype be wrapped in a proxy.
 	var proxyPrototype = new Proxy(targetPrototype, {
 		has: function (target, key) {
-			return key in ReactComponent.propTypes;
+			return key in ReactComponent.propTypes ||
+				key in targetPrototype;
 		},
 
 		// when any undefined property is set, create a getter/setter that re-renders
 		set: function(target, key, value, receiver) {
-			if (typeof key === "symbol" || key === "_reactRootContainer" || key in target) {
+			console.log("set",key, rendering)
+			if(rendering) {
+				renderAddedProperties[key] = true;
+			}
+
+			if (typeof key === "symbol" || renderAddedProperties[key] || key in target) {
 				return Reflect.set(target, key, value, receiver);
 			} else {
 				define.expando(receiver, key, value)
 			}
 			return true;
+		},
+		// makes sure the property looks writable
+		getOwnPropertyDescriptor: function(target, key){
+			var own = Reflect.getOwnPropertyDescriptor(target, key);
+			if(own) {
+				return own;
+			}
+			if(key in ReactComponent.propTypes) {
+				return { configurable: true, enumerable: true, writable: true, value: undefined };
+			}
 		}
 	});
 	WebComponent.prototype = proxyPrototype;
@@ -58,11 +75,13 @@ export default function(ReactComponent, React, ReactDOM) {
 		if (this.isConnected) {
 			var data = {};
 			Object.keys(this).forEach(function(key) {
-				if (key !== "_reactRootContainer") {
+				if (renderAddedProperties[key] !== false) {
 					data[key] = this[key];
 				}
 			}, this);
-			this[reactComponentSymbol] = ReactDOM.render(React.createElement(ReactComponent, data), this)
+			rendering = true;
+			this[reactComponentSymbol] = ReactDOM.render(React.createElement(ReactComponent, data), this);
+			rendering = false;
 		}
 	};
 
@@ -72,15 +91,6 @@ export default function(ReactComponent, React, ReactDOM) {
 		targetPrototype.attributeChangedCallback = function(name, oldValue, newValue) {
 			// TODO: handle type conversion
 			this[name] = newValue;
-		};
-
-		var setAttribute = targetPrototype.setAttribute;
-		targetPrototype.setAttribute = function (name, val) {
-			if (typeof val === "string") {
-				setAttribute.apply(this, arguments);
-			} else {
-				targetPrototype.attributeChangedCallback.call(this, name, undefined, val);
-			}
 		};
 	}
 
