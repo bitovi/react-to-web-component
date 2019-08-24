@@ -1,5 +1,6 @@
 var reactComponentSymbol = Symbol.for("r2wc.reactComponent");
 var renderSymbol = Symbol.for("r2wc.reactRender");
+var shouldRenderSymbol = Symbol.for("r2wc.shouldRender");
 
 var define = {
 	// Creates a getter/setter that re-renders everytime a property is set.
@@ -20,7 +21,7 @@ var define = {
 }
 
 export default function(ReactComponent, React, ReactDOM) {
-	var renderAddedProperties = {};
+	var renderAddedProperties = {isConnected: "isConnected" in HTMLElement.prototype};
 	var rendering = false;
 	// Create the web component "class"
 	var WebComponent = function() {
@@ -42,7 +43,6 @@ export default function(ReactComponent, React, ReactDOM) {
 
 		// when any undefined property is set, create a getter/setter that re-renders
 		set: function(target, key, value, receiver) {
-			console.log("set",key, rendering)
 			if(rendering) {
 				renderAddedProperties[key] = true;
 			}
@@ -69,10 +69,13 @@ export default function(ReactComponent, React, ReactDOM) {
 
 	// Setup lifecycle methods
 	targetPrototype.connectedCallback = function() {
+		// Once connected, it will keep updating the innerHTML.
+		// We could add a render method to allow this as well.
+		this[shouldRenderSymbol] = true;
 		this[renderSymbol]();
 	};
 	targetPrototype[renderSymbol] = function() {
-		if (this.isConnected) {
+		if (this[shouldRenderSymbol] === true) {
 			var data = {};
 			Object.keys(this).forEach(function(key) {
 				if (renderAddedProperties[key] !== false) {

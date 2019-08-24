@@ -4,7 +4,7 @@
 
 `react-to-webcomponent`:
 
-- Should work in all modern browsers. (I haven't tested yet).
+- Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
 - Is `1.11KB` minified and gzipped.
 
 ## Basic Use

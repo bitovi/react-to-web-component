@@ -128,7 +128,7 @@ QUnit.test("works within can-stache and can-stache-bindings (propTypes are writa
 
 	customElements.define("can-welcome", MyWelcome);
 
-	var view = stache("<can-welcome user:from='this.person'>");
+	var view = stache("<can-welcome user:from='this.person'/>");
 	var frag = view({
 		person: {name: "Bohdi"}
 	});
