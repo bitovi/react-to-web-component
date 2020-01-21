@@ -1,8 +1,8 @@
 {
-  "name": "react-to-webcomponent",
+  "name": "react-to-can-webcomponent",
   "version": "0.0.1",
-  "description": "Convert react components to native Web Components.",
-  "main": "react-to-webcomponent",
+  "description": "Convert react components to native Web Components that work with CanJS.",
+  "main": "react-to-can-webcomponent",
   "dependencies": {},
   "devDependencies": {
     "@webcomponents/custom-elements": "^1.2.4",
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bitovi/react-to-webcomponent.git"
+    "url": "git+https://github.com/bitovi/react-to-can-webcomponent.git"
   },
   "keywords": [
     "React",
@@ -38,7 +38,7 @@
   "author": "Bitovi",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bitovi/react-to-webcomponent/issues"
+    "url": "https://github.com/bitovi/react-to-can-webcomponent/issues"
   },
-  "homepage": "https://github.com/bitovi/react-to-webcomponent#readme"
+  "homepage": "https://github.com/bitovi/react-to-can-webcomponent#readme"
 }
