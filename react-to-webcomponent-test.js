@@ -198,3 +198,39 @@ QUnit.test("works with nested properties of observable objects and arrays", func
 	assert.equal(myWelcome.childNodes[1].innerHTML, "I see you like basketball and school", "can update array elements");
 
 });
+
+QUnit.test("subproperties update with can-stache and can-stache-bindings", function(assert){
+	class Welcome extends React.Component {
+		render() {
+			return <h1>Hello, {
+				this.props.user.name
+			}</h1>;
+		}
+	}
+	Welcome.propTypes = {
+		user: PropTypes.object
+	};
+
+	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM) {}
+
+	customElements.define("can-welcome-ii", MyWelcome);
+
+	var view = stache("<can-welcome-ii user:from='this.person'/>");
+	var person = new ObservableObject({name: "Bohdi"});
+	var frag = view({
+		person
+	});
+
+	var fixture = document.getElementById("qunit-fixture");
+	var myWelcome = frag.firstElementChild;
+	fixture.appendChild(frag);
+
+	assert.equal(myWelcome.nodeName, "CAN-WELCOME-II", "able to read nodeName");
+
+	assert.equal(myWelcome.childNodes.length, 1, "able to render something")
+
+	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, Bohdi", "can update");
+
+	person.name = "Cherif";
+	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, Cherif", "can update");	
+});
