@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import PreactCompat from "preact-compat";
 import stache from "can-stache";
 import stacheBindings from "can-stache-bindings";
+import ObservableObject from "can-observable-object";
+import ObservableArray from "can-observable-array";
 
 
 stache.addBindings(stacheBindings);
@@ -19,7 +21,7 @@ QUnit.test("basics with react", function(assert) {
 		render() {
 			return <h1>Hello, {
 				this.props.name
-			}< /h1>;
+			}</h1>;
 		}
 	}
 
@@ -49,7 +51,7 @@ QUnit.test("works with attributes set with propTypes", function(assert) {
 		render() {
 			return <h1 >Hello, {
 				this.props.name
-			}< /h1>;
+			}</h1>;
 		}
 	}
 	Greeting.propTypes = {
@@ -110,7 +112,7 @@ QUnit.test("basics with preact", function(assert){
 	myWelcome.name = "Justin";
 
 	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, Justin", "can update");
-})
+});
 
 QUnit.test("works within can-stache and can-stache-bindings (propTypes are writable)", function(assert){
 	class Welcome extends React.Component {
@@ -143,4 +145,52 @@ QUnit.test("works within can-stache and can-stache-bindings (propTypes are writa
 	assert.equal(myWelcome.childNodes.length, 1, "able to render something")
 
 	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, Bohdi", "can update");
+});
+
+
+QUnit.test("works with nested properties of observable objects and arrays", function(assert) {
+	class Welcome extends React.Component {
+		render() {
+			return <React.Fragment>
+				<h1>
+					Hello, { this.props.name.first } { this.props.name.last }
+				</h1>
+				<h1>
+					I see you like { this.props.hobbies.join(" and ")}
+				</h1>
+			</React.Fragment>;
+		}
+	}
+
+	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM) {}
+
+	customElements.define("nested-props-welcome", MyWelcome);
+
+	var fixture = document.getElementById("qunit-fixture");
+
+	var myWelcome = new MyWelcome();
+	myWelcome.name = new ObservableObject({
+		first: "Justin",
+		last: "Meyer"
+	});
+	myWelcome.hobbies = new ObservableArray([
+		"basketball",
+		"javascript"
+	]);
+	fixture.appendChild(myWelcome);
+	assert.deepEqual(myWelcome.name.get(), { first: "Justin", last: "Meyer" });
+
+	assert.equal(myWelcome.nodeName, "NESTED-PROPS-WELCOME", "able to read nodeName");
+	assert.equal(myWelcome.childNodes.length, 2, "able to render something")
+	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, Justin Meyer", "renders the right thing");
+	assert.equal(myWelcome.childNodes[1].innerHTML, "I see you like basketball and javascript", "renders the right array");
+
+	myWelcome.name.first = "Ramiya";
+	// Note: myWelcome.hobbies[0] = "school" will not update the view as binding of list-likes
+	//   listens for changes on the length.
+	myWelcome.hobbies.splice(1, 1, "school");
+
+	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, Ramiya Meyer", "can update object properties");
+	assert.equal(myWelcome.childNodes[1].innerHTML, "I see you like basketball and school", "can update array elements");
+
 });
