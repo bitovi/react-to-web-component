@@ -11,9 +11,9 @@ import ObservableArray from "can-observable-array";
 
 stache.addBindings(stacheBindings);
 
-import reactToWebComponent from "./react-to-webcomponent";
+import reactToWebComponent from "./react-to-can-webcomponent";
 
-QUnit.module("react-to-webcomponent");
+QUnit.module("react-to-can-webcomponent");
 
 
 QUnit.test("basics with react", function(assert) {
