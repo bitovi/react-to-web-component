@@ -153,7 +153,7 @@ QUnit.test("works with nested properties of observable objects and arrays", func
 		render() {
 			return <React.Fragment>
 				<h1>
-					Hello, { this.props.name.first } { this.props.name.last }
+					Hello, { this.props.name.full }
 				</h1>
 				<h1>
 					I see you like { this.props.hobbies.join(" and ")}
@@ -169,9 +169,13 @@ QUnit.test("works with nested properties of observable objects and arrays", func
 	var fixture = document.getElementById("qunit-fixture");
 
 	var myWelcome = new MyWelcome();
-	myWelcome.name = new ObservableObject({
+	myWelcome.name = new (class extends ObservableObject {
+		get full() {
+			return this.first + ' ' + this.last;
+		}
+	})({
 		first: "Justin",
-		last: "Meyer"
+		last: "Meyer",
 	});
 	myWelcome.hobbies = new ObservableArray([
 		"basketball",

@@ -76,7 +76,7 @@ export default function(ReactComponent, React, ReactDOM) {
 		this[shouldRenderSymbol] = true;
 		// Also catch any sub-properties of observables which
 		//   are read while rendering the React component.
-		this[observationSymbol] = new Observation(() => {
+		this[observationSymbol] = this[observationSymbol] || new Observation(() => {
 			this[renderSymbol]();
 		});
 		this[observationSymbol].on();
