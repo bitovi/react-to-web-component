@@ -1,6 +1,8 @@
+import Observation from "can-observation";
 var reactComponentSymbol = Symbol.for("r2wc.reactComponent");
 var renderSymbol = Symbol.for("r2wc.reactRender");
 var shouldRenderSymbol = Symbol.for("r2wc.shouldRender");
+var observationSymbol = Symbol.for("r2wc.observation");
 
 var define = {
 	// Creates a getter/setter that re-renders everytime a property is set.
@@ -72,8 +74,17 @@ export default function(ReactComponent, React, ReactDOM) {
 		// Once connected, it will keep updating the innerHTML.
 		// We could add a render method to allow this as well.
 		this[shouldRenderSymbol] = true;
-		this[renderSymbol]();
+		// Also catch any sub-properties of observables which
+		//   are read while rendering the React component.
+		this[observationSymbol] = this[observationSymbol] || new Observation(() => {
+			this[renderSymbol]();
+		});
+		this[observationSymbol].on();
 	};
+	targetPrototype.disconnectedCallback = function() {
+		this[observationSymbol].off();
+	};
+
 	targetPrototype[renderSymbol] = function() {
 		if (this[shouldRenderSymbol] === true) {
 			var data = {};
