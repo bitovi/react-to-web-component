@@ -4,7 +4,11 @@
   "description": "Convert react components to native Web Components that work with CanJS.",
   "main": "react-to-can-webcomponent",
   "dependencies": {
-    "can-observation": "^4.2.0"
+    "can-observation": "^4.2.0",
+    "can-observation-recorder": "^1.3.1",
+    "can-queues": "^1.3.1",
+    "can-reflect": "^1.18.0",
+    "ylem": "git+https://github.com/bitovi/ylem.git#hooks"
   },
   "devDependencies": {
     "@webcomponents/custom-elements": "^1.2.4",
@@ -12,7 +16,7 @@
     "can-observable-object": "^1.0.1",
     "can-stache": "^5.1.1",
     "can-stache-bindings": "^5.0.4",
-    "preact": "^8.5.3",
+    "preact": "^10.2.1",
     "preact-compat": "^3.19.0",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
@@ -30,6 +34,12 @@
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
     "test": "testee --browsers firefox test.html"
+  },
+  "steal": {
+	  "map": {
+  		"preact/compat": "preact/compat/dist/compat",
+  		"preact/hooks": "preact/hooks/dist/hooks"
+  	}
   },
   "repository": {
     "type": "git",
