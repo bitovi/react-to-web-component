@@ -17,7 +17,6 @@
     "can-stache": "^5.1.1",
     "can-stache-bindings": "^5.0.4",
     "preact": "^10.2.1",
-    "preact-compat": "^3.19.0",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -36,10 +35,10 @@
     "test": "testee --browsers firefox test.html"
   },
   "steal": {
-	  "map": {
-  		"preact/compat": "preact/compat/dist/compat",
-  		"preact/hooks": "preact/hooks/dist/hooks"
-  	}
+    "map": {
+      "preact/compat": "preact/compat/dist/compat",
+      "preact/hooks": "preact/hooks/dist/hooks"
+    }
   },
   "repository": {
     "type": "git",
