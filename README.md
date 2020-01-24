@@ -1,8 +1,8 @@
-# react-to-webcomponent
+# react-to-can-webcomponent
 
-`react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share react components as native elements that __don't__ require mounted being through React. The custom element acts as a wrapper for the underlying react component. Use these custom elements in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
+`react-to-can-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share react components as native elements that __don't__ require mounted being through React. The custom element acts as a wrapper for the underlying react component. Use these custom elements in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
-`react-to-webcomponent`:
+`react-to-can-webcomponent`:
 
 - Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
 - Is `1.11KB` minified and gzipped.
@@ -13,16 +13,16 @@ Given a react component like:
 
 ```js
 class Greeting extends React.Component {
-  render() {
-    return <h1>Hello, {this.props.name}</h1>;
-  }
+	render() {
+		return <h1>Hello, {this.props.name}</h1>;
+	}
 }
 ```
 
 Call `reactToWebComponent` and [customElements.define](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define) as follows:
 
 ```js
-import reactToWebComponent from "react-to-webcomponent";
+import reactToWebComponent from "react-to-can-webcomponent";
 
 const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM);
 
@@ -62,13 +62,13 @@ work, you must specify your component's properties with
 
 ```js
 class Greeting extends React.Component {
-  render() {
-    return <h1>Hello, {this.props.name}</h1>;
-  }
+	render() {
+		return <h1>Hello, {this.props.name}</h1>;
+	}
 }
 
 Greeting.propTypes = {
-  name: PropTypes.string.isRequired
+	name: PropTypes.string.isRequired
 };
 ```
 
@@ -89,7 +89,7 @@ document.body.firstChild.innerHTML //-> "<h1>Hello, Amazed</h1>"
 To install from npm:
 
 ```
-npm i react-to-webcomponent
+npm i react-to-can-webcomponent
 ```
 
 #### CodePen
@@ -101,9 +101,9 @@ npm i react-to-webcomponent
 `reactToWebComponent(ReactComponent, React, ReactDOM)` takes the following:
 
 - `ReactComponent` - A react component that you want to
-  convert to a Web Component.
+	convert to a Web Component.
 - `React` - A version of React (or [preact-compat](https://preactjs.com/guide/v10/switching-to-preact)) the
-  component works with.
+	component works with.
 - `ReactDOM` - A version of ReactDOM (or preact-compat) that the component works with.
 
 A new class inheriting from `HTMLElement` is
@@ -144,7 +144,10 @@ customElements.define("web-greeting", WebGreeting);
 
 - re-renders the React component inside the custom element.
 - creates an enumerable getter / setter on the instance
-  to save the set value and avoid hitting the proxy in the future.
+	to save the set value and avoid hitting the proxy in the future.
+- sets up an observer to listen for observable properties that are read by the component.
+  (Note: this is the only difference between this library and 
+  [Bitovi's react-to-webcomponent library](https://github.com/bitovi/react-web-component) )
 
 Also:
 
