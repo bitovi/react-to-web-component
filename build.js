@@ -17,7 +17,7 @@ stealTools.export({
 			removeDevelopmentCode: false,
 			useNormalizedDependencies: true,
 			exports: {
-				"react-to-webcomponent": "reactToWebComponent"
+				"react-to-can-webcomponent": "reactToCanWebComponent"
 			},
 			normalize: function(depName, depLoad, curName, curLoad, loader){
 				return baseNormalize.call(this, depName, depLoad, curName, curLoad, loader, true);
