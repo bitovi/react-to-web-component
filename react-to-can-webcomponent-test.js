@@ -2,16 +2,15 @@ import QUnit from "steal-qunit";
 import React from 'react';
 import ReactDOM from "react-dom";
 import PropTypes from 'prop-types';
-import PreactCompat from "preact-compat";
+import PreactCompat from "preact/compat";
 import stache from "can-stache";
 import stacheBindings from "can-stache-bindings";
 import ObservableObject from "can-observable-object";
 import ObservableArray from "can-observable-array";
 
-
+import reactToWebComponent from "./react-to-can-webcomponent";
 stache.addBindings(stacheBindings);
 
-import reactToWebComponent from "./react-to-can-webcomponent";
 
 QUnit.module("react-to-can-webcomponent");
 
@@ -163,7 +162,6 @@ QUnit.test("works with nested properties of observable objects and arrays", func
 	}
 
 	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM) {}
-
 	customElements.define("nested-props-welcome", MyWelcome);
 
 	var fixture = document.getElementById("qunit-fixture");
@@ -196,7 +194,6 @@ QUnit.test("works with nested properties of observable objects and arrays", func
 
 	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, Ramiya Meyer", "can update object properties");
 	assert.equal(myWelcome.childNodes[1].innerHTML, "I see you like basketball and school", "can update array elements");
-
 });
 
 QUnit.test("subproperties update with can-stache and can-stache-bindings", function(assert){
@@ -233,4 +230,111 @@ QUnit.test("subproperties update with can-stache and can-stache-bindings", funct
 
 	person.name = "Cherif";
 	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, Cherif", "can update");	
+});
+
+QUnit.test("sibling subcomponents only update for their own changes", function(assert){
+	class Welcome extends React.Component {
+		render() {
+			return <h1>Hello, {
+				this.props.name.first
+			}</h1>;
+		}
+	}
+	class Farewell extends React.Component {
+		render() {
+			return <h1>Goodbye, Mr. {
+				this.props.name.last
+			}</h1>;
+		}
+	}
+
+	class HelloGoodbye extends React.Component {
+		render() {
+			return <section>
+				<Welcome name={this.props.name} />
+				<Farewell name={this.props.name} />
+			</section>
+		}
+	}
+
+	class MyHelloGoodbye extends reactToWebComponent(HelloGoodbye, React, ReactDOM) {}
+	customElements.define("can-hello-goodbye", MyHelloGoodbye);
+
+	var myHelloGoodbye = new MyHelloGoodbye();
+	myHelloGoodbye.name = new ObservableObject({
+		first: "Justin",
+		last: "Meyer",
+	});
+
+	var fixture = document.getElementById("qunit-fixture");
+	fixture.appendChild(myHelloGoodbye);
+
+	assert.equal(myHelloGoodbye.nodeName, "CAN-HELLO-GOODBYE", "able to read nodeName");
+	assert.equal(myHelloGoodbye.childNodes.length, 1, "able to render something");
+
+	assert.equal(myHelloGoodbye.firstElementChild.firstElementChild.innerHTML, "Hello, Justin", "can update");
+	assert.equal(myHelloGoodbye.firstElementChild.lastElementChild.innerHTML, "Goodbye, Mr. Meyer", "can update");
+
+	myHelloGoodbye.childNodes[0].firstElementChild.innerHTML = "Hello, Brad";
+	myHelloGoodbye.name.last = "Momberger";
+
+	assert.equal(myHelloGoodbye.firstElementChild.firstElementChild.innerHTML, "Hello, Brad", "doesn't rerender for no reason");
+	assert.equal(myHelloGoodbye.firstElementChild.lastElementChild.innerHTML, "Goodbye, Mr. Momberger", "rerenders on change");
+});
+
+QUnit.test("sibling wrapped components only update with their own changes", function(assert){
+	class Welcome extends React.Component {
+		render() {
+			return <h1>Hello, {
+				this.props.name.first
+			}</h1>;
+		}
+	}
+	Welcome.propTypes = {
+		name: PropTypes.object
+	};
+	class Farewell extends React.Component {
+		render() {
+			return <h1>Goodbye, Mr. {
+				this.props.name.last
+			}</h1>;
+		}
+	}
+	Farewell.propTypes = {
+		name: PropTypes.object
+	};
+
+	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM) {}
+	customElements.define("can-welcome-iii", MyWelcome);
+	class MyFarewell extends reactToWebComponent(Farewell, React, ReactDOM) {}
+	customElements.define("can-farewell", MyFarewell);
+
+	var tmpl = stache(`
+		<can-welcome-iii name:from="this" />
+		<can-farewell name:from="this" />
+	`)
+	var vm = new ObservableObject({
+		first: "Justin",
+		last: "Meyer",
+	});
+	var frag = tmpl(vm);
+
+	var fixture = document.getElementById("qunit-fixture");
+	fixture.appendChild(frag);
+	var myWelcome = fixture.firstElementChild;
+	var myFarewell = fixture.lastElementChild;
+
+	assert.equal(myWelcome.nodeName, "CAN-WELCOME-III", "able to read nodeName");
+	assert.equal(myWelcome.childNodes.length, 1, "able to render something");
+	assert.equal(myFarewell.nodeName, "CAN-FAREWELL", "able to read nodeName");
+	assert.equal(myFarewell.childNodes.length, 1, "able to render something");
+
+	assert.equal(myWelcome.firstElementChild.innerHTML, "Hello, Justin", "can update");
+	assert.equal(myFarewell.firstElementChild.innerHTML, "Goodbye, Mr. Meyer", "can update");
+
+	myWelcome.firstElementChild.innerHTML = "Hello, Brad";
+	vm.last = "Momberger";
+
+	assert.equal(myWelcome.firstElementChild.innerHTML, "Hello, Brad", "doesn't rerender for no reason");
+	assert.equal(myFarewell.firstElementChild.innerHTML, "Goodbye, Mr. Momberger", "rerenders on change");
 });

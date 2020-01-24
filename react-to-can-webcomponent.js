@@ -1,8 +1,8 @@
-import Observation from "can-observation";
+// TODO if ylem hooks branch is ever released, import use-observer from ylem instead.
+import useObserver from "./lib/use-observer";
 var reactComponentSymbol = Symbol.for("r2wc.reactComponent");
 var renderSymbol = Symbol.for("r2wc.reactRender");
 var shouldRenderSymbol = Symbol.for("r2wc.shouldRender");
-var observationSymbol = Symbol.for("r2wc.observation");
 
 var define = {
 	// Creates a getter/setter that re-renders everytime a property is set.
@@ -21,6 +21,7 @@ var define = {
 		receiver[renderSymbol]();
 	}
 }
+
 
 export default function(ReactComponent, React, ReactDOM) {
 	var renderAddedProperties = {isConnected: "isConnected" in HTMLElement.prototype};
@@ -74,15 +75,10 @@ export default function(ReactComponent, React, ReactDOM) {
 		// Once connected, it will keep updating the innerHTML.
 		// We could add a render method to allow this as well.
 		this[shouldRenderSymbol] = true;
-		// Also catch any sub-properties of observables which
-		//   are read while rendering the React component.
-		this[observationSymbol] = this[observationSymbol] || new Observation(() => {
-			this[renderSymbol]();
-		});
-		this[observationSymbol].on();
+		this[renderSymbol]();
 	};
 	targetPrototype.disconnectedCallback = function() {
-		this[observationSymbol].off();
+		this[shouldRenderSymbol] = false;
 	};
 
 	targetPrototype[renderSymbol] = function() {
@@ -94,7 +90,13 @@ export default function(ReactComponent, React, ReactDOM) {
 				}
 			}, this);
 			rendering = true;
-			this[reactComponentSymbol] = ReactDOM.render(React.createElement(ReactComponent, data), this);
+			this[reactComponentSymbol] = ReactDOM.render(
+				React.createElement(props => {
+					useObserver(React);
+					return React.createElement(ReactComponent, props);
+				}, data),
+				this
+			);
 			rendering = false;
 		}
 	};
