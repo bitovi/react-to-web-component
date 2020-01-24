@@ -7,13 +7,13 @@ var baseNormalize = globalJS.normalize();
 stealTools.export({
 	steal: {
 		config: __dirname + "/package.json!npm",
-		main: "react-to-webcomponent",
+		main: "react-to-can-webcomponent",
 	},
 	outputs: {
 		"global core": {
-			modules: ["react-to-webcomponent"],
+			modules: ["react-to-can-webcomponent"],
 			format: "global",
-			dest: __dirname + "/dist/react-to-webcomponent.js",
+			dest: __dirname + "/dist/react-to-can-webcomponent.js",
 			removeDevelopmentCode: false,
 			useNormalizedDependencies: true,
 			exports: {
