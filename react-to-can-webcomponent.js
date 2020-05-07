@@ -37,6 +37,11 @@ export default function(ReactComponent, React, ReactDOM) {
 	var targetPrototype = Object.create(HTMLElement.prototype);
 	targetPrototype.constructor = WebComponent;
 
+	var ObservedComponent = function(props) {
+		useObserver(React);
+		return React.createElement(ReactComponent, props);
+	};
+
 	// But have that prototype be wrapped in a proxy.
 	var proxyPrototype = new Proxy(targetPrototype, {
 		has: function (target, key) {
@@ -91,10 +96,7 @@ export default function(ReactComponent, React, ReactDOM) {
 			}, this);
 			rendering = true;
 			this[reactComponentSymbol] = ReactDOM.render(
-				React.createElement(props => {
-					useObserver(React);
-					return React.createElement(ReactComponent, props);
-				}, data),
+				React.createElement(ObservedComponent, data),
 				this
 			);
 			rendering = false;

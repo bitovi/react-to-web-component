@@ -16,7 +16,16 @@ QUnit.module("react-to-can-webcomponent");
 
 
 QUnit.test("basics with react", function(assert) {
+	var mountCount = 0;
+	var unmountCount = 0;
+
 	class Welcome extends React.Component {
+		componentDidMount() {
+			mountCount += 1;
+		}
+		componentWillUnmount() {
+			unmountCount += 1;
+		}
 		render() {
 			return <h1>Hello, {
 				this.props.name
@@ -42,6 +51,8 @@ QUnit.test("basics with react", function(assert) {
 	myWelcome.name = "Justin";
 
 	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, Justin", "can update");
+	assert.equal(mountCount, 1, "component has only been mounted once");
+	assert.equal(unmountCount, 0, "component has not been unmounted");
 
 });
 

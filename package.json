@@ -41,7 +41,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bitovi/react-to-can-webcomponent.git"
+    "url": "git+https://github.com/canjs/react-to-can-webcomponent.git"
   },
   "keywords": [
     "React",
@@ -51,7 +51,7 @@
   "author": "Bitovi",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bitovi/react-to-can-webcomponent/issues"
+    "url": "https://github.com/canjs/react-to-can-webcomponent/issues"
   },
-  "homepage": "https://github.com/bitovi/react-to-can-webcomponent#readme"
+  "homepage": "https://github.com/canjs/react-to-can-webcomponent#readme"
 }
