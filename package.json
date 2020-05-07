@@ -1,6 +1,6 @@
 {
   "name": "react-to-can-webcomponent",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Convert react components to native Web Components that work with CanJS.",
   "main": "react-to-can-webcomponent",
   "dependencies": {
