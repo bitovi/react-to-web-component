@@ -67,7 +67,7 @@ QUnit.test("works with attributes set with propTypes", function(assert) {
 	var oldError = console.error;
 	console.error = function(message) {
 		assert.ok(message.includes("required"), "got a warning with required");
-		oldError = console.error;
+		console.error = oldError;
 	}
 	fixture.appendChild(myGreeting);
 
@@ -78,6 +78,29 @@ QUnit.test("works with attributes set with propTypes", function(assert) {
 	assert.equal(fixture.firstElementChild.innerHTML, "<h1>Hello, Christopher</h1>");
 
 
+
+});
+
+QUnit.test("works with no props", function(assert) {
+	class Greeting extends React.Component {
+		render() {
+			return <h1>Hello, unnamed user</h1>;
+		}
+	}
+
+	var MyGreeting = reactToWebComponent(Greeting, React, ReactDOM)
+
+	customElements.define("my-plain-greeting", MyGreeting);
+
+	var fixture = document.getElementById("qunit-fixture");
+
+	var myGreeting = new MyGreeting();
+
+	fixture.appendChild(myGreeting);
+
+	fixture.innerHTML = "<my-plain-greeting></my-plain-greeting>";
+
+	assert.equal(fixture.firstElementChild.innerHTML, "<h1>Hello, unnamed user</h1>");
 
 });
 

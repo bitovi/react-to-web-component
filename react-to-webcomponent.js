@@ -60,6 +60,9 @@ export default function(ReactComponent, React, ReactDOM) {
 			if(own) {
 				return own;
 			}
+			if (!ReactComponent.propTypes) {
+				return undefined;
+			}
 			if(key in ReactComponent.propTypes) {
 				return { configurable: true, enumerable: true, writable: true, value: undefined };
 			}
