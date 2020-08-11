@@ -81,7 +81,7 @@ QUnit.test("works with attributes set with propTypes", function(assert) {
 
 });
 
-QUnit.test("works with no props", function(assert) {
+QUnit.test("works with no propTypes", function(assert) {
 	class Greeting extends React.Component {
 		render() {
 			return <h1>Hello, unnamed user</h1>;
