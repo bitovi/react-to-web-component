@@ -98,13 +98,15 @@ npm i react-to-webcomponent
 
 ## API
 
-`reactToWebComponent(ReactComponent, React, ReactDOM)` takes the following:
+`reactToWebComponent(ReactComponent, React, ReactDOM, options)` takes the following:
 
 - `ReactComponent` - A react component that you want to
   convert to a Web Component.
 - `React` - A version of React (or [preact-compat](https://preactjs.com/guide/v10/switching-to-preact)) the
   component works with.
 - `ReactDOM` - A version of ReactDOM (or preact-compat) that the component works with.
+- `options` - An optional set of parameters.
+- `options.shadow` - Use shadow DOM rather than light DOM.
 
 A new class inheriting from `HTMLElement` is
 returned. This class can be directly passed to `customElements.define` as follows:
@@ -136,6 +138,19 @@ class WebGreeting extends reactToWebComponent(Greeting, React, ReactDOM)
 	}
 }
 customElements.define("web-greeting", WebGreeting);
+```
+
+Components can also be implemented using [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM).
+
+```js
+const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM, { shadow: true });
+
+customElements.define("web-greeting", WebGreeting);
+
+var myGreeting = new WebGreeting();
+document.body.appendChild(myGreeting);
+
+var shadowContent = myGreeting.shadowRoot.children[0];
 ```
 
 ### How it works

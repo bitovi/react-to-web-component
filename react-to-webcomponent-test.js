@@ -144,3 +144,38 @@ QUnit.test("works within can-stache and can-stache-bindings (propTypes are writa
 
 	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, Bohdi", "can update");
 });
+
+
+QUnit.test("works with shadow DOM `options.shadow === true`", function(assert) {
+	class Welcome extends React.Component {
+		render() {
+			return <h1>Hello, {
+				this.props.name
+			}</h1>;
+		}
+	}
+	Welcome.propTypes = {
+		user: PropTypes.string
+	};
+
+	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM, { shadow: true }) {}
+	
+	customElements.define("my-shadow-welcome", MyWelcome);
+
+	var fixture = document.getElementById("qunit-fixture");
+
+	var myWelcome = new MyWelcome();
+	fixture.appendChild(myWelcome);
+
+	assert.true(myWelcome.shadowRoot !== undefined, "shadow DOM is attached");
+
+	assert.equal(myWelcome.shadowRoot.children.length, 1, "able to render something in shadow DOM")
+
+	var child = myWelcome.shadowRoot.childNodes[0];
+	assert.equal(child.tagName, "H1", "renders the right tag name");
+	assert.equal(child.innerHTML, "Hello, ", "renders the right content");
+
+	myWelcome.name = "Justin";
+	child = myWelcome.shadowRoot.childNodes[0]
+	assert.equal(child.innerHTML, "Hello, Justin", "can update");
+});			
