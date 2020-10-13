@@ -13,7 +13,6 @@ var define = {
 			set: function(newValue) {
 				value = newValue;
 				this[renderSymbol]();
-				return true;
 			}
 		});
 		receiver[renderSymbol]();

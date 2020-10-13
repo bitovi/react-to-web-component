@@ -6,8 +6,13 @@
   "dependencies": {},
   "devDependencies": {
     "@webcomponents/custom-elements": "^1.2.4",
+    "babel-eslint": "^10.1.0",
     "can-stache": "^4.17.20",
     "can-stache-bindings": "^4.10.9",
+    "detect-cyclic-packages": "^1.1.0",
+    "eslint": "^7.11.0",
+    "eslint-plugin-react": "^7.21.4",
+    "http-server": "^0.11.1",
     "preact": "^8.5.2",
     "preact-compat": "^3.19.0",
     "prop-types": "^15.7.2",
@@ -15,7 +20,9 @@
     "react-dom": "^16.9.0",
     "steal": "^2.2.2",
     "steal-qunit": "^2.0.0",
-    "steal-tools": "^2.2.2"
+    "steal-tools": "^2.2.2",
+    "test-saucelabs": "0.0.6",
+    "testee": "^0.9.0"
   },
   "scripts": {
     "build": "node build.js",
@@ -24,7 +31,11 @@
     "postpublish": "git push --tags && git checkout master && git branch -D release && git push origin master",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
-    "release:major": "npm version major && npm publish"
+    "release:major": "npm version major && npm publish",
+    "test": "npm run detect-cycle && npm run eslint && npm run testee",
+    "detect-cycle": "detect-cyclic-packages",
+    "eslint": "eslint ./*.js",
+    "testee": "testee test.html --browsers firefox"
   },
   "repository": {
     "type": "git",

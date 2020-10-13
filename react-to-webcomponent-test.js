@@ -64,10 +64,8 @@ QUnit.test("works with attributes set with propTypes", function(assert) {
 
 	var myGreeting = new MyGreeting();
 
-	var oldError = console.error;
 	console.error = function(message) {
 		assert.ok(message.includes("required"), "got a warning with required");
-		oldError = console.error;
 	}
 	fixture.appendChild(myGreeting);
 
