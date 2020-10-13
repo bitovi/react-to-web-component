@@ -2,11 +2,7 @@ language: node_js
 node_js: node
 addons:
   firefox: latest
-  sauce_connect: true
 dist: xenial
 services:
   - xvfb
-before_script:
-  - npm run http-server &
-  - sleep 2
 script: npm run ci
