@@ -13,19 +13,28 @@ var define = {
 			set: function(newValue) {
 				value = newValue;
 				this[renderSymbol]();
-				return true;
 			}
 		});
 		receiver[renderSymbol]();
 	}
 }
 
-export default function(ReactComponent, React, ReactDOM) {
+
+/**
+ * Converts a React component into a webcomponent by wrapping it in a Proxy object.
+ * @param {ReactComponent}
+ * @param {React}
+ * @param {ReactDOM}
+ * @param {Object} options - Optional parameters
+ * @param {String?} options.shadow - Use shadow DOM rather than light DOM.
+ */
+export default function(ReactComponent, React, ReactDOM, options= {}) {
 	var renderAddedProperties = {isConnected: "isConnected" in HTMLElement.prototype};
 	var rendering = false;
 	// Create the web component "class"
 	var WebComponent = function() {
 		var self = Reflect.construct(HTMLElement, arguments, this.constructor);
+		self.attachShadow({ mode: 'open' });
 		return self;
 	};
 
@@ -43,7 +52,7 @@ export default function(ReactComponent, React, ReactDOM) {
 
 		// when any undefined property is set, create a getter/setter that re-renders
 		set: function(target, key, value, receiver) {
-			if(rendering) {
+			if (rendering) {
 				renderAddedProperties[key] = true;
 			}
 
@@ -57,10 +66,10 @@ export default function(ReactComponent, React, ReactDOM) {
 		// makes sure the property looks writable
 		getOwnPropertyDescriptor: function(target, key){
 			var own = Reflect.getOwnPropertyDescriptor(target, key);
-			if(own) {
+			if (own) {
 				return own;
 			}
-			if(key in ReactComponent.propTypes) {
+			if (key in ReactComponent.propTypes) {
 				return { configurable: true, enumerable: true, writable: true, value: undefined };
 			}
 		}
@@ -83,7 +92,10 @@ export default function(ReactComponent, React, ReactDOM) {
 				}
 			}, this);
 			rendering = true;
-			this[reactComponentSymbol] = ReactDOM.render(React.createElement(ReactComponent, data), this);
+			// Container is either shadow DOM or light DOM depending on `shadow` option.
+			const container = options.shadow ? this.shadowRoot : this;
+			// Use react to render element in container
+			this[reactComponentSymbol] = ReactDOM.render(React.createElement(ReactComponent, data), container);
 			rendering = false;
 		}
 	};

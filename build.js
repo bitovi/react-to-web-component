@@ -1,4 +1,3 @@
-
 var stealTools = require("steal-tools");
 
 var globalJS = require("steal-tools/lib/build/helpers/global").js;
