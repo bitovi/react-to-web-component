@@ -34,7 +34,9 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 	// Create the web component "class"
 	var WebComponent = function() {
 		var self = Reflect.construct(HTMLElement, arguments, this.constructor);
-		self.attachShadow({ mode: 'open' });
+		if (options.shadow) {
+			self.attachShadow({ mode: 'open' });
+		}
 		return self;
 	};
 
