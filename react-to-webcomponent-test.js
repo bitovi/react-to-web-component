@@ -177,29 +177,3 @@ QUnit.test("works with shadow DOM `options.shadow === true`", function(assert) {
 	child = myWelcome.shadowRoot.childNodes[0]
 	assert.equal(child.innerHTML, "Hello, Justin", "can update");
 });
-
-QUnit.test('It works without shadow option set to "true"', function(assert) {
-	class Welcome extends React.Component {
-		render() {
-			return <h1>Hello, {
-				this.props.name
-			}</h1>;
-		}
-	}
-	Welcome.propTypes = {
-		user: PropTypes.string
-	};
-
-	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM) {}
-	
-	customElements.define("my-noshadow-welcome", MyWelcome);
-
-	var fixture = document.getElementById("qunit-fixture");
-
-	var myWelcome = new MyWelcome();
-	fixture.appendChild(myWelcome);
-
-	assert.true(myWelcome.shadowRoot === null, "shadow DOM is not attached");
-
-	// assert.equal(myWelcome.shadowRoot.children.length, 0, "able to render something in shadow DOM");
-});
