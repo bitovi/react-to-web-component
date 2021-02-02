@@ -203,3 +203,59 @@ QUnit.test('It works without shadow option set to "true"', function(assert) {
 
 	// assert.equal(myWelcome.shadowRoot.children.length, 0, "able to render something in shadow DOM");
 });
+
+QUnit.test('Converts text child nodes to react.props.children', function(assert) {
+	class Welcome extends React.Component {
+		render() {
+			return <h1>Hello, {this.props.children}</h1>;
+		}
+	}
+	Welcome.propTypes = {
+		children: PropTypes.oneOfType([
+			PropTypes.arrayOf(PropTypes.node),
+			PropTypes.node
+		]).isRequired
+	};
+
+	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM) {}
+
+	customElements.define("my-haschildren-welcome", MyWelcome);
+
+	var fixture = document.getElementById("qunit-fixture");
+
+	var myWelcome = document.createElement('my-haschildren-welcome');
+	myWelcome.innerHTML = "phrase goes here"
+	fixture.appendChild(myWelcome);
+
+	assert.equal(myWelcome.childNodes.length, 1, "able to render something")
+
+	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, phrase goes here", "renders the right thing");
+});
+
+QUnit.test('Converts nested html child nodes to react.props.children', function(assert) {
+	class Welcome extends React.Component {
+		render() {
+			return <h1>Hello, {this.props.children}</h1>;
+		}
+	}
+	Welcome.propTypes = {
+		children: PropTypes.oneOfType([
+			PropTypes.arrayOf(PropTypes.node),
+			PropTypes.node
+		]).isRequired
+	};
+
+	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM) {}
+
+	customElements.define("my-hasnestedchildren-welcome", MyWelcome);
+
+	var fixture = document.getElementById("qunit-fixture");
+
+	var myWelcome = document.createElement('my-hasnestedchildren-welcome');
+	myWelcome.innerHTML = "<b>phrase goes here</b>"
+	fixture.appendChild(myWelcome);
+
+	assert.equal(myWelcome.childNodes.length, 1, "able to render something")
+
+	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, <b>phrase goes here</b>", "renders the right thing");
+});

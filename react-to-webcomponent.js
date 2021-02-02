@@ -19,6 +19,21 @@ var define = {
 	}
 }
 
+function isAllCaps(word) {
+	return word.split('').every(c => c.toUpperCase() === c);
+}
+
+function mapChildren(React, node) {
+	if (!node.children || !node.children.length) {
+		return node.innerHTML;
+	}
+	return Array.from(node.children).map(c => {
+		// BR = br, ReactElement = ReactElement
+		var nodeName = isAllCaps(c.nodeName) ? c.nodeName.toLowerCase() : c.nodeName;
+		var children = mapChildren(React, c);
+		return React.createElement(nodeName, c.attributes, children)
+	});
+}
 
 /**
  * Converts a React component into a webcomponent by wrapping it in a Proxy object.
@@ -97,7 +112,7 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 			// Container is either shadow DOM or light DOM depending on `shadow` option.
 			const container = options.shadow ? this.shadowRoot : this;
 			// Use react to render element in container
-			this[reactComponentSymbol] = ReactDOM.render(React.createElement(ReactComponent, data), container);
+			this[reactComponentSymbol] = ReactDOM.render(React.createElement(ReactComponent, data, mapChildren(React, this)), container);
 			rendering = false;
 		}
 	};
