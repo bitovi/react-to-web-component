@@ -23,16 +23,30 @@ function isAllCaps(word) {
 	return word.split('').every(c => c.toUpperCase() === c);
 }
 
-function mapChildren(React, node) {
-	if (!node.children || !node.children.length) {
-		return node.innerHTML;
+function flattenIfOne(arr) {
+	if (!Array.isArray(arr)) {
+		return arr;
 	}
-	return Array.from(node.children).map(c => {
+	if (arr.length === 1) {
+		return arr[0];
+	}
+	return arr;
+}
+
+function mapChildren(React, node) {
+	if (node.nodeType === Node.TEXT_NODE) {
+		return node.textContent.toString();
+	}
+
+	return flattenIfOne(Array.from(node.childNodes).map(c => {
+		if (c.nodeType === Node.TEXT_NODE) {
+			return c.textContent.toString();
+		}
 		// BR = br, ReactElement = ReactElement
 		var nodeName = isAllCaps(c.nodeName) ? c.nodeName.toLowerCase() : c.nodeName;
-		var children = mapChildren(React, c);
-		return React.createElement(nodeName, c.attributes, children)
-	});
+		var children = flattenIfOne(mapChildren(React, c));
+		return React.createElement(nodeName, c.attributes, children);
+	}));
 }
 
 /**
@@ -111,8 +125,10 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 			rendering = true;
 			// Container is either shadow DOM or light DOM depending on `shadow` option.
 			const container = options.shadow ? this.shadowRoot : this;
+			Array.from(this.attributes).forEach(function(attr) { data[attr.name] = attr.nodeValue; });
+			const children = flattenIfOne(mapChildren(React, this));
 			// Use react to render element in container
-			this[reactComponentSymbol] = ReactDOM.render(React.createElement(ReactComponent, data, mapChildren(React, this)), container);
+			this[reactComponentSymbol] = ReactDOM.render(React.createElement(ReactComponent, data, children), container);
 			rendering = false;
 		}
 	};
