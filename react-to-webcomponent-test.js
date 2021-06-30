@@ -14,16 +14,16 @@ import reactToWebComponent from "./react-to-webcomponent";
 QUnit.module("react-to-webcomponent");
 
 
-QUnit.test("basics with react", function(assert) {
+QUnit.test("basics with react", function (assert) {
 	class Welcome extends React.Component {
 		render() {
 			return <h1>Hello, {
 				this.props.name
-			}< /h1>;
+			}</h1>;
 		}
 	}
 
-	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM) {}
+	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM) { }
 
 	customElements.define("my-welcome", MyWelcome);
 
@@ -44,12 +44,12 @@ QUnit.test("basics with react", function(assert) {
 
 });
 
-QUnit.test("works with attributes set with propTypes", function(assert) {
+QUnit.test("works with attributes set with propTypes", function (assert) {
 	class Greeting extends React.Component {
 		render() {
 			return <h1 >Hello, {
 				this.props.name
-			}< /h1>;
+			}</h1>;
 		}
 	}
 	Greeting.propTypes = {
@@ -64,7 +64,7 @@ QUnit.test("works with attributes set with propTypes", function(assert) {
 
 	var myGreeting = new MyGreeting();
 
-	console.error = function(message) {
+	console.error = function (message) {
 		assert.ok(message.includes("required"), "got a warning with required");
 	}
 	fixture.appendChild(myGreeting);
@@ -79,18 +79,18 @@ QUnit.test("works with attributes set with propTypes", function(assert) {
 
 });
 
-QUnit.test("basics with preact", function(assert){
+QUnit.test("basics with preact", function (assert) {
 
 	class Welcome extends React.Component {
 		render() {
-			return PreactCompat.createElement("h1",null,[
+			return PreactCompat.createElement("h1", null, [
 				"Hello, ",
 				this.props.name
 			]);
 		}
 	}
 
-	class MyWelcome extends reactToWebComponent(Welcome, PreactCompat, PreactCompat) {}
+	class MyWelcome extends reactToWebComponent(Welcome, PreactCompat, PreactCompat) { }
 
 	customElements.define("preact-welcome", MyWelcome);
 
@@ -110,7 +110,7 @@ QUnit.test("basics with preact", function(assert){
 	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, Justin", "can update");
 })
 
-QUnit.test("works within can-stache and can-stache-bindings (propTypes are writable)", function(assert){
+QUnit.test("works within can-stache and can-stache-bindings (propTypes are writable)", function (assert) {
 	class Welcome extends React.Component {
 		render() {
 			return <h1>Hello, {
@@ -122,13 +122,13 @@ QUnit.test("works within can-stache and can-stache-bindings (propTypes are writa
 		user: PropTypes.object
 	};
 
-	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM) {}
+	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM) { }
 
 	customElements.define("can-welcome", MyWelcome);
 
 	var view = stache("<can-welcome user:from='this.person'/>");
 	var frag = view({
-		person: {name: "Bohdi"}
+		person: { name: "Bohdi" }
 	});
 
 
@@ -144,7 +144,7 @@ QUnit.test("works within can-stache and can-stache-bindings (propTypes are writa
 });
 
 
-QUnit.test("works with shadow DOM `options.shadow === true`", function(assert) {
+QUnit.test("works with shadow DOM `options.shadow === true`", function (assert) {
 	class Welcome extends React.Component {
 		render() {
 			return <h1>Hello, {
@@ -156,8 +156,8 @@ QUnit.test("works with shadow DOM `options.shadow === true`", function(assert) {
 		user: PropTypes.string
 	};
 
-	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM, { shadow: true }) {}
-	
+	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM, { shadow: true }) { }
+
 	customElements.define("my-shadow-welcome", MyWelcome);
 
 	var fixture = document.getElementById("qunit-fixture");
@@ -178,7 +178,7 @@ QUnit.test("works with shadow DOM `options.shadow === true`", function(assert) {
 	assert.equal(child.innerHTML, "Hello, Justin", "can update");
 });
 
-QUnit.test('It works without shadow option set to "true"', function(assert) {
+QUnit.test('It works without shadow option set to "true"', function (assert) {
 	class Welcome extends React.Component {
 		render() {
 			return <h1>Hello, {
@@ -190,8 +190,8 @@ QUnit.test('It works without shadow option set to "true"', function(assert) {
 		user: PropTypes.string
 	};
 
-	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM) {}
-	
+	class MyWelcome extends reactToWebComponent(Welcome, React, ReactDOM) { }
+
 	customElements.define("my-noshadow-welcome", MyWelcome);
 
 	var fixture = document.getElementById("qunit-fixture");
@@ -202,4 +202,36 @@ QUnit.test('It works without shadow option set to "true"', function(assert) {
 	assert.true(myWelcome.shadowRoot === null, "shadow DOM is not attached");
 
 	// assert.equal(myWelcome.shadowRoot.children.length, 0, "able to render something in shadow DOM");
+});
+
+QUnit.test('It works with dashed attributes styled set to "true"', function (assert) {
+	class Greeting extends React.Component {
+		render() {
+			return <h1 >Hello, {
+				this.props.camelCaseName
+			}</h1>;
+		}
+	}
+	Greeting.propTypes = {
+		camelCaseName: PropTypes.string.isRequired
+	};
+
+	var MyGreeting = reactToWebComponent(Greeting, React, ReactDOM, { dashStyleAttributes: true })
+
+	customElements.define("my-dashed-style-greeting", MyGreeting);
+
+	var fixture = document.getElementById("qunit-fixture");
+
+	var myGreeting = new MyGreeting();
+
+	console.error = function (message) {
+		assert.ok(message.includes("required"), "got a warning with required");
+	}
+	fixture.appendChild(myGreeting);
+
+
+
+	fixture.innerHTML = "<my-dashed-style-greeting camel-case-name='Christopher'></my-dashed-style-greetingg>";
+
+	assert.equal(fixture.firstElementChild.innerHTML, "<h1>Hello, Christopher</h1>");
 });
