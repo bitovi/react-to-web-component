@@ -45,6 +45,9 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 	var targetPrototype = Object.create(HTMLElement.prototype);
 	targetPrototype.constructor = WebComponent;
 
+	// Container is either shadow DOM or light DOM depending on `shadow` option.
+	const container = options.shadow? targetPrototype.shadowRoot: targetPrototype;
+
 	// But have that prototype be wrapped in a proxy.
 	var proxyPrototype = new Proxy(targetPrototype, {
 		has: function (target, key) {
@@ -85,6 +88,12 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 		this[shouldRenderSymbol] = true;
 		this[renderSymbol]();
 	};
+
+	targetPrototype.disconnectedCallback = function () {
+		// Once disconnected, unmount the component.
+		ReactDOM.unmountComponentAtNode(this);
+	};
+
 	targetPrototype[renderSymbol] = function() {
 		if (this[shouldRenderSymbol] === true) {
 			var data = {};
@@ -94,8 +103,6 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 				}
 			}, this);
 			rendering = true;
-			// Container is either shadow DOM or light DOM depending on `shadow` option.
-			const container = options.shadow ? this.shadowRoot : this;
 			// Use react to render element in container
 			this[reactComponentSymbol] = ReactDOM.render(React.createElement(ReactComponent, data), container);
 			rendering = false;
