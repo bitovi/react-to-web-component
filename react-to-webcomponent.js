@@ -1,3 +1,4 @@
+
 var reactComponentSymbol = Symbol.for("r2wc.reactComponent");
 var renderSymbol = Symbol.for("r2wc.reactRender");
 var shouldRenderSymbol = Symbol.for("r2wc.shouldRender");
@@ -27,15 +28,18 @@ var define = {
  * @param {ReactDOM}
  * @param {Object} options - Optional parameters
  * @param {String?} options.shadow - Use shadow DOM rather than light DOM.
+ * @param {String?} options.shadowMode - Set shadow mode as either open or closed
  */
 export default function(ReactComponent, React, ReactDOM, options= {}) {
 	var renderAddedProperties = {isConnected: "isConnected" in HTMLElement.prototype};
 	var rendering = false;
+	var rendering = false;
 	// Create the web component "class"
 	var WebComponent = function() {
+		var shadowModes = ['open', 'closed'];
 		var self = Reflect.construct(HTMLElement, arguments, this.constructor);
 		if (options.shadow) {
-			self.attachShadow({ mode: 'open' });
+			self._shadowRoot = self.attachShadow({ mode: shadowModes.includes(options.shadowMode)? options.shadowMode : 'open' });
 		}
 		return self;
 	};
@@ -95,7 +99,8 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 			}, this);
 			rendering = true;
 			// Container is either shadow DOM or light DOM depending on `shadow` option.
-			const container = options.shadow ? this.shadowRoot : this;
+			const container = options.shadow ? this._shadowRoot : this;
+			this._shadowRoot = null;
 			// Use react to render element in container
 			this[reactComponentSymbol] = ReactDOM.render(React.createElement(ReactComponent, data), container);
 			rendering = false;
