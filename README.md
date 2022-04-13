@@ -1,6 +1,6 @@
 # react-to-webcomponent
 
-`react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share react components as native elements that __don't__ require mounted being through React. The custom element acts as a wrapper for the underlying react component. Use these custom elements in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
+`react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share react components as native elements that **don't** require mounted being through React. The custom element acts as a wrapper for the underlying react component. Use these custom elements in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
 `react-to-webcomponent`:
 
@@ -13,9 +13,9 @@ Given a react component like:
 
 ```js
 class Greeting extends React.Component {
-  render() {
-    return <h1>Hello, {this.props.name}</h1>;
-  }
+	render() {
+		return <h1>Hello, {this.props.name}</h1>;
+	}
 }
 ```
 
@@ -29,7 +29,6 @@ const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM);
 customElements.define("web-greeting", WebGreeting);
 ```
 
-
 Now you can use `<web-greeting>` like any other HTML element!
 
 You can create it programatically:
@@ -40,7 +39,7 @@ webGreeting.name = "StandardsFan";
 
 document.body.append(webGreeting);
 
-webGreeting.innerHTML //-> "<h1>Hello, StandardsFan</h1>"
+webGreeting.innerHTML; //-> "<h1>Hello, StandardsFan</h1>"
 ```
 
 Or you can use it declaratively:
@@ -50,7 +49,7 @@ document.body.innerHTML = "<web-greeting></web-greeting>";
 
 document.body.firstChild.name = "CoolBeans";
 
-document.body.firstChild.innerHTML //-> "<h1>Hello, CoolBeans</h1>"
+document.body.firstChild.innerHTML; //-> "<h1>Hello, CoolBeans</h1>"
 ```
 
 ### Working with Attributes
@@ -62,13 +61,13 @@ work, you must specify your component's properties with
 
 ```js
 class Greeting extends React.Component {
-  render() {
-    return <h1>Hello, {this.props.name}</h1>;
-  }
+	render() {
+		return <h1>Hello, {this.props.name}</h1>;
+	}
 }
 
 Greeting.propTypes = {
-  name: PropTypes.string.isRequired
+	name: PropTypes.string.isRequired,
 };
 ```
 
@@ -78,9 +77,8 @@ as follows:
 ```js
 document.body.innerHTML = "<web-greeting name='Amazed'></web-greeting>";
 
-document.body.firstChild.innerHTML //-> "<h1>Hello, Amazed</h1>"
+document.body.firstChild.innerHTML; //-> "<h1>Hello, Amazed</h1>"
 ```
-
 
 ## Setup
 
@@ -112,8 +110,10 @@ A new class inheriting from `HTMLElement` is
 returned. This class can be directly passed to `customElements.define` as follows:
 
 ```js
-customElements.define("web-greeting",
-	reactToWebComponent(Greeting, React, ReactDOM) );
+customElements.define(
+	"web-greeting",
+	reactToWebComponent(Greeting, React, ReactDOM)
+);
 ```
 
 Or the class can be defined and used later:
@@ -130,9 +130,8 @@ document.body.appendChild(myGreeting);
 Or the class can be extended:
 
 ```js
-class WebGreeting extends reactToWebComponent(Greeting, React, ReactDOM)
-{
-	disconnectedCallback(){
+class WebGreeting extends reactToWebComponent(Greeting, React, ReactDOM) {
+	disconnectedCallback() {
 		super.disconnectedCallback();
 		// special stuff
 	}
@@ -143,7 +142,9 @@ customElements.define("web-greeting", WebGreeting);
 Components can also be implemented using [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM).
 
 ```js
-const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM, { shadow: true });
+const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM, {
+	shadow: true,
+});
 
 customElements.define("web-greeting", WebGreeting);
 
@@ -151,6 +152,22 @@ var myGreeting = new WebGreeting();
 document.body.appendChild(myGreeting);
 
 var shadowContent = myGreeting.shadowRoot.children[0];
+```
+
+Shadow modes can be implemented by passing `open` or `closed` to `shadowMode` prop.
+
+```js
+const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM, {
+	shadow: true,
+	shadowMode: "closed",
+});
+
+customElements.define("web-greeting", WebGreeting);
+
+var myGreeting = new WebGreeting();
+document.body.appendChild(myGreeting);
+
+var shadowContent = myGreeting.shadowRoot; //=> null
 ```
 
 ### How it works
