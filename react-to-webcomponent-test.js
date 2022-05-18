@@ -19,7 +19,7 @@ QUnit.test("basics with react", function(assert) {
 		render() {
 			return <h1>Hello, {
 				this.props.name
-			}< /h1>;
+			}</h1>;
 		}
 	}
 
@@ -49,7 +49,7 @@ QUnit.test("works with attributes set with propTypes", function(assert) {
 		render() {
 			return <h1 >Hello, {
 				this.props.name
-			}< /h1>;
+			}</h1>;
 		}
 	}
 	Greeting.propTypes = {
@@ -202,4 +202,31 @@ QUnit.test('It works without shadow option set to "true"', function(assert) {
 	assert.true(myWelcome.shadowRoot === null, "shadow DOM is not attached");
 
 	// assert.equal(myWelcome.shadowRoot.children.length, 0, "able to render something in shadow DOM");
+});
+
+
+QUnit.test("mounts and unmounts underlying react component", function (assert) {
+	assert.expect(2);
+
+	class RCom extends React.Component {
+		componentDidMount () {
+			assert.ok(true, "mounted")
+		}
+
+		componentWillUnmount () {
+			assert.ok(true, "unmounted")
+		}
+
+		render () {
+			return <h1>Hello, Goodbye</h1>;
+		}
+	}
+
+	class WebCom extends reactToWebComponent(RCom, React, ReactDOM) {}
+	customElements.define("mount-unmount", WebCom);
+	var webCom = new WebCom();
+
+	var fixture = document.getElementById("qunit-fixture");
+	fixture.appendChild(webCom);
+	fixture.removeChild(webCom);
 });
