@@ -107,6 +107,7 @@ npm i react-to-webcomponent
 - `ReactDOM` - A version of ReactDOM (or preact-compat) that the component works with.
 - `options` - An optional set of parameters.
 - `options.shadow` - Use shadow DOM rather than light DOM.
+- `options.dashStyleAttributes` - convert dashed-attirbutes on the web component into camelCase props for the react component
 
 A new class inheriting from `HTMLElement` is
 returned. This class can be directly passed to `customElements.define` as follows:
@@ -151,6 +152,26 @@ var myGreeting = new WebGreeting();
 document.body.appendChild(myGreeting);
 
 var shadowContent = myGreeting.shadowRoot.children[0];
+```
+
+Using dashStyleAttributes to convert dashed-attributes into camelCase react props
+
+```js
+class Greeting extends React.Component {
+  render () { return <h1>Hello, { this.props.camelCaseName }</h1>; }
+}
+Greeting.propTypes = {
+  camelCaseName: PropTypes.string.isRequired
+};
+
+customElements.define(
+  "my-dashed-style-greeting",
+  reactToWebComponent(Greeting, React, ReactDOM, { dashStyleAttributes: true })
+);
+
+document.body.innerHTML = "<my-dashed-style-greeting camel-case-name='Christopher'></my-dashed-style-greetingg>";
+
+console.log(document.body.firstElementChild.innerHTML) // "<h1>Hello, Christopher</h1>"
 ```
 
 ### How it works
