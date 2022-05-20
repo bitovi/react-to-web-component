@@ -2,15 +2,23 @@ var reactComponentSymbol = Symbol.for("r2wc.reactComponent");
 var renderSymbol = Symbol.for("r2wc.reactRender");
 var shouldRenderSymbol = Symbol.for("r2wc.shouldRender");
 
+function toDashedStyle(camelCase = "") {
+	return camelCase.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+}
+
+function toCamelCaseStyle(dashedStyle = "") {
+	return dashedStyle.replace(/-([a-z0-9])/g, function (g) { return g[1].toUpperCase() });
+}
+
 var define = {
 	// Creates a getter/setter that re-renders everytime a property is set.
-	expando: function(receiver, key, value) {
+	expando: function (receiver, key, value) {
 		Object.defineProperty(receiver, key, {
 			enumerable: true,
-			get: function() {
+			get: function () {
 				return value;
 			},
-			set: function(newValue) {
+			set: function (newValue) {
 				value = newValue;
 				this[renderSymbol]();
 			}
@@ -19,7 +27,6 @@ var define = {
 	}
 }
 
-
 /**
  * Converts a React component into a webcomponent by wrapping it in a Proxy object.
  * @param {ReactComponent}
@@ -27,12 +34,13 @@ var define = {
  * @param {ReactDOM}
  * @param {Object} options - Optional parameters
  * @param {String?} options.shadow - Use shadow DOM rather than light DOM.
+ * @param {String?} options.dashStyleAttributes - Use dashed style of attributes to reflect camelCase properties
  */
-export default function(ReactComponent, React, ReactDOM, options= {}) {
-	var renderAddedProperties = {isConnected: "isConnected" in HTMLElement.prototype};
+export default function (ReactComponent, React, ReactDOM, options = {}) {
+	var renderAddedProperties = { isConnected: "isConnected" in HTMLElement.prototype };
 	var rendering = false;
 	// Create the web component "class"
-	var WebComponent = function() {
+	var WebComponent = function () {
 		var self = Reflect.construct(HTMLElement, arguments, this.constructor);
 		if (options.shadow) {
 			self.attachShadow({ mode: 'open' });
@@ -53,7 +61,7 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 		},
 
 		// when any undefined property is set, create a getter/setter that re-renders
-		set: function(target, key, value, receiver) {
+		set: function (target, key, value, receiver) {
 			if (rendering) {
 				renderAddedProperties[key] = true;
 			}
@@ -66,7 +74,7 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 			return true;
 		},
 		// makes sure the property looks writable
-		getOwnPropertyDescriptor: function(target, key){
+		getOwnPropertyDescriptor: function (target, key) {
 			var own = Reflect.getOwnPropertyDescriptor(target, key);
 			if (own) {
 				return own;
@@ -79,7 +87,7 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 	WebComponent.prototype = proxyPrototype;
 
 	// Setup lifecycle methods
-	targetPrototype.connectedCallback = function() {
+	targetPrototype.connectedCallback = function () {
 		// Once connected, it will keep updating the innerHTML.
 		// We could add a render method to allow this as well.
 		this[shouldRenderSymbol] = true;
@@ -88,10 +96,10 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 	targetPrototype.disconnectedCallback = function () {
 		ReactDOM.unmountComponentAtNode(this)
 	}
-	targetPrototype[renderSymbol] = function() {
+	targetPrototype[renderSymbol] = function () {
 		if (this[shouldRenderSymbol] === true) {
 			var data = {};
-			Object.keys(this).forEach(function(key) {
+			Object.keys(this).forEach(function (key) {
 				if (renderAddedProperties[key] !== false) {
 					data[key] = this[key];
 				}
@@ -107,10 +115,11 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 
 	// Handle attributes changing
 	if (ReactComponent.propTypes) {
-		WebComponent.observedAttributes = Object.keys(ReactComponent.propTypes);
-		targetPrototype.attributeChangedCallback = function(name, oldValue, newValue) {
+		WebComponent.observedAttributes = options.dashStyleAttributes ? Object.keys(ReactComponent.propTypes).map(function (key) { return toDashedStyle(key); }) : Object.keys(ReactComponent.propTypes);
+		targetPrototype.attributeChangedCallback = function (name, oldValue, newValue) {
 			// TODO: handle type conversion
-			this[name] = newValue;
+			var propertyName = options.dashStyleAttributes ? toCamelCaseStyle(name) : name;
+			this[propertyName] = newValue;
 		};
 	}
 
