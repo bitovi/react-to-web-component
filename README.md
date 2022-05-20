@@ -96,6 +96,10 @@ npm i react-to-webcomponent
 
 [Greeting example in a CodePen](https://codepen.io/justinbmeyer/pen/gOYrQax?editors=1010)
 
+#### Bundled JS file available
+
+[https://unpkg.com/react-to-webcomponent/dist/react-to-webcomponent.js](https://unpkg.com/react-to-webcomponent/dist/react-to-webcomponent.js)
+
 ## API
 
 `reactToWebComponent(ReactComponent, React, ReactDOM, options)` takes the following:
