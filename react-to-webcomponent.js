@@ -27,7 +27,6 @@ var define = {
 	}
 }
 
-
 /**
  * Converts a React component into a webcomponent by wrapping it in a Proxy object.
  * @param {ReactComponent}
@@ -94,6 +93,9 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
 		this[shouldRenderSymbol] = true;
 		this[renderSymbol]();
 	};
+	targetPrototype.disconnectedCallback = function () {
+		ReactDOM.unmountComponentAtNode(this)
+	}
 	targetPrototype[renderSymbol] = function () {
 		if (this[shouldRenderSymbol] === true) {
 			var data = {};

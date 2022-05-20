@@ -229,9 +229,33 @@ QUnit.test('It works with dashed attributes styled set to "true"', function (ass
 	}
 	fixture.appendChild(myGreeting);
 
-
-
 	fixture.innerHTML = "<my-dashed-style-greeting camel-case-name='Christopher'></my-dashed-style-greetingg>";
 
 	assert.equal(fixture.firstElementChild.innerHTML, "<h1>Hello, Christopher</h1>");
+});
+
+QUnit.test("mounts and unmounts underlying react component", function (assert) {
+	assert.expect(2);
+
+	class RCom extends React.Component {
+		componentDidMount () {
+			assert.ok(true, "mounted")
+		}
+
+		componentWillUnmount () {
+			assert.ok(true, "unmounted")
+		}
+
+		render () {
+			return <h1>Hello, Goodbye</h1>;
+		}
+	}
+
+	class WebCom extends reactToWebComponent(RCom, React, ReactDOM) {}
+	customElements.define("mount-unmount", WebCom);
+	var webCom = new WebCom();
+
+	var fixture = document.getElementById("qunit-fixture");
+	fixture.appendChild(webCom);
+	fixture.removeChild(webCom);
 });
