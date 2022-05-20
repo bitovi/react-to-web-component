@@ -85,6 +85,9 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 		this[shouldRenderSymbol] = true;
 		this[renderSymbol]();
 	};
+	targetPrototype.disconnectedCallback = function () {
+		ReactDOM.unmountComponentAtNode(this)
+	}
 	targetPrototype[renderSymbol] = function() {
 		if (this[shouldRenderSymbol] === true) {
 			var data = {};
