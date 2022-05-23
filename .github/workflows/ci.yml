@@ -22,6 +22,9 @@ jobs:
         run: npm run detect-cycle
       - name: Linting
         run: npm run eslint
+
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@v0.0.0
       - name: Test
         run: npm run testee
         
