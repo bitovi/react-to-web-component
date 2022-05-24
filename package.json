@@ -36,7 +36,7 @@
     "test": "npm run detect-cycle && npm run eslint && npm run testee",
     "detect-cycle": "detect-cyclic-packages",
     "eslint": "eslint ./*.js",
-    "testee": "DEBUG=* testee test.html --config=testee.js"
+    "testee": "DEBUG=testee:* testee test.html --config=testee.js"
   },
   "repository": {
     "type": "git",

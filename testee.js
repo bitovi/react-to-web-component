@@ -1,13 +1,13 @@
 module.exports = {
     browsers: [
         {
-            browser: "firefox",
+            clean: true,
+            browser: "chrome",
             args: [
-                "-headless",
-                "-P",
-                "default",
-                "--start-debugger-server",
-                "9222",
+                "--headless",
+                "--disable-gpu",
+                "--no-sandbox",
+                "--remote-debugging-port=9222"
             ],
         },
     ],
