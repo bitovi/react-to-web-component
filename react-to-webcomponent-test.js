@@ -38,7 +38,7 @@ QUnit.test("basics with react", function (assert) {
 
 	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, ", "renders the right thing");
 
-	myWelcome.name = "Justin";
+	myWelcome.name = "Justine";
 
 	assert.equal(myWelcome.childNodes[0].innerHTML, "Hello, Justin", "can update");
 

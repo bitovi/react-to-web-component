@@ -22,11 +22,6 @@ jobs:
         run: npm run detect-cycle
       - name: Linting
         run: npm run eslint
-
-      - name: Setup Firefox
-        uses: browser-actions/setup-firefox@v0.0.0
-      - name: Install dbus
-        run: sudo apt-get install -y dbus-x11
       - name: Test
         run: npm run testee
         
