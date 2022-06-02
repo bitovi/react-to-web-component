@@ -17,10 +17,10 @@
 Given a react component like:
 
 ```js
-class Greeting extends React.Component {
-  render() {
-    return <h1>Hello, {this.props.name}</h1>;
-  }
+const Greeting = (props) => {
+  return (
+    <h1>Hello, {this.props.name}</h1>
+  );
 }
 ```
 
@@ -66,10 +66,10 @@ work, you must specify your component's properties with
 [PropTypes](https://reactjs.org/docs/typechecking-with-proptypes.html) as follows:
 
 ```js
-class Greeting extends React.Component {
-  render() {
-    return <h1>Hello, {this.props.name}</h1>;
-  }
+const Greeting = (props) => {
+  return (
+    <h1>Hello, {this.props.name}</h1>
+  );
 }
 
 Greeting.propTypes = {
@@ -85,6 +85,50 @@ document.body.innerHTML = "<web-greeting name='Amazed'></web-greeting>";
 
 document.body.firstChild.innerHTML //-> "<h1>Hello, Amazed</h1>"
 ```
+
+### Working with External Libraries
+
+`reactToWebComponent` also works with react components that utilize external libraries! For instance with Material-Ui:
+
+```tsx
+import { Button } from "@mui/material";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+interface GreetingProps {
+    name: string;
+    description: string;
+    colorMode: "light" | "dark" | undefined;
+    buttonVariant: "contained" | "text" | "outlined" | undefined;
+}
+
+export const Greeting = ({ name, description, colorMode = "light", buttonVariant = "text" }: GreetingProps) => {
+    const themeMode = createTheme({
+        palette: {
+            mode: colorMode,
+        },
+    })
+
+    return (
+        <ThemeProvider theme={themeMode}>
+            <main>
+                <h1>Hello, {name}</h1>
+                <p>{description}</p>
+                <Button variant={buttonVariant}>This is the button</Button>
+            </main>
+        </ThemeProvider>
+    );
+}
+```
+
+Given default props, this will render with in light mode, and with the text variant for Material UI's [Button Component](https://mui.com/material-ui/react-button/)
+
+With `reactToWebComponent` like showcased before, you can access those attributes and update the component's view.
+
+```js
+document.body.innerHTML = "<web-greeting name='Sven' description='How do you do?' colodeMode='dark' buttonVariant='contained'></web-greeting>";
+```
+
+Since the attributes would be set by the web component, the [Theme Provider's Dark Theme](https://mui.com/material-ui/customization/dark-mode/) will use the dark css properties while also making sure the button appears with the contained view.
 
 
 ## Setup
