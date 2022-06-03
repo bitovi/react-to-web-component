@@ -1,0 +1,29 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+          
+      - name: Install dependencies
+        run: npm i
+      
+      - name: Dependency analysis
+        run: npm run detect-cycle
+      - name: Linting
+        run: npm run eslint
+      - name: Test
+        run: npm run testee
+        
+      - name: Build Library
+        run: npm run build
