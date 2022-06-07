@@ -21,7 +21,7 @@ QUnit.test("basics with react", function (assert) {
 
 	function Welcome({ name }) {
 		return (
-		 	<h1>Hello, {name}</h1>
+			<h1>Hello, {name}</h1>
 		)
 	}
 
@@ -93,7 +93,7 @@ QUnit.test("works within can-stache and can-stache-bindings (propTypes are writa
 
 	function Welcome({ user }) {
 		return (
-		 	<h1>Hello, {user.name}</h1>
+			<h1>Hello, {user.name}</h1>
 		)
 	}
 	
@@ -131,7 +131,7 @@ QUnit.test("works with shadow DOM `options.shadow === true`", function (assert) 
 
 	function Welcome({ name }) {
 		return (
-		 	<h1>Hello, {name}</h1>
+			<h1>Hello, {name}</h1>
 		)
 	}
 
@@ -172,7 +172,7 @@ QUnit.test('It works without shadow option set to "true"', function (assert) {
 
 	function Welcome({ name }) {
 		return (
-		 	<h1>Hello, {name}</h1>
+			<h1>Hello, {name}</h1>
 		)
 	}
 	
@@ -200,7 +200,7 @@ QUnit.test('It works with dashed attributes styled set to "true"', function (ass
 
 	function Greeting({ camelCaseName }) {
 		return (
-		 	<h1>Hello, {camelCaseName}</h1>
+			<h1>Hello, {camelCaseName}</h1>
 		)
 	}
 
