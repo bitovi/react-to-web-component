@@ -3,7 +3,6 @@
   "version": "1.5.1",
   "description": "Convert react components to native Web Components.",
   "main": "react-to-webcomponent",
-  "dependencies": {},
   "devDependencies": {
     "@webcomponents/custom-elements": "^1.2.4",
     "babel-eslint": "^10.1.0",
@@ -16,8 +15,6 @@
     "preact": "^8.5.2",
     "preact-compat": "^3.19.0",
     "prop-types": "^15.7.2",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
     "steal": "^2.2.2",
     "steal-qunit": "^2.0.0",
     "steal-tools": "^2.2.2",
@@ -36,7 +33,9 @@
     "test": "npm run detect-cycle && npm run eslint && npm run testee",
     "detect-cycle": "detect-cyclic-packages",
     "eslint": "eslint ./*.js",
-    "testee": "testee test.html --config=testee.js"
+    "testee": "testee react16/test.html react17/test.html react18/test.html --config=testee.js",
+    "start": "http-server -c-1",
+    "postinstall": "chmod +x postinstall && ./postinstall"
   },
   "repository": {
     "type": "git",

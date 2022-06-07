@@ -1,6 +1,6 @@
-var reactComponentSymbol = Symbol.for("r2wc.reactComponent");
-var renderSymbol = Symbol.for("r2wc.reactRender");
-var shouldRenderSymbol = Symbol.for("r2wc.shouldRender");
+const renderSymbol = Symbol.for("r2wc.reactRender");
+const shouldRenderSymbol = Symbol.for("r2wc.shouldRender");
+const rootSymbol = Symbol.for("r2wc.root");
 
 function toDashedStyle(camelCase = "") {
 	return camelCase.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
@@ -94,7 +94,12 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
 		this[renderSymbol]();
 	};
 	targetPrototype.disconnectedCallback = function () {
-		ReactDOM.unmountComponentAtNode(this)
+		if(typeof ReactDOM.createRoot === 'function') {
+			this[rootSymbol].unmount();
+		}
+		else {
+			ReactDOM.unmountComponentAtNode(this);
+		}
 	}
 	targetPrototype[renderSymbol] = function () {
 		if (this[shouldRenderSymbol] === true) {
@@ -107,8 +112,21 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
 			rendering = true;
 			// Container is either shadow DOM or light DOM depending on `shadow` option.
 			const container = options.shadow ? this.shadowRoot : this;
+
+			const element = React.createElement(ReactComponent, data);
+
 			// Use react to render element in container
-			this[reactComponentSymbol] = ReactDOM.render(React.createElement(ReactComponent, data), container);
+			if(typeof ReactDOM.createRoot === 'function') {
+				if(!this[rootSymbol]) {
+					this[rootSymbol] = ReactDOM.createRoot(container);
+				}
+
+				this[rootSymbol].render(element);
+			}
+			else {
+				ReactDOM.render(element, container);
+			}
+			
 			rendering = false;
 		}
 	};
