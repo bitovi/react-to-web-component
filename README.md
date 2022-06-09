@@ -1,3 +1,8 @@
+# Contact Bitovi
+[Join our Slack](https://www.bitovi.com/community/slack)
+[Follow us on Twitter](https://twitter.com/bitovi)
+[Need help, you can hire us](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
+
 # react-to-webcomponent
 
 `react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share react components as native elements that __don't__ require mounted being through React. The custom element acts as a wrapper for the underlying react component. Use these custom elements in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
