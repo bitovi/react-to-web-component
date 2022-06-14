@@ -131,6 +131,29 @@ document.body.innerHTML = "<web-greeting name='Sven' description='How do you do?
 Since the attributes would be set by the web component, the [Theme Provider's Dark Theme](https://mui.com/material-ui/customization/dark-mode/) will use the dark css properties while also making sure the button appears with the contained view.
 
 
+### React 18
+
+`reactToWebComponent` now supports React 18!
+To use the new render API, the only change needed is how ReactDOM is imported, the rest remains the same.
+
+```js
+import React from 'react';
+import * as ReactDOM from 'react-dom/client';
+
+const Greeting = ({ name }) => {
+  return (
+    <h1>Hello, {name}</h1>
+  );
+}
+
+const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM);
+
+customElements.define("web-greeting", WebGreeting);
+```
+
+Please note that by using React 18, `reactToWebComponent` will use the new root API. If your application needs the legacy API, please use React 17. 
+
+
 ## Setup
 
 #### From NPM
