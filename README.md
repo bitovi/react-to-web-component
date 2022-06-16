@@ -17,9 +17,9 @@
 Given a react component like:
 
 ```js
-const Greeting = (props) => {
+const Greeting = ({name}) => {
   return (
-    <h1>Hello, {this.props.name}</h1>
+    <h1>Hello, {name}</h1>
   );
 }
 ```
@@ -66,9 +66,9 @@ work, you must specify your component's properties with
 [PropTypes](https://reactjs.org/docs/typechecking-with-proptypes.html) as follows:
 
 ```js
-const Greeting = (props) => {
+const Greeting = ({ name }) => {
   return (
-    <h1>Hello, {this.props.name}</h1>
+    <h1>Hello, {name}</h1>
   );
 }
 
@@ -120,16 +120,21 @@ export const Greeting = ({ name, description, colorMode = "light", buttonVariant
 }
 ```
 
-Given default props, this will render with in light mode, and with the text variant for Material UI's [Button Component](https://mui.com/material-ui/react-button/)
-
-With `reactToWebComponent` like showcased before, you can access those attributes and update the component's view.
-
 ```js
-document.body.innerHTML = "<web-greeting name='Sven' description='How do you do?' colodeMode='dark' buttonVariant='contained'></web-greeting>";
+document.body.innerHTML = "<web-greeting name='Sven' description='How do you do?'></web-greeting>";
 ```
 
-Since the attributes would be set by the web component, the [Theme Provider's Dark Theme](https://mui.com/material-ui/customization/dark-mode/) will use the dark css properties while also making sure the button appears with the contained view.
+Using `reactToWebComponent` with a few provided attributes, while also not filling out the `colorMode` or `buttonVariant`. This will cause the component to render with [Theme Provider's Light Theme](https://mui.com/material-ui/customization/dark-mode/), and with the text variant for Material UI's [Button Component](https://mui.com/material-ui/react-button/)
 
+If we access those attributes (`colorMode` and `buttonVariant`):
+
+```js
+document.body.innerHTML = "<web-greeting name='Sven' description='How do you do?' colorMode='dark' buttonVariant='contained'></web-greeting>";
+```
+
+The Theme Provider will use the Dark Theme instead, and the Button Component wiill use the contained variant.
+
+Thus, using `reactToWebComponent` you can interat with React Components using Third Party Libraries with ease.
 
 ### React 18
 
