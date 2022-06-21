@@ -1,7 +1,13 @@
-# Contact Bitovi
-[Join our Slack](https://www.bitovi.com/community/slack)
-[Follow us on Twitter](https://twitter.com/bitovi)
-[Need help, you can hire us](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
+## Need help or have questions?
+
+This project is supported by [Bitovi, a React Consultancy](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
+
+- Join our [Slack](https://www.bitovi.com/community/slack)
+
+- Follow us on [Twitter](https://twitter.com/bitovi)
+
+Or, you can hire us for training, consulting or development.
+
 
 # react-to-webcomponent
 
