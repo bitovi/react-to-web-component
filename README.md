@@ -1,9 +1,12 @@
 # Get in touch with Bitovi
-Want to join the conversation? [Talk to us on Slack.](https://www.bitovi.com/community/slack)
+## Bitovi is an end-to-end app delivery consultancy that believes strongly in contributing to open source. We're always interested in feedback on our projects. Here are a few ways to reach out:
+<br />
 
-Want to see what's new with Bitovi? [Follow us on Twitter.](https://twitter.com/bitovi)
+Want to chat about open source with us? [Join our community Slack.](https://www.bitovi.com/community/slack)
 
-Need help? [You can hire us.](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
+Want updates on our new open source projects?  [Follow us on Twitter.](https://twitter.com/bitovi)
+
+Need help? [Set up a free consultation.](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
 
 # react-to-webcomponent
 
@@ -273,6 +276,6 @@ Also:
 
 # We want to hear from you.
 
-Join the conversation in our [Slack](https://www.bitovi.com/community/slack)
+Join the conversation in [Slack](https://www.bitovi.com/community/slack)
 
 See what we're up to by following us on [Twitter](https://twitter.com/bitovi)
