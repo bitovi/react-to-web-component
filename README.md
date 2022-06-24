@@ -5,18 +5,23 @@
 
 # react-to-webcomponent
 
-`react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share react components as native elements that __don't__ require mounted being through React. The custom element acts as a wrapper for the underlying react component. Use these custom elements in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
+`react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share react components as native elements that __don't__ require mounted being through React. The custom element acts as a wrapper for the underlying react component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
 `react-to-webcomponent`:
 
 - Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
 - Is `1.11KB` minified and gzipped.
 
-## Basic Use
+## Basic Usage
 
-Given a react component like:
+For basic usage, we will use this simple react component:
 
 ```js
+import React from 'react';
+import * as ReactDOM from 'react-dom/client'; 
+// When using React 16 and 17 import ReactDom with the commented statement below instead:
+// import ReactDom from 'react-dom'
+
 const Greeting = ({name}) => {
   return (
     <h1>Hello, {name}</h1>
@@ -24,7 +29,7 @@ const Greeting = ({name}) => {
 }
 ```
 
-Call `reactToWebComponent` and [customElements.define](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define) as follows:
+With our React component complete, all we have to do is call `reactToWebComponent` and [customElements.define](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define) to create and define our custom element:
 
 ```js
 import reactToWebComponent from "react-to-webcomponent";
@@ -34,31 +39,22 @@ const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM);
 customElements.define("web-greeting", WebGreeting);
 ```
 
+Now we can use `<web-greeting>` like any other HTML element!
 
-Now you can use `<web-greeting>` like any other HTML element!
+```html
+<body>
+  <h1>Greeting Demo</h1>
 
-You can create it programatically:
-
-```js
-const webGreeting = document.createElement("web-greeting");
-webGreeting.name = "StandardsFan";
-
-document.body.append(webGreeting);
-
-webGreeting.innerHTML //-> "<h1>Hello, StandardsFan</h1>"
+  <web-greeting></web-greeting>
+</body>
 ```
 
-Or you can use it declaratively:
+Note that by using React 18, `reactToWebComponent` will use the new root API. If your application needs the legacy API, please use React 17 
 
-```js
-document.body.innerHTML = "<web-greeting></web-greeting>";
 
-document.body.firstChild.name = "CoolBeans";
+In the above case, the web-greeting custom element is not making use of the ```name``` property from our ```Greeting``` component. 
 
-document.body.firstChild.innerHTML //-> "<h1>Hello, CoolBeans</h1>"
-```
-
-### Working with Attributes
+## Working with Attributes
 
 By default, custom elements created by `reactToWebComponent` only
 pass properties to the underlying React component. To make attributes
@@ -66,6 +62,11 @@ work, you must specify your component's properties with
 [PropTypes](https://reactjs.org/docs/typechecking-with-proptypes.html) as follows:
 
 ```js
+import React from 'react';
+import * as ReactDOM from 'react-dom/client';
+// When using React 16 and 17 import ReactDom with the commented statement below instead:
+// import ReactDom from 'react-dom'
+
 const Greeting = ({ name }) => {
   return (
     <h1>Hello, {name}</h1>
@@ -80,88 +81,19 @@ Greeting.propTypes = {
 Now `reactToWebComponent` will know to look for `name` attributes
 as follows:
 
-```js
-document.body.innerHTML = "<web-greeting name='Amazed'></web-greeting>";
+```html
+<body>
+  <h1>Greeting Demo</h1>
 
-document.body.firstChild.innerHTML //-> "<h1>Hello, Amazed</h1>"
+  <web-greeting name="Justin"></web-greeting>
+</body>
 ```
 
-### Working with External Libraries
+For programatic and declarative demos, [view this example doc](docs/programaticUsage.md).
 
-`reactToWebComponent` also works with react components that utilize external libraries! For instance with Material-Ui:
-
-```tsx
-import { Button } from "@mui/material";
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-
-interface GreetingProps {
-    name: string;
-    description: string;
-    colorMode: "light" | "dark" | undefined;
-    buttonVariant: "contained" | "text" | "outlined" | undefined;
-}
-
-export const Greeting = ({ name, description, colorMode = "light", buttonVariant = "text" }: GreetingProps) => {
-    const themeMode = createTheme({
-        palette: {
-            mode: colorMode,
-        },
-    })
-
-    return (
-        <ThemeProvider theme={themeMode}>
-            <main>
-                <h1>Hello, {name}</h1>
-                <p>{description}</p>
-                <Button variant={buttonVariant}>This is the button</Button>
-            </main>
-        </ThemeProvider>
-    );
-}
-```
-
-```js
-document.body.innerHTML = "<web-greeting name='Sven' description='How do you do?'></web-greeting>";
-```
-
-Using `reactToWebComponent` with a few provided attributes, while also not filling out the `colorMode` or `buttonVariant`. This will cause the component to render with [Theme Provider's Light Theme](https://mui.com/material-ui/customization/dark-mode/), and with the text variant for Material UI's [Button Component](https://mui.com/material-ui/react-button/)
-
-If we access those attributes (`colorMode` and `buttonVariant`):
-
-```js
-document.body.innerHTML = "<web-greeting name='Sven' description='How do you do?' colorMode='dark' buttonVariant='contained'></web-greeting>";
-```
-
-The Theme Provider will use the Dark Theme instead, and the Button Component wiill use the contained variant.
-
-Thus, using `reactToWebComponent` you can interat with React Components using Third Party Libraries with ease.
-
-### React 18
-
-`reactToWebComponent` now supports React 18!
-To use the new render API, the only change needed is how ReactDOM is imported, the rest remains the same.
-
-```js
-import React from 'react';
-import * as ReactDOM from 'react-dom/client';
-
-const Greeting = ({ name }) => {
-  return (
-    <h1>Hello, {name}</h1>
-  );
-}
-
-const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM);
-
-customElements.define("web-greeting", WebGreeting);
-```
-
-Please note that by using React 18, `reactToWebComponent` will use the new root API. If your application needs the legacy API, please use React 17. 
-
+For a more complete example using a third party library, [view this complete example](docs/completeExample.md).
 
 ## Setup
-
-#### From NPM
 
 To install from npm:
 
@@ -169,93 +101,17 @@ To install from npm:
 npm i react-to-webcomponent
 ```
 
-#### CodePen
+## External Examples
 
 [Greeting example in a CodePen](https://codepen.io/justinbmeyer/pen/gOYrQax?editors=1010)
 
-#### Bundled JS file available
+## Bundled JS file available
 
 [https://unpkg.com/react-to-webcomponent/dist/react-to-webcomponent.js](https://unpkg.com/react-to-webcomponent/dist/react-to-webcomponent.js)
 
-## API
+## How it works
 
-`reactToWebComponent(ReactComponent, React, ReactDOM, options)` takes the following:
-
-- `ReactComponent` - A react component that you want to
-  convert to a Web Component.
-- `React` - A version of React (or [preact-compat](https://preactjs.com/guide/v10/switching-to-preact)) the
-  component works with.
-- `ReactDOM` - A version of ReactDOM (or preact-compat) that the component works with.
-- `options` - An optional set of parameters.
-- `options.shadow` - Use shadow DOM rather than light DOM.
-- `options.dashStyleAttributes` - convert dashed-attirbutes on the web component into camelCase props for the react component
-
-A new class inheriting from `HTMLElement` is
-returned. This class can be directly passed to `customElements.define` as follows:
-
-```js
-customElements.define("web-greeting",
-	reactToWebComponent(Greeting, React, ReactDOM) );
-```
-
-Or the class can be defined and used later:
-
-```js
-const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM);
-
-customElements.define("web-greeting", WebGreeting);
-
-var myGreeting = new WebGreeting();
-document.body.appendChild(myGreeting);
-```
-
-Or the class can be extended:
-
-```js
-class WebGreeting extends reactToWebComponent(Greeting, React, ReactDOM)
-{
-	disconnectedCallback(){
-		super.disconnectedCallback();
-		// special stuff
-	}
-}
-customElements.define("web-greeting", WebGreeting);
-```
-
-Components can also be implemented using [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM).
-
-```js
-const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM, { shadow: true });
-
-customElements.define("web-greeting", WebGreeting);
-
-var myGreeting = new WebGreeting();
-document.body.appendChild(myGreeting);
-
-var shadowContent = myGreeting.shadowRoot.children[0];
-```
-
-Using dashStyleAttributes to convert dashed-attributes into camelCase react props
-
-```js
-class Greeting extends React.Component {
-  render () { return <h1>Hello, { this.props.camelCaseName }</h1>; }
-}
-Greeting.propTypes = {
-  camelCaseName: PropTypes.string.isRequired
-};
-
-customElements.define(
-  "my-dashed-style-greeting",
-  reactToWebComponent(Greeting, React, ReactDOM, { dashStyleAttributes: true })
-);
-
-document.body.innerHTML = "<my-dashed-style-greeting camel-case-name='Christopher'></my-dashed-style-greetingg>";
-
-console.log(document.body.firstElementChild.innerHTML) // "<h1>Hello, Christopher</h1>"
-```
-
-### How it works
+The full API details can be viewed [here](docs/api.md).
 
 `reactToWebComponent` creates a constructor function whose prototype is a [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy). This acts as a trap for any property set on instances of the custom element. When a property is set, the proxy:
 
