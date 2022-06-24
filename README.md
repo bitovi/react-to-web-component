@@ -1,7 +1,12 @@
-# Contact Bitovi
-[Join our Slack](https://www.bitovi.com/community/slack)
-[Follow us on Twitter](https://twitter.com/bitovi)
-[Need help, you can hire us](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
+# Get in touch with Bitovi
+## Bitovi is an end-to-end app delivery consultancy that believes strongly in contributing to open source. We're always interested in feedback on our projects. Here are a few ways to reach out:
+<br />
+
+Want to chat about open source with us? [Join our community Slack.](https://www.bitovi.com/community/slack)
+
+Want updates on our new open source projects?  [Follow us on Twitter.](https://twitter.com/bitovi)
+
+Need help? [Set up a free consultation.](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
 
 # react-to-webcomponent
 
@@ -267,3 +272,10 @@ Also:
 
 - Enumerable properties and values on the custom element are used as the `props` passed to the React component.
 - The React component is not rendered until the custom element is inserted into the page.
+
+
+# We want to hear from you.
+
+Come chat with us about open source in our community [Slack](https://www.bitovi.com/community/slack).
+
+See what we're up to by following us on [Twitter](https://twitter.com/bitovi).
