@@ -104,8 +104,9 @@ npm i react-to-webcomponent
 
 ## External Examples
 
-[Greeting example in a CodePen](https://codepen.io/justinbmeyer/pen/gOYrQax?editors=1010)
-[Greeting example in CodeSandbox](https://codesandbox.io/s/react-to-webcomponent--basic-forked-codugl)
+Greeting example in a [CodePen](https://codepen.io/justinbmeyer/pen/gOYrQax?editors=1010)
+
+Greeting example in [CodeSandbox](https://codesandbox.io/s/react-to-webcomponent--basic-forked-codugl)
 
 ## Bundled JS file available
 
