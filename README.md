@@ -63,6 +63,7 @@ work, you must specify your component's properties with
 
 ```js
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as ReactDOM from 'react-dom/client';
 // When using React 16 and 17 import ReactDom with the commented statement below instead:
 // import ReactDom from 'react-dom'
@@ -104,6 +105,7 @@ npm i react-to-webcomponent
 ## External Examples
 
 [Greeting example in a CodePen](https://codepen.io/justinbmeyer/pen/gOYrQax?editors=1010)
+[Greeting example in CodeSandbox](https://codesandbox.io/s/react-to-webcomponent--basic-forked-codugl)
 
 ## Bundled JS file available
 
