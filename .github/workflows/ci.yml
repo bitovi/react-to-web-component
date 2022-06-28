@@ -18,8 +18,16 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
+
+          sed "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" react-to-webcomponent-test.js > react16/react-to-webcomponent-test.js
+          cp test.html react16
           cd react16 && npm install && cd ..
+
+          sed "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" react-to-webcomponent-test.js > react17/react-to-webcomponent-test.js
+          cp test.html react17
           cd react17 && npm install && cd ..
+
+          cp react-to-webcomponent-test.js react18
           cd react18 && npm install && cd ..
 
       - name: Dependency analysis
