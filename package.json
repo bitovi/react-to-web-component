@@ -34,8 +34,7 @@
     "detect-cycle": "detect-cyclic-packages",
     "eslint": "eslint ./*.js",
     "testee": "testee react16/test.html react17/test.html react18/test.html --config=testee.js",
-    "start": "http-server -c-1",
-    "postinstall": "chmod +x postinstall && ./postinstall"
+    "start": "http-server -c-1"
   },
   "repository": {
     "type": "git",
