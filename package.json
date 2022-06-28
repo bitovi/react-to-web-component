@@ -1,6 +1,6 @@
 {
   "name": "react-to-webcomponent",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Convert react components to native Web Components.",
   "main": "react-to-webcomponent",
   "devDependencies": {
