@@ -1,12 +1,3 @@
-# Get in touch with Bitovi
-## Bitovi is an end-to-end app delivery consultancy that believes strongly in contributing to open source. We're always interested in feedback on our projects. Here are a few ways to reach out:
-<br />
-
-Want to chat about open source with us? [Join our community Slack.](https://www.bitovi.com/community/slack)
-
-Want updates on our new open source projects?  [Follow us on Twitter.](https://twitter.com/bitovi)
-
-Need help? [Set up a free consultation.](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
 
 # react-to-webcomponent
 
@@ -16,6 +7,16 @@ Need help? [Set up a free consultation.](https://www.bitovi.com/frontend-javascr
 
 - Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
 - Is `1.11KB` minified and gzipped.
+
+
+## Get Help
+
+Bitovi is an end-to-end app delivery consultancy that believes strongly in contributing to open source. We're always interested in feedback on our projects. Here are a few ways to reach out:
+
+- Want to chat about open source with us? [Join our community Slack.](https://www.bitovi.com/community/slack)
+- Want updates on our new open source projects?  [Follow us on Twitter.](https://twitter.com/bitovi)
+- Need help? [Set up a free consultation.](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
+
 
 ## Basic Use
 
