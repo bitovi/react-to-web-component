@@ -9,13 +9,14 @@
 - Is `1.11KB` minified and gzipped.
 
 
-## Get Help
+## Need help or have questions?
 
-Bitovi is an end-to-end app delivery consultancy that believes strongly in contributing to open source. We're always interested in feedback on our projects. Here are a few ways to reach out:
+This project is supported by [Bitovi, a React consultancy](https://www.bitovi.com/frontend-javascript-consulting/react-consulting). You can get help or ask questions on our:
 
-- Want to chat about open source with us? [Join our community Slack.](https://www.bitovi.com/community/slack)
-- Want updates on our new open source projects?  [Follow us on Twitter.](https://twitter.com/bitovi)
-- Need help? [Set up a free consultation.](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
+- [Slack Community](https://www.bitovi.com/community/slack)
+- [Twitter](https://twitter.com/bitovi)
+
+Or, you can hire us for training, consulting or development. [Set up a free consultation.](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
 
 
 ## Basic Use
