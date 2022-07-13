@@ -1,7 +1,3 @@
-# Contact Bitovi
-[Join our Slack](https://www.bitovi.com/community/slack)
-[Follow us on Twitter](https://twitter.com/bitovi)
-[Need help, you can hire us](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
 
 # react-to-webcomponent
 
@@ -12,13 +8,24 @@
 - Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
 - Is `1.11KB` minified and gzipped.
 
-## Basic Usage
+
+## Need help or have questions?
+
+This project is supported by [Bitovi, a React consultancy](https://www.bitovi.com/frontend-javascript-consulting/react-consulting). You can get help or ask questions on our:
+
+- [Slack Community](https://www.bitovi.com/community/slack)
+- [Twitter](https://twitter.com/bitovi)
+
+Or, you can hire us for training, consulting or development. [Set up a free consultation.](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
+
+
+## Basic Use
 
 For basic usage, we will use this simple react component:
 
 ```js
 import React from 'react';
-import * as ReactDOM from 'react-dom/client'; 
+import * as ReactDOM from 'react-dom/client';
 // When using React 16 and 17 import ReactDom with the commented statement below instead:
 // import ReactDom from 'react-dom'
 
@@ -49,10 +56,10 @@ Now we can use `<web-greeting>` like any other HTML element!
 </body>
 ```
 
-Note that by using React 18, `reactToWebComponent` will use the new root API. If your application needs the legacy API, please use React 17 
+Note that by using React 18, `reactToWebComponent` will use the new root API. If your application needs the legacy API, please use React 17
 
 
-In the above case, the web-greeting custom element is not making use of the ```name``` property from our ```Greeting``` component. 
+In the above case, the web-greeting custom element is not making use of the ```name``` property from our ```Greeting``` component.
 
 ## Working with Attributes
 
@@ -126,3 +133,10 @@ Also:
 
 - Enumerable properties and values on the custom element are used as the `props` passed to the React component.
 - The React component is not rendered until the custom element is inserted into the page.
+
+
+# We want to hear from you.
+
+Come chat with us about open source in our community [Slack](https://www.bitovi.com/community/slack).
+
+See what we're up to by following us on [Twitter](https://twitter.com/bitovi).

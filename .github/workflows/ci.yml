@@ -9,21 +9,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          
+
       - name: Install dependencies
-        run: npm i
-      
+        run: |
+          npm install
+
+          sed "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" react-to-webcomponent-test.js > react16/react-to-webcomponent-test.js
+          cp test.html react16
+          cd react16 && npm install && cd ..
+
+          sed "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" react-to-webcomponent-test.js > react17/react-to-webcomponent-test.js
+          cp test.html react17
+          cd react17 && npm install && cd ..
+
+          cp react-to-webcomponent-test.js react18
+          cd react18 && npm install && cd ..
+
       - name: Dependency analysis
         run: npm run detect-cycle
       - name: Linting
         run: npm run eslint
       - name: Test
         run: npm run testee
-        
+
       - name: Build Library
         run: npm run build
