@@ -1,16 +1,16 @@
-## Working with External Libraries
+## Complete Example
 
-`reactToWebComponent` also works with react components that utilize external libraries like Material-Ui:
+`reactToWebComponent` also works with React components that utilize external libraries like Material-Ui:
 
 ```tsx
-import { Button } from "@mui/material";
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Button } from "@mui/material"
+import { ThemeProvider, createTheme } from "@mui/material/styles"
 
 interface GreetingProps {
-    name: string;
-    description: string;
-    colorMode: "light" | "dark" | undefined;
-    buttonVariant: "contained" | "text" | "outlined" | undefined;
+    name: string
+    description: string
+    colorMode: "light" | "dark" | undefined
+    buttonVariant: "contained" | "text" | "outlined" | undefined
 }
 
 export const Greeting = ({ name, description, colorMode = "light", buttonVariant = "text" }: GreetingProps) => {
@@ -28,12 +28,12 @@ export const Greeting = ({ name, description, colorMode = "light", buttonVariant
                 <Button variant={buttonVariant}>This is the button</Button>
             </main>
         </ThemeProvider>
-    );
+    )
 }
 
-const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM);
+const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM)
 
-customElements.define("web-greeting", WebGreeting);
+customElements.define("web-greeting", WebGreeting)
 ```
 
 ```html
@@ -52,10 +52,10 @@ If we access those attributes (`colorMode` and `buttonVariant`):
 <body>
   <h1>Greeting Demo</h1>
 
-  <web-greeting 
-    name="Sven" 
-    description="How do you do?" 
-    colorMode="dark" 
+  <web-greeting
+    name="Sven"
+    description="How do you do?"
+    colorMode="dark"
     buttonVariant="contained">
   </web-greeting>
 </body>

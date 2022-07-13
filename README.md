@@ -1,13 +1,11 @@
-
 # react-to-webcomponent
 
-`react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share react components as native elements that __don't__ require mounted being through React. The custom element acts as a wrapper for the underlying react component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
+`react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that __don't__ require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
 `react-to-webcomponent`:
 
 - Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
 - Is `1.11KB` minified and gzipped.
-
 
 ## Need help or have questions?
 
@@ -16,34 +14,33 @@ This project is supported by [Bitovi, a React consultancy](https://www.bitovi.co
 - [Slack Community](https://www.bitovi.com/community/slack)
 - [Twitter](https://twitter.com/bitovi)
 
-Or, you can hire us for training, consulting or development. [Set up a free consultation.](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
-
+Or, you can hire us for training, consulting, or development. [Set up a free consultation.](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
 
 ## Basic Use
 
-For basic usage, we will use this simple react component:
+For basic usage, we will use this simple React component:
 
 ```js
-import React from 'react';
-import * as ReactDOM from 'react-dom/client';
+import React from "react"
+import * as ReactDOM from "react-dom/client"
 // When using React 16 and 17 import ReactDom with the commented statement below instead:
-// import ReactDom from 'react-dom'
+// import ReactDom from "react-dom"
 
 const Greeting = ({name}) => {
   return (
     <h1>Hello, {name}</h1>
-  );
+  )
 }
 ```
 
 With our React component complete, all we have to do is call `reactToWebComponent` and [customElements.define](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define) to create and define our custom element:
 
 ```js
-import reactToWebComponent from "react-to-webcomponent";
+import reactToWebComponent from "react-to-webcomponent"
 
-const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM);
+const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM)
 
-customElements.define("web-greeting", WebGreeting);
+customElements.define("web-greeting", WebGreeting)
 ```
 
 Now we can use `<web-greeting>` like any other HTML element!
@@ -59,7 +56,7 @@ Now we can use `<web-greeting>` like any other HTML element!
 Note that by using React 18, `reactToWebComponent` will use the new root API. If your application needs the legacy API, please use React 17
 
 
-In the above case, the web-greeting custom element is not making use of the ```name``` property from our ```Greeting``` component.
+In the above case, the web-greeting custom element is not making use of the `name` property from our `Greeting` component.
 
 ## Working with Attributes
 
@@ -69,21 +66,19 @@ work, you must specify your component's properties with
 [PropTypes](https://reactjs.org/docs/typechecking-with-proptypes.html) as follows:
 
 ```js
-import React from 'react';
-import PropTypes from 'prop-types';
-import * as ReactDOM from 'react-dom/client';
-// When using React 16 and 17 import ReactDom with the commented statement below instead:
-// import ReactDom from 'react-dom'
+import React from "react"
+import PropTypes from "prop-types"
+import * as ReactDOM from "react-dom/client"
 
 const Greeting = ({ name }) => {
   return (
     <h1>Hello, {name}</h1>
-  );
+  )
 }
 
 Greeting.propTypes = {
   name: PropTypes.string.isRequired
-};
+}
 ```
 
 Now `reactToWebComponent` will know to look for `name` attributes
@@ -97,9 +92,9 @@ as follows:
 </body>
 ```
 
-For programatic and declarative demos, [view this example doc](docs/programaticUsage.md).
+For projects needing more advanced usage of the web components, see our [prgramatic usage and declarative demos](docs/programatic-usage.md).
 
-For a more complete example using a third party library, [view this complete example](docs/completeExample.md).
+We also have a [complete example using a third party library](docs/complete-example.md).
 
 ## Setup
 
@@ -121,7 +116,7 @@ Greeting example in [CodeSandbox](https://codesandbox.io/s/react-to-webcomponent
 
 ## How it works
 
-The full API details can be viewed [here](docs/api.md).
+Check out our [full API documentation](docs/api.md).
 
 `reactToWebComponent` creates a constructor function whose prototype is a [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy). This acts as a trap for any property set on instances of the custom element. When a property is set, the proxy:
 
@@ -133,7 +128,6 @@ Also:
 
 - Enumerable properties and values on the custom element are used as the `props` passed to the React component.
 - The React component is not rendered until the custom element is inserted into the page.
-
 
 # We want to hear from you.
 
