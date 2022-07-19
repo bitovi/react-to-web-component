@@ -26,7 +26,7 @@ var define = {
  * @param {React}
  * @param {ReactDOM}
  * @param {Object} options - Optional parameters
- * @param {String?} options.shadow - Use shadow DOM rather than light DOM.
+ * @param {String?} options.shadow - Shadow DOM mode as either open or closed. 
  */
 export default function(ReactComponent, React, ReactDOM, options= {}) {
 	var renderAddedProperties = {isConnected: "isConnected" in HTMLElement.prototype};
@@ -35,7 +35,7 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 	var WebComponent = function() {
 		var self = Reflect.construct(HTMLElement, arguments, this.constructor);
 		if (options.shadow) {
-			self.attachShadow({ mode: 'open' });
+			self.attachShadow({ mode: options.shadow });
 		}
 		return self;
 	};
@@ -95,7 +95,7 @@ export default function(ReactComponent, React, ReactDOM, options= {}) {
 			}, this);
 			rendering = true;
 			// Container is either shadow DOM or light DOM depending on `shadow` option.
-			const container = options.shadow ? this.shadowRoot : this;
+			const container = options.shadow && options.shadow === 'open' ? this.shadowRoot : this;
 			// Use react to render element in container
 			this[reactComponentSymbol] = ReactDOM.render(React.createElement(ReactComponent, data), container);
 			rendering = false;
