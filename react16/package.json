@@ -10,7 +10,7 @@
     "react-to-webcomponent": "file:.."
   },
   "devDependencies": {
-    "steal": "^2.2.2",
-    "steal-qunit": "^2.0.0"
+    "typescript": "^4.3.5",
+    "vite": "^3.0.3"
   }
 }
