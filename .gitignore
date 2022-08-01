@@ -1,10 +1,7 @@
 node_modules/
 dist/
 .idea/
-react16/react-to-webcomponent-test.js
-react16/test.html
-react17/react-to-webcomponent-test.js
-react17/test.html
-react18/react-to-webcomponent-test.js
-react18/test.html
+react16/react-to-webcomponent.test.jsx
+react17/react-to-webcomponent.test.jsx
+react18/react-to-webcomponent.test.jsx
 .DS_Store

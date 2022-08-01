@@ -30,12 +30,12 @@
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
-    "test": "npm run detect-cycle && npm run eslint && npm run testee",
+    "test": "npm run detect-cycle && npm run eslint && npm run vitestReactVersions",
     "detect-cycle": "detect-cyclic-packages",
     "eslint": "eslint ./*.js",
-    "testee": "testee react16/test.html react17/test.html react18/test.html --config=testee.js",
+    "vitestReactVersions": "vitest react18/react-to-webcomponent.test.jsx react17/react-to-webcomponent.test.jsx react16/react-to-webcomponent.test.jsx",
     "start": "http-server -c-1",
-    "postinstall": "chmod +x postinstall && ./postinstall"
+    "fortests": "chmod +x fortests && ./fortests"
   },
   "repository": {
     "type": "git",
