@@ -43,7 +43,12 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
 	var WebComponent = function () {
 		var self = Reflect.construct(HTMLElement, arguments, this.constructor);
 		if (options.shadow) {
-			self.attachShadow({ mode: options.shadow });
+			if(typeof options.shadow === 'string') {
+				self.attachShadow({ mode: options.shadow });
+			}
+			else {
+				self.attachShadow({ mode: 'open' });
+			}
 		}
 		return self;
 	};
