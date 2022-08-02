@@ -1,4 +1,4 @@
-import  { test, assert, expect } from "vitest"
+import  { test, assert, expect, beforeEach } from "vitest"
 
 import React from 'react';
 import * as ReactDOM from 'react-dom/client';
@@ -10,6 +10,10 @@ import stacheBindings from "can-stache-bindings";
 stache.addBindings(stacheBindings);
 
 import reactToWebComponent from "react-to-webcomponent";
+
+beforeEach(() => {
+  document.body.innerHTML = ""
+})
 
 test("basics with react", () => {
 	
@@ -61,17 +65,12 @@ test("works with attributes set with propTypes", async () => {
 			r();
 		}, 0);
 	});
-
-
-
 });
-
-
 
 test("works within can-stache and can-stache-bindings (propTypes are writable)", async () => {
 	expect.assertions(3);
 
-	function Welcome({ user }) {
+	function Welcome ({ user }) {
 		return (
 			<h1>Hello, {user.name}</h1>
 		)
@@ -100,10 +99,9 @@ test("works within can-stache and can-stache-bindings (propTypes are writable)",
 			expect(myWelcome.childNodes.length).toEqual(1);
 			expect(myWelcome.childNodes[0].innerHTML).toEqual("Hello, Bohdi");
 			r();
-		}, 0);
+		}, 100);
 	});
 });
-
 
 test("works with shadow DOM `options.shadow === true`", async () => {
 	expect.assertions(5);
@@ -250,5 +248,4 @@ test("mounts and unmounts underlying react component", async () => {
 			})
 		}, 0);
 	});
-	
 });
