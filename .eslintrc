@@ -1,18 +1,10 @@
 {
-    "env": {
-        "es6": true,
-        "browser": true,
-        "node": true
-    },
-    "extends": "eslint:recommended",
-    "parser": "babel-eslint",
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true,
-            "experimentalObjectRestSpread": true
-        }
-    },
-    "plugins": [
-        "react"
-    ]
+	"env": {
+		"es6": true,
+		"browser": true,
+		"node": true
+	},
+	"plugins": ["react"],
+	"root": true,
+	"extends": "@bitovi/eslint-config/react"
 }

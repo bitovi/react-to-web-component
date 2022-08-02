@@ -2,27 +2,32 @@
   "name": "react-to-webcomponent",
   "version": "1.6.1",
   "description": "Convert react components to native Web Components.",
-  "main": "react-to-webcomponent",
+  "main": "react-to-webcomponent.es.js",
+  "module": "react-to-webcomponent.es.js",
+  "files": [
+    "dist/**/*"
+  ],
   "devDependencies": {
+    "@bitovi/eslint-config": "^1.3.0",
     "@webcomponents/custom-elements": "^1.2.4",
     "babel-eslint": "^10.1.0",
     "can-stache": "^4.17.20",
     "can-stache-bindings": "^4.10.9",
+    "depcheck": "^1.4.3",
     "detect-cyclic-packages": "^1.1.0",
-    "eslint": "^7.11.0",
+    "eslint": "^8.0.0",
     "eslint-plugin-react": "^7.21.4",
     "http-server": "^0.11.1",
     "jsdom": "^20.0.0",
-    "preact": "^8.5.2",
-    "preact-compat": "^3.19.0",
+    "prettier": "^2.7.1",
     "prop-types": "^15.7.2",
-    "test-saucelabs": "0.0.6",
+    "rollup-plugin-typescript2": "^0.32.1",
     "typescript": "^4.3.5",
     "vite": "^3.0.3",
     "vitest": "^0.19.1"
   },
   "scripts": {
-    "build": "node build.js",
+    "build": "vite build",
     "ci": "npm run test",
     "preversion": "npm test && npm run build",
     "version": "git commit -am \"Update version number\" && git checkout -b release && git add -f dist/",
@@ -31,11 +36,12 @@
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
     "buildtests": "chmod +x tests/buildtests && ./tests/buildtests",
-    "test": "npm run detect-cycle && npm run eslint && npm run vitestReactVersions",
-    "vitestReactVersions": "vitest react18/react-to-webcomponent.test.jsx react17/react-to-webcomponent.test.jsx react16/react-to-webcomponent.test.jsx",
-    "detect-cycle": "detect-cyclic-packages",
+    "test": "vitest tests/**/react-to-webcomponent.test.jsx",
+    "start": "http-server -c-1",
+    "typecheck": "tsc --noEmit",
     "eslint": "eslint ./*.js",
-    "start": "http-server -c-1"
+    "prettier": "prettier --check ./*.js",
+    "depcheck": "depcheck ."
   },
   "repository": {
     "type": "git",
@@ -51,5 +57,9 @@
   "bugs": {
     "url": "https://github.com/bitovi/react-to-webcomponent/issues"
   },
-  "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting"
+  "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting",
+  "prettier": {
+    "semi": false,
+    "trailingComma": "all"
+  }
 }

@@ -1,0 +1,1 @@
+ignores: ["react", "react-dom", "react-to-webcomponent", "@webcomponents/custom-elements"]
