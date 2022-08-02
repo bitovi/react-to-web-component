@@ -2,27 +2,30 @@
   "name": "react-to-webcomponent",
   "version": "1.6.1",
   "description": "Convert react components to native Web Components.",
-  "main": "react-to-webcomponent",
+  "main": "dist/react-to-webcomponent.es.js",
+  "module": "dist/react-to-webcomponent.es.js",
+  "files": [
+    "dist/**/*"
+  ],
   "devDependencies": {
+    "@bitovi/eslint-config": "^1.3.0",
     "@webcomponents/custom-elements": "^1.2.4",
-    "babel-eslint": "^10.1.0",
     "can-stache": "^4.17.20",
     "can-stache-bindings": "^4.10.9",
-    "detect-cyclic-packages": "^1.1.0",
-    "eslint": "^7.11.0",
+    "depcheck": "^1.4.3",
+    "eslint": "^8.0.0",
     "eslint-plugin-react": "^7.21.4",
     "http-server": "^0.11.1",
-    "preact": "^8.5.2",
-    "preact-compat": "^3.19.0",
+    "jsdom": "^20.0.0",
+    "prettier": "^2.7.1",
     "prop-types": "^15.7.2",
-    "steal": "^2.2.2",
-    "steal-qunit": "^2.0.0",
-    "steal-tools": "^2.2.2",
-    "test-saucelabs": "0.0.6",
-    "testee": "^0.9.0"
+    "rollup-plugin-typescript2": "^0.32.1",
+    "typescript": "^4.3.5",
+    "vite": "^3.0.3",
+    "vitest": "^0.19.1"
   },
   "scripts": {
-    "build": "node build.js",
+    "build": "vite build",
     "ci": "npm run test",
     "preversion": "npm test && npm run build",
     "version": "git commit -am \"Update version number\" && git checkout -b release && git add -f dist/",
@@ -30,11 +33,13 @@
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
-    "test": "npm run detect-cycle && npm run eslint && npm run testee",
-    "detect-cycle": "detect-cyclic-packages",
-    "eslint": "eslint ./*.js",
-    "testee": "testee react16/test.html react17/test.html react18/test.html --config=testee.js",
-    "start": "http-server -c-1"
+    "buildtests": "chmod +x src/tests/buildtests && ./src/tests/buildtests",
+    "test": "vitest src/tests/**/react-to-webcomponent.test.jsx",
+    "start": "http-server -c-1",
+    "typecheck": "tsc --noEmit",
+    "eslint": "eslint ./src/*.js",
+    "prettier": "prettier --check ./src/*.js",
+    "depcheck": "depcheck ."
   },
   "repository": {
     "type": "git",
@@ -50,5 +55,9 @@
   "bugs": {
     "url": "https://github.com/bitovi/react-to-webcomponent/issues"
   },
-  "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting"
+  "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting",
+  "prettier": {
+    "semi": false,
+    "trailingComma": "all"
+  }
 }

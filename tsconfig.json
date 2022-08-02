@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "jsx": "preserve",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "ESNext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "noEmit": true,
+    "outDir": "./dist",
+
+    "incremental": true,
+    "strict": false,
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  },
+  "include": ["@types", "./src/react-to-webcomponent.js"],
+  "exclude": ["node_modules"]
+}

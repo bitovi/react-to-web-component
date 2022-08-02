@@ -1,0 +1,33 @@
+name: Verify
+
+on: [push]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+      - name: ESLint
+        run: npm run eslint
+      - name: Prettier
+        run: npm run prettier
+      - name: depcheck
+        run: npm run depcheck
+      - name: Test
+        run: npm run buildtests && npm run test
+
+      - name: Build
+        run: npm run build
