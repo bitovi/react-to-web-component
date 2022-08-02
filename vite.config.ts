@@ -7,7 +7,7 @@ export default defineConfig((configEnv) => ({
   build: {
     lib: {
       formats: ['es', 'cjs', 'umd'],
-      entry: resolve(__dirname, 'react-to-webcomponent.js'),
+      entry: resolve(__dirname, 'src/react-to-webcomponent.js'),
       name: 'react-to-webcomponent',
       fileName: (format) => `react-to-webcomponent.${format}.js`,
     },

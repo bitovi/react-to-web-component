@@ -1,0 +1,19 @@
+#!/bin/bash
+
+sed "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" src/react-to-webcomponent.test.jsx > src/tests/react16/react-to-webcomponent.test.jsx
+
+cd src/tests/react16
+npm i
+cd ../../../
+
+sed "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" src/react-to-webcomponent.test.jsx > src/tests/react17/react-to-webcomponent.test.jsx
+
+cd src/tests/react17
+npm i
+cd ../../../
+
+cp src/react-to-webcomponent.test.jsx src/tests/react18
+
+cd src/tests/react18
+npm i
+cd ../../../

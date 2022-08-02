@@ -9,7 +9,7 @@ import stache from "can-stache"
 import stacheBindings from "can-stache-bindings"
 stache.addBindings(stacheBindings)
 
-import reactToWebComponent from "react-to-webcomponent"
+import reactToWebComponent from "src/react-to-webcomponent"
 
 beforeEach(() => {
   document.body.innerHTML = ""
