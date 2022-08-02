@@ -42,10 +42,10 @@ class WebGreeting extends reactToWebComponent(Greeting, React, ReactDOM)
 customElements.define("web-greeting", WebGreeting)
 ```
 
-Components can also be implemented using [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM).
+Components can also be implemented using [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) with either `open` or `closed` mode.
 
 ```js
-const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM, { shadow: true })
+const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM, { shadow: 'open' })
 
 customElements.define("web-greeting", WebGreeting)
 

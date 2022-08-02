@@ -35,23 +35,24 @@ var define = {
  * @param {React}
  * @param {ReactDOM}
  * @param {Object} options - Optional parameters
- * @param {String?} options.shadow - Use shadow DOM rather than light DOM.
+ * @param {String?} options.shadow - Shadow DOM mode as either open or closed. 
  * @param {String?} options.dashStyleAttributes - Use dashed style of attributes to reflect camelCase properties
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function (ReactComponent, React, ReactDOM, options = {}) {
-  var renderAddedProperties = {
-    isConnected: "isConnected" in HTMLElement.prototype,
-  }
-  var rendering = false
-  // Create the web component "class"
-  var WebComponent = function () {
-    var self = Reflect.construct(HTMLElement, arguments, this.constructor)
-    if (options.shadow) {
-      self.attachShadow({ mode: "open" })
-    }
-    return self
-  }
+	var renderAddedProperties = { isConnected: "isConnected" in HTMLElement.prototype };
+	var rendering = false;
+	// Create the web component "class"
+	var WebComponent = function () {
+		var self = Reflect.construct(HTMLElement, arguments, this.constructor);
+		if (typeof options.shadow === 'string') {
+			self.attachShadow({ mode: options.shadow });
+		} else if (options.shadow) {
+			console.warn('Specifying the "shadow" option as a boolean is deprecated and will be removed in a future version.');
+			self.attachShadow({ mode: 'open' });
+		}
+		return self;
+	};
 
   // Make the class extend HTMLElement
   var targetPrototype = Object.create(HTMLElement.prototype)
@@ -124,7 +125,32 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
       // Container is either shadow DOM or light DOM depending on `shadow` option.
       const container = options.shadow ? this.shadowRoot : this
 
-      const element = React.createElement(ReactComponent, data)
+	// Setup lifecycle methods
+	targetPrototype.connectedCallback = function () {
+		// Once connected, it will keep updating the innerHTML.
+		// We could add a render method to allow this as well.
+		this[shouldRenderSymbol] = true;
+		this[renderSymbol]();
+	};
+	targetPrototype.disconnectedCallback = function () {
+		if (typeof ReactDOM.createRoot === 'function') {
+			this[rootSymbol].unmount();
+		}
+		else {
+			ReactDOM.unmountComponentAtNode(this);
+		}
+	}
+	targetPrototype[renderSymbol] = function () {
+		if (this[shouldRenderSymbol] === true) {
+			var data = {};
+			Object.keys(this).forEach(function (key) {
+				if (renderAddedProperties[key] !== false) {
+					data[key] = this[key];
+				}
+			}, this);
+			rendering = true;
+			// Container is either shadow DOM or light DOM depending on `shadow` option.
+			const container = options.shadow && options.shadow === 'open' ? this.shadowRoot : this;
 
       // Use react to render element in container
       if (typeof ReactDOM.createRoot === "function") {
@@ -132,14 +158,21 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
           this[rootSymbol] = ReactDOM.createRoot(container)
         }
 
-        this[rootSymbol].render(element)
-      } else {
-        ReactDOM.render(element, container)
-      }
+			// Use react to render element in container
+			if (typeof ReactDOM.createRoot === 'function') {
+				if (!this[rootSymbol]) {
+					this[rootSymbol] = ReactDOM.createRoot(container);
+				}
 
-      rendering = false
-    }
-  }
+				this[rootSymbol].render(element);
+			}
+			else {
+				ReactDOM.render(element, container);
+			}
+
+			rendering = false;
+		}
+	};
 
   // Handle attributes changing
   if (ReactComponent.propTypes) {
