@@ -7,12 +7,9 @@ import PropTypes from 'prop-types';
 
 import stache from "can-stache";
 import stacheBindings from "can-stache-bindings";
-
-
 stache.addBindings(stacheBindings);
 
 import reactToWebComponent from "react-to-webcomponent";
-
 
 test("basics with react", () => {
 	
