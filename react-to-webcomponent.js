@@ -42,13 +42,11 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
 	// Create the web component "class"
 	var WebComponent = function () {
 		var self = Reflect.construct(HTMLElement, arguments, this.constructor);
-		if (options.shadow) {
-			if(typeof options.shadow === 'string') {
-				self.attachShadow({ mode: options.shadow });
-			}
-			else {
-				self.attachShadow({ mode: 'open' });
-			}
+		if (typeof options.shadow === 'string') {
+			self.attachShadow({ mode: options.shadow });
+		} else if (options.shadow) {
+			console.warn('Specifying the "shadow" option as a boolean is deprecated and will be removed in a future version.');
+			self.attachShadow({ mode: 'open' });
 		}
 		return self;
 	};
@@ -99,7 +97,7 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
 		this[renderSymbol]();
 	};
 	targetPrototype.disconnectedCallback = function () {
-		if(typeof ReactDOM.createRoot === 'function') {
+		if (typeof ReactDOM.createRoot === 'function') {
 			this[rootSymbol].unmount();
 		}
 		else {
@@ -117,12 +115,12 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
 			rendering = true;
 			// Container is either shadow DOM or light DOM depending on `shadow` option.
 			const container = options.shadow && options.shadow === 'open' ? this.shadowRoot : this;
-      
+
 			const element = React.createElement(ReactComponent, data);
-      
+
 			// Use react to render element in container
-			if(typeof ReactDOM.createRoot === 'function') {
-				if(!this[rootSymbol]) {
+			if (typeof ReactDOM.createRoot === 'function') {
+				if (!this[rootSymbol]) {
 					this[rootSymbol] = ReactDOM.createRoot(container);
 				}
 
@@ -131,7 +129,7 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
 			else {
 				ReactDOM.render(element, container);
 			}
-			
+
 			rendering = false;
 		}
 	};
