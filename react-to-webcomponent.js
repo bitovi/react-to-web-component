@@ -38,7 +38,8 @@ var define = {
  * @param {String?} options.shadow - Use shadow DOM rather than light DOM.
  * @param {String?} options.dashStyleAttributes - Use dashed style of attributes to reflect camelCase properties
  */
-export default function (ReactComponent, React, ReactDOM, options = {}) { // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
+export default function (ReactComponent, React, ReactDOM, options = {}) {
+	// eslint-disable-line @typescript-eslint/explicit-module-boundary-types
 	var renderAddedProperties = {
 		isConnected: "isConnected" in HTMLElement.prototype,
 	}
@@ -145,7 +146,7 @@ export default function (ReactComponent, React, ReactDOM, options = {}) { // esl
 		WebComponent.observedAttributes = options.dashStyleAttributes
 			? Object.keys(ReactComponent.propTypes).map(function (key) {
 					return toDashedStyle(key)
-				})
+			  })
 			: Object.keys(ReactComponent.propTypes)
 		targetPrototype.attributeChangedCallback = function (
 			name,
