@@ -33,7 +33,7 @@ jobs:
       - name: Linting
         run: npm run eslint
       - name: Test
-        run: npm run testee
+        run: npm run test
 
       - name: Build Library
         run: npm run build
