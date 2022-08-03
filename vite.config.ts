@@ -1,6 +1,6 @@
 import { resolve } from "path"
 import { defineConfig } from "vite"
-import typescript from "rollup-plugin-typescript2"
+import typescript from "@rollup/plugin-typescript"
 
 export default defineConfig((configEnv) => ({
   plugins: [typescript()],
