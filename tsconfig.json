@@ -20,6 +20,6 @@
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
-  "include": ["@types", "./src/react-to-webcomponent.js"],
+  "include": ["@types", "./src/react-to-webcomponent.ts"],
   "exclude": ["node_modules"]
 }
