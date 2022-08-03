@@ -1,0 +1,59 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      segment:
+        description: "The version segment to increment: major, minor, or patch."
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      - name: "Install"
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+      - name: ESLint
+        run: npm run eslint
+      - name: Prettier
+        run: npm run prettier
+      - name: depcheck
+        run: npm run depcheck
+
+      - name: Test
+        run: npm run buildtests && npm run test
+      - name: Build
+        run: npm run build
+
+      - name: Increment Version
+        run: |
+          git config --local user.email "Workflow: ${{ env.GITHUB_WORKFLOW }}[bot]"
+          git config --local user.name "${{ env.GITHUB_WORKFLOW }}[bot]@workflow"
+          npm version ${{ github.event.inputs.segment }} -m "Publish v%s"
+
+      - name: Publish to NPM Registry
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Git Push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          tags: true
