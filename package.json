@@ -13,7 +13,8 @@
   },
   "files": [
     "dist/",
-    "src/"
+    "src/",
+    "!src/tests/"
   ],
   "devDependencies": {
     "@bitovi/eslint-config": "^1.3.0",
