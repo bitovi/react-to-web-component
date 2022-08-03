@@ -34,6 +34,13 @@ interface R2WCOptions {
   dashStyleAttributes?: boolean
 }
 
+interface React {
+  createElement: (
+    ReactComponent: object,
+    data: object,
+  ) => Record<string, unknown>
+}
+
 interface ReactDOM {
   createRoot?: (container: unknown) => unknown
   unmountComponentAtNode: (obj: Record<string, unknown>) => unknown
@@ -55,7 +62,7 @@ interface ReactDOM {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function (
   ReactComponent: { propTypes?: object },
-  React: { createElement: (ReactComponent: object, data: object) => unknown },
+  React: React,
   ReactDOM: ReactDOM,
   options: R2WCOptions = {},
 ) {
