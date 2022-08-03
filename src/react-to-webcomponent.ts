@@ -14,7 +14,7 @@ function toCamelCaseStyle(dashedStyle = "") {
 
 const define = {
   // Creates a getter/setter that re-renders everytime a property is set.
-  expando: function (receiver, key, value) {
+  expando: function (receiver: object, key: string, value: unknown) {
     Object.defineProperty(receiver, key, {
       enumerable: true,
       get: function () {
@@ -34,6 +34,15 @@ interface R2WCOptions {
   dashStyleAttributes?: boolean
 }
 
+interface ReactDOM {
+  createRoot?: (container: unknown) => unknown
+  unmountComponentAtNode: (obj: Record<string, unknown>) => unknown
+  render: (
+    element: Record<string, unknown>,
+    container: Record<string, unknown>,
+  ) => unknown
+}
+
 /**
  * Converts a React component into a webcomponent by wrapping it in a Proxy object.
  * @param {ReactComponent}
@@ -45,9 +54,9 @@ interface R2WCOptions {
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function (
-  ReactComponent,
-  React,
-  ReactDOM,
+  ReactComponent: { propTypes?: object },
+  React: { createElement: (ReactComponent: object, data: object) => unknown },
+  ReactDOM: ReactDOM,
   options: R2WCOptions = {},
 ) {
   const renderAddedProperties = {
