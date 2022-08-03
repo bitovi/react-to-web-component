@@ -26,6 +26,7 @@ jobs:
         run: npm run prettier
       - name: depcheck
         run: npm run depcheck
+
       - name: Test
         run: npm run buildtests && npm run test
 
