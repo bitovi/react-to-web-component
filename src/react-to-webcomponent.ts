@@ -30,7 +30,7 @@ const define = {
 }
 
 interface R2WCOptions {
-  shadow?: string | boolean,
+  shadow?: string | boolean
   dashStyleAttributes?: boolean
 }
 
@@ -44,7 +44,12 @@ interface R2WCOptions {
  * @param {String?} options.dashStyleAttributes - Use dashed style of attributes to reflect camelCase properties
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function (ReactComponent, React, ReactDOM, options: R2WCOptions = {}) {
+export default function (
+  ReactComponent,
+  React,
+  ReactDOM,
+  options: R2WCOptions = {},
+) {
   const renderAddedProperties = {
     isConnected: "isConnected" in HTMLElement.prototype,
   }
