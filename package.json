@@ -2,13 +2,22 @@
   "name": "react-to-webcomponent",
   "version": "1.6.1",
   "description": "Convert react components to native Web Components.",
-  "main": "dist/react-to-webcomponent.es.js",
-  "module": "dist/react-to-webcomponent.es.js",
+  "main": "./dist/react-to-webcomponent.es.js",
+  "module": "./dist/react-to-webcomponent.es.js",
+  "types": "./dist/react-to-webcomponent.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/react-to-webcomponent.es.js",
+      "require": "./dist/react-to-webcomponent.umd.js"
+    }
+  },
   "files": [
-    "dist/**/*"
+    "dist/",
+    "src/"
   ],
   "devDependencies": {
     "@bitovi/eslint-config": "^1.3.0",
+    "@rollup/plugin-typescript": "^8.3.4",
     "@webcomponents/custom-elements": "^1.2.4",
     "can-stache": "^4.17.20",
     "can-stache-bindings": "^4.10.9",
@@ -19,7 +28,6 @@
     "jsdom": "^20.0.0",
     "prettier": "^2.7.1",
     "prop-types": "^15.7.2",
-    "rollup-plugin-typescript2": "^0.32.1",
     "typescript": "^4.3.5",
     "vite": "^3.0.3",
     "vitest": "^0.19.1"
