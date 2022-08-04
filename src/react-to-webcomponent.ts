@@ -188,6 +188,13 @@ export default function (
       const propertyName = options.dashStyleAttributes
         ? toCamelCaseStyle(name)
         : name
+      if (name.match(/^(?:on|handle)-/)) {
+        if (typeof window !== "undefined") {
+          newValue = window[newValue] || newValue
+        } else if (typeof global !== "undefined") {
+          newValue = global[newValue] || newValue
+        }
+      }
       this[propertyName] = newValue
     }
   }

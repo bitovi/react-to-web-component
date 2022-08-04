@@ -93,7 +93,7 @@ test("works within can-stache and can-stache-bindings (propTypes are writable)",
       expect(myWelcome.childNodes.length).toEqual(1)
       expect(myWelcome.childNodes[0].innerHTML).toEqual("Hello, Bohdi")
       r()
-    }, 100)
+    }, 250)
   })
 })
 
@@ -239,6 +239,104 @@ test("mounts and unmounts underlying react component", async () => {
         body.removeChild(webCom)
         r()
       })
+    }, 0)
+  })
+})
+
+test('Dashed attributes styled set to "true" will also convert the string value of attributes starting with "handle-" into global fn calls', async () => {
+  expect.assertions(1)
+
+  function ThemeSelect({ handleClick }) {
+    return (
+      <div>
+        <button onClick={() => handleClick("V")}>V</button>
+        <button onClick={() => handleClick("Johnny")}>Johnny</button>
+        <button onClick={() => handleClick("Jane")}>Jane</button>
+      </div>
+    )
+  }
+
+  ThemeSelect.propTypes = {
+    handleClick: PropTypes.func.isRequired,
+  }
+
+  const WebThemeSelect = reactToWebComponent(ThemeSelect, React, ReactDOM, {
+    dashStyleAttributes: true,
+  })
+
+  customElements.define("theme-select", WebThemeSelect)
+
+  const body = document.body
+
+  await new Promise((r) => {
+    const failUnlessCleared = setTimeout(() => {
+      delete global.globalFn
+      expect("globalFn was not called to clear the failure timeout").toEqual(
+        "not to fail because globalFn should have been called to clear the failure timeout",
+      )
+      r()
+    }, 1000)
+
+    global.globalFn = (selected) => {
+      delete global.globalFn
+      clearTimeout(failUnlessCleared)
+      expect(selected).toEqual("Jane")
+      r()
+    }
+
+    body.innerHTML = "<theme-select handle-click='globalFn'></theme-select>"
+
+    setTimeout(() => {
+      document.querySelector("theme-select button:last-child").click()
+    }, 0)
+  })
+})
+
+test('Dashed attributes styled set to "true" will also convert the string value of attributes starting with "on-" into global fn calls', async () => {
+  expect.assertions(1)
+
+  function ThemeSelectToo({ onData }) {
+    return (
+      <div>
+        <button onClick={() => onData("V")}>V</button>
+        <button onClick={() => onData("Johnny")}>Johnny</button>
+        <button onClick={() => onData("Jane")}>Jane</button>
+      </div>
+    )
+  }
+
+  ThemeSelectToo.propTypes = {
+    onData: PropTypes.func.isRequired,
+  }
+
+  const WebThemeSelectToo = reactToWebComponent(ThemeSelectToo, React, ReactDOM, {
+    dashStyleAttributes: true,
+  })
+
+  customElements.define("theme-select-too", WebThemeSelectToo)
+
+  const body = document.body
+
+  await new Promise((r) => {
+    const failUnlessCleared = setTimeout(() => {
+      delete global.globalFn
+      expect("globalFn was not called to clear the failure timeout").toEqual(
+        "not to fail because globalFn should have been called to clear the failure timeout",
+      )
+      r()
+    }, 1000)
+
+    global.globalFn = (selected) => {
+      delete global.globalFn
+      clearTimeout(failUnlessCleared)
+      expect(selected).toEqual("Jane")
+      r()
+    }
+
+    body.innerHTML = "<theme-select-too on-data='globalFn'></theme-select>"
+
+    setTimeout(() => {
+      document.querySelector("theme-select-too button:last-child").click()
     }, 0)
   })
 })
