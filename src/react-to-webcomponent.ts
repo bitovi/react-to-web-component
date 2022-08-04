@@ -12,9 +12,9 @@ function toCamelCaseStyle(dashedStyle = "") {
   })
 }
 
-var define = {
+const define = {
   // Creates a getter/setter that re-renders everytime a property is set.
-  expando: function (receiver, key, value) {
+  expando: function (receiver: object, key: string, value: unknown) {
     Object.defineProperty(receiver, key, {
       enumerable: true,
       get: function () {
@@ -29,6 +29,27 @@ var define = {
   },
 }
 
+interface R2WCOptions {
+  shadow?: string | boolean
+  dashStyleAttributes?: boolean
+}
+
+interface React {
+  createElement: (
+    ReactComponent: object,
+    data: object,
+  ) => Record<string, unknown>
+}
+
+interface ReactDOM {
+  createRoot?: (container: unknown) => unknown
+  unmountComponentAtNode: (obj: Record<string, unknown>) => unknown
+  render: (
+    element: Record<string, unknown>,
+    container: Record<string, unknown>,
+  ) => unknown
+}
+
 /**
  * Converts a React component into a webcomponent by wrapping it in a Proxy object.
  * @param {ReactComponent}
@@ -39,14 +60,19 @@ var define = {
  * @param {String?} options.dashStyleAttributes - Use dashed style of attributes to reflect camelCase properties
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function (ReactComponent, React, ReactDOM, options = {}) {
-  var renderAddedProperties = {
+export default function (
+  ReactComponent: { propTypes?: object },
+  React: React,
+  ReactDOM: ReactDOM,
+  options: R2WCOptions = {},
+) {
+  const renderAddedProperties = {
     isConnected: "isConnected" in HTMLElement.prototype,
   }
-  var rendering = false
+  let rendering = false
   // Create the web component "class"
-  var WebComponent = function () {
-    var self = Reflect.construct(HTMLElement, arguments, this.constructor)
+  const WebComponent = function (...args) {
+    const self = Reflect.construct(HTMLElement, args, this.constructor)
     if (typeof options.shadow === "string") {
       self.attachShadow({ mode: options.shadow })
     } else if (options.shadow) {
@@ -59,11 +85,11 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
   }
 
   // Make the class extend HTMLElement
-  var targetPrototype = Object.create(HTMLElement.prototype)
+  const targetPrototype = Object.create(HTMLElement.prototype)
   targetPrototype.constructor = WebComponent
 
   // But have that prototype be wrapped in a proxy.
-  var proxyPrototype = new Proxy(targetPrototype, {
+  const proxyPrototype = new Proxy(targetPrototype, {
     has: function (target, key) {
       return key in ReactComponent.propTypes || key in targetPrototype
     },
@@ -87,7 +113,7 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
     },
     // makes sure the property looks writable
     getOwnPropertyDescriptor: function (target, key) {
-      var own = Reflect.getOwnPropertyDescriptor(target, key)
+      const own = Reflect.getOwnPropertyDescriptor(target, key)
       if (own) {
         return own
       }
@@ -119,7 +145,7 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
   }
   targetPrototype[renderSymbol] = function () {
     if (this[shouldRenderSymbol] === true) {
-      var data = {}
+      const data = {}
       Object.keys(this).forEach(function (key) {
         if (renderAddedProperties[key] !== false) {
           data[key] = this[key]
@@ -154,12 +180,12 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
         })
       : Object.keys(ReactComponent.propTypes)
     targetPrototype.attributeChangedCallback = function (
-      name,
+      name: string,
       oldValue,
       newValue,
     ) {
       // @TODO: handle type conversion
-      var propertyName = options.dashStyleAttributes
+      const propertyName = options.dashStyleAttributes
         ? toCamelCaseStyle(name)
         : name
       this[propertyName] = newValue
