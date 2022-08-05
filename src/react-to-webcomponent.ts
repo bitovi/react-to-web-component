@@ -6,12 +6,6 @@ function toDashedStyle(camelCase = "") {
   return camelCase.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase()
 }
 
-function toCamelCaseStyle(dashedStyle = "") {
-  return dashedStyle.replace(/-([a-z0-9])/g, function (g) {
-    return g[1].toUpperCase()
-  })
-}
-
 const define = {
   // Creates a getter/setter that re-renders everytime a property is set.
   expando: function (receiver: object, key: string, value: unknown) {
@@ -27,11 +21,6 @@ const define = {
     })
     receiver[renderSymbol]()
   },
-}
-
-interface R2WCOptions {
-  shadow?: string | boolean
-  dashStyleAttributes?: boolean
 }
 
 interface React {
@@ -50,6 +39,11 @@ interface ReactDOM {
   ) => unknown
 }
 
+interface R2WCOptions {
+  shadow?: string | boolean
+  props?: Array<string> | Record<string, unknown>
+}
+
 /**
  * Converts a React component into a webcomponent by wrapping it in a Proxy object.
  * @param {ReactComponent}
@@ -57,7 +51,7 @@ interface ReactDOM {
  * @param {ReactDOM}
  * @param {Object} options - Optional parameters
  * @param {String?} options.shadow - Shadow DOM mode as either open or closed.
- * @param {String?} options.dashStyleAttributes - Use dashed style of attributes to reflect camelCase properties
+ * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function (
@@ -66,6 +60,23 @@ export default function (
   ReactDOM: ReactDOM,
   options: R2WCOptions = {},
 ) {
+  const propTypes = {} // { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
+  const propAttrMap = {} // @TODO: add option to specify for asymetric mapping (eg "className" from "class")
+  const attrPropMap = {} // cached inverse of propAttrMap
+  if (!options.props) {
+    options.props = ReactComponent.propTypes
+      ? Object.keys(ReactComponent.propTypes)
+      : []
+  }
+  const propKeys = Array.isArray(options.props)
+    ? options.props.slice()
+    : Object.keys(options.props)
+  const optionsPropsIsArray = Array.isArray(options.props)
+  propKeys.forEach((key) => {
+    propTypes[key] = optionsPropsIsArray ? String : options.props[key]
+    propAttrMap[key] = toDashedStyle(key)
+    attrPropMap[propAttrMap[key]] = key
+  })
   const renderAddedProperties = {
     isConnected: "isConnected" in HTMLElement.prototype,
   }
@@ -91,7 +102,7 @@ export default function (
   // But have that prototype be wrapped in a proxy.
   const proxyPrototype = new Proxy(targetPrototype, {
     has: function (target, key) {
-      return key in ReactComponent.propTypes || key in targetPrototype
+      return key in propTypes || key in targetPrototype
     },
 
     // when any undefined property is set, create a getter/setter that re-renders
@@ -117,7 +128,7 @@ export default function (
       if (own) {
         return own
       }
-      if (key in ReactComponent.propTypes) {
+      if (key in propTypes) {
         return {
           configurable: true,
           enumerable: true,
@@ -173,30 +184,41 @@ export default function (
   }
 
   // Handle attributes changing
-  if (ReactComponent.propTypes) {
-    WebComponent.observedAttributes = options.dashStyleAttributes
-      ? Object.keys(ReactComponent.propTypes).map(function (key) {
-          return toDashedStyle(key)
-        })
-      : Object.keys(ReactComponent.propTypes)
-    targetPrototype.attributeChangedCallback = function (
-      name: string,
-      oldValue,
-      newValue,
-    ) {
-      // @TODO: handle type conversion
-      const propertyName = options.dashStyleAttributes
-        ? toCamelCaseStyle(name)
-        : name
-      if (name.match(/^(?:on|handle)-/)) {
+  WebComponent.observedAttributes = Object.keys(attrPropMap)
+
+  targetPrototype.attributeChangedCallback = function (
+    name: string,
+    oldValue,
+    newValue,
+  ) {
+    const propertyName = attrPropMap[name] || name
+    switch (propTypes[propertyName]) {
+      case Function:
         if (typeof window !== "undefined") {
           newValue = window[newValue] || newValue
         } else if (typeof global !== "undefined") {
           newValue = global[newValue] || newValue
         }
-      }
-      this[propertyName] = newValue
+        if (typeof newValue === "function") {
+          newValue = newValue.bind(this) // this = instance of the WebComponent / HTMLElement
+        }
+        break
+      case Number:
+        newValue = parseFloat(newValue)
+        break
+      case Boolean:
+        newValue = /^[ty1-9]/i.test(newValue)
+        break
+      case Object:
+      case Array:
+        newValue = JSON.parse(newValue)
+        break
+      case String:
+      default:
+        break
     }
+
+    this[propertyName] = newValue
   }
 
   return WebComponent

@@ -166,7 +166,7 @@ test('It works without shadow option set to "true"', async () => {
   })
 })
 
-test('It works with dashed attributes styled set to "true"', async () => {
+test("It converts dashed-attributes to camelCase", async () => {
   expect.assertions(1)
 
   function Greeting({ camelCaseName }) {
@@ -177,9 +177,7 @@ test('It works with dashed attributes styled set to "true"', async () => {
     camelCaseName: PropTypes.string.isRequired,
   }
 
-  const MyGreeting = reactToWebComponent(Greeting, React, ReactDOM, {
-    dashStyleAttributes: true,
-  })
+  const MyGreeting = reactToWebComponent(Greeting, React, ReactDOM, {})
 
   customElements.define("my-dashed-style-greeting", MyGreeting)
 
@@ -243,8 +241,143 @@ test("mounts and unmounts underlying react component", async () => {
   })
 })
 
-test('Dashed attributes styled set to "true" will also convert the string value of attributes starting with "handle-" into global fn calls', async () => {
+test("options.props can be used as an array of props instead of relying on keys from propTypes", async () => {
   expect.assertions(1)
+
+  function PropTypesNotRequired({ greeting, camelCaseName }) {
+    return (
+      <h1>
+        {greeting}, {camelCaseName}
+      </h1>
+    )
+  }
+
+  const WebPropTypesNotRequired = reactToWebComponent(
+    PropTypesNotRequired,
+    React,
+    ReactDOM,
+    {
+      props: ["greeting", "camelCaseName"],
+    },
+  )
+
+  customElements.define("web-proptypes-not-required", WebPropTypesNotRequired)
+
+  const body = document.body
+
+  body.innerHTML =
+    "<web-proptypes-not-required greeting='Ayy' camel-case-name='lmao'></web-proptypes-not-required>"
+
+  await new Promise((r) => {
+    setTimeout(() => {
+      expect(body.firstElementChild.innerHTML).toEqual("<h1>Ayy, lmao</h1>")
+      r()
+    }, 0)
+  })
+})
+
+test("options.props can specify and will convert the String attribute value into Number, Boolean, Array, and/or Object", async () => {
+  expect.assertions(12)
+
+  function OptionsPropsTypeCasting({
+    stringProp,
+    numProp,
+    floatProp,
+    trueProp,
+    falseProp,
+    arrayProp,
+    objProp,
+  }) {
+    global.castedValues = {
+      stringProp,
+      numProp,
+      floatProp,
+      trueProp,
+      falseProp,
+      arrayProp,
+      objProp,
+    }
+    return <h1>{stringProp}</h1>
+  }
+
+  OptionsPropsTypeCasting.propTypes = {
+    stringProp: PropTypes.string.isRequired,
+    numProp: PropTypes.number.isRequired,
+    floatProp: PropTypes.number.isRequired,
+    trueProp: PropTypes.bool.isRequired,
+    falseProp: PropTypes.bool.isRequired,
+    arrayProp: PropTypes.array.isRequired,
+    objProp: PropTypes.object.isRequired,
+  }
+
+  const WebOptionsPropsTypeCasting = reactToWebComponent(
+    OptionsPropsTypeCasting,
+    React,
+    ReactDOM,
+    {
+      props: {
+        stringProp: String,
+        numProp: Number,
+        floatProp: Number,
+        trueProp: Boolean,
+        falseProp: Boolean,
+        arrayProp: Array,
+        objProp: Object,
+      },
+    },
+  )
+
+  customElements.define("attr-type-casting", WebOptionsPropsTypeCasting)
+
+  const body = document.body
+
+  console.error = function (...messages) {
+    // propTypes will throw if any of the types passed into the underlying react component are wrong or missing
+    expect("propTypes should not have thrown").toEqual(messages.join(""))
+  }
+
+  body.innerHTML = `
+    <attr-type-casting
+      string-prop="iloveyou"
+      num-prop="360"
+      float-prop="0.5"
+      true-prop="true"
+      false-prop="false"
+      array-prop='[true, 100.25, "👽", { "aliens": "welcome" }]'
+      obj-prop='{ "very": "object", "such": "wow!" }'
+    ></attr-type-casting>
+  `
+
+  await new Promise((r) => {
+    setTimeout(() => {
+      const {
+        stringProp,
+        numProp,
+        floatProp,
+        trueProp,
+        falseProp,
+        arrayProp,
+        objProp,
+      } = global.castedValues
+      expect(stringProp).toEqual("iloveyou")
+      expect(numProp).toEqual(360)
+      expect(floatProp).toEqual(0.5)
+      expect(trueProp).toEqual(true)
+      expect(falseProp).toEqual(false)
+      expect(arrayProp.length).toEqual(4)
+      expect(arrayProp[0]).toEqual(true)
+      expect(arrayProp[1]).toEqual(100.25)
+      expect(arrayProp[2]).toEqual("👽")
+      expect(arrayProp[3].aliens).toEqual("welcome")
+      expect(objProp.very).toEqual("object")
+      expect(objProp.such).toEqual("wow!")
+      r()
+    }, 0)
+  })
+})
+
+test("Props typed as Function convert the string value of attribute into global fn calls bound to the webcomponent instance", async () => {
+  expect.assertions(2)
 
   function ThemeSelect({ handleClick }) {
     return (
@@ -261,7 +394,9 @@ test('Dashed attributes styled set to "true" will also convert the string value 
   }
 
   const WebThemeSelect = reactToWebComponent(ThemeSelect, React, ReactDOM, {
-    dashStyleAttributes: true,
+    props: {
+      handleClick: Function,
+    },
   })
 
   customElements.define("theme-select", WebThemeSelect)
@@ -277,10 +412,11 @@ test('Dashed attributes styled set to "true" will also convert the string value 
       r()
     }, 1000)
 
-    global.globalFn = (selected) => {
+    global.globalFn = function (selected) {
       delete global.globalFn
       clearTimeout(failUnlessCleared)
       expect(selected).toEqual("Jane")
+      expect(this).toEqual(document.querySelector("theme-select"))
       r()
     }
 
@@ -288,55 +424,6 @@ test('Dashed attributes styled set to "true" will also convert the string value 
 
     setTimeout(() => {
       document.querySelector("theme-select button:last-child").click()
-    }, 0)
-  })
-})
-
-test('Dashed attributes styled set to "true" will also convert the string value of attributes starting with "on-" into global fn calls', async () => {
-  expect.assertions(1)
-
-  function ThemeSelectToo({ onData }) {
-    return (
-      <div>
-        <button onClick={() => onData("V")}>V</button>
-        <button onClick={() => onData("Johnny")}>Johnny</button>
-        <button onClick={() => onData("Jane")}>Jane</button>
-      </div>
-    )
-  }
-
-  ThemeSelectToo.propTypes = {
-    onData: PropTypes.func.isRequired,
-  }
-
-  const WebThemeSelectToo = reactToWebComponent(ThemeSelectToo, React, ReactDOM, {
-    dashStyleAttributes: true,
-  })
-
-  customElements.define("theme-select-too", WebThemeSelectToo)
-
-  const body = document.body
-
-  await new Promise((r) => {
-    const failUnlessCleared = setTimeout(() => {
-      delete global.globalFn
-      expect("globalFn was not called to clear the failure timeout").toEqual(
-        "not to fail because globalFn should have been called to clear the failure timeout",
-      )
-      r()
-    }, 1000)
-
-    global.globalFn = (selected) => {
-      delete global.globalFn
-      clearTimeout(failUnlessCleared)
-      expect(selected).toEqual("Jane")
-      r()
-    }
-
-    body.innerHTML = "<theme-select-too on-data='globalFn'></theme-select>"
-
-    setTimeout(() => {
-      document.querySelector("theme-select-too button:last-child").click()
     }, 0)
   })
 })
