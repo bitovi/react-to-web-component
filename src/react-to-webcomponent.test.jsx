@@ -427,3 +427,82 @@ test("Props typed as Function convert the string value of attribute into global 
     }, 0)
   })
 })
+
+test("Props typed as 'ref' work", async () => {
+  expect.assertions(8)
+
+  class RCom extends React.Component {
+    constructor(props) {
+      super(props)
+      this.state = { tag: "h1" }
+    }
+    render() {
+      const Tag = this.state.tag
+      return (
+        <Tag
+          ref={this.props.h1Ref}
+          onClick={() => this.setState({ tag: "h2" })}
+        >
+          Ref
+        </Tag>
+      )
+    }
+  }
+
+  class WebCom extends reactToWebComponent(RCom, React, ReactDOM, {
+    props: {
+      ref: "ref",
+      h1Ref: "ref",
+    },
+  }) {}
+
+  customElements.define("ref-test", WebCom)
+
+  const body = document.body
+
+  await new Promise((r) => {
+    body.innerHTML = "<ref-test ref h1-ref></ref-test>"
+
+    setTimeout(() => {
+      const el = document.querySelector("ref-test")
+      expect(el.ref.current instanceof RCom).toEqual(true)
+      const h1 = document.querySelector("ref-test h1")
+      expect(el.h1Ref.current).toEqual(h1)
+      h1.click()
+      setTimeout(() => {
+        const h2 = document.querySelector("ref-test h2")
+        expect(el.h1Ref.current).not.toEqual(h1)
+        expect(el.h1Ref.current).toEqual(h2)
+        r()
+      }, 0)
+    }, 0)
+  })
+
+  await new Promise((r) => {
+    const failUnlessCleared = setTimeout(() => {
+      delete global.globalRefFn
+      expect("globalRefFn was not called to clear the failure timeout").toEqual(
+        "not to fail because globalRefFn should have been called to clear the failure timeout",
+      )
+      r()
+    }, 1000)
+
+    global.globalRefFn = function (el) {
+      if (!el) {
+        // null before it switches to h2
+        return
+      }
+      expect(this).toEqual(document.querySelector("ref-test"))
+      expect(el).toEqual(this.querySelector("h1, h2"))
+      if (el.tagName.toLowerCase() === "h1") {
+        el.click()
+      } else {
+        delete global.globalRefFn
+        clearTimeout(failUnlessCleared)
+        r()
+      }
+    }
+
+    body.innerHTML = "<ref-test h1-ref='globalRefFn'></ref-test>"
+  })
+})

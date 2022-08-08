@@ -10,7 +10,7 @@
 - `options` - An optional set of parameters.
 
   - `options.shadow` - Use shadow DOM rather than light DOM.
-  - `options.props` - Array of camelCasedProps to watch as String values or { [camelCasedProps]: String | Number | Boolean | Function | Object | Array }
+  - `options.props` - Array of camelCasedProps to watch as String values or { [camelCasedProps]: String | Number | Boolean | Function | Object | Array | "ref" }
 
     - When specifying Array or Object as the type, the string passed into the attribute must pass `JSON.parse()` requirements.
     - When specifying Boolean as the type, "true", "1", "yes", "TRUE", and "t" are mapped to `true`. All strings NOT begining with t, T, 1, y, or Y will be `false`.
@@ -109,9 +109,13 @@ document.body.innerHTML =
 console.log(document.body.firstElementChild.innerHTML) // "<h1>Hello, Jane</h1>"
 ```
 
-If `options.props` is an object, the keys are the camelCased React props and the values are any one of the following built in javascript types:
+## Typed Props
 
-`String | Number | Boolean | Function | Object | Array`
+If `options.props` is an object, the keys are the camelCased React props and the values are any one of the following built in javascript types, or the string "ref":
+
+`String | Number | Boolean | Function | Object | Array | "ref"`
+
+### String | Number | Boolean | Object | Array props
 
 ```js
 class AttrPropTypeCasting extends React.Component {
@@ -162,6 +166,8 @@ document.body.innerHTML = `
 */
 ```
 
+### Function props
+
 When `Function` is specified as the type, attribute values on the web component will be converted into function references when passed into the underlying React component. The string value of the attribute must be a valid reference to a function on `window` (or on `global`).
 
 ```js
@@ -197,4 +203,51 @@ setTimeout(
   0,
 )
 // ^ calls globalFn, logs: true, "Jane"
+```
+
+### "ref" props
+
+If the React component is a class type or has ref props, you can specify attributes as `"ref"` type and `React.createRef()` will automatically happen behind the scenes then attach the reference to the webcomponent instance.
+
+```js
+class ComRef extends React.Component {
+  render() {
+    return <h1 ref={this.props.h1Ref}>Ref</h1>
+  }
+}
+
+class WebComRef extends reactToWebComponent(ComRef, React, ReactDOM, {
+  props: {
+    ref: "ref",
+    h1Ref: "ref",
+  },
+}) {}
+
+customElements.define("ref-example", WebComRef)
+
+document.body.innerHTML = "<ref-example ref h1-ref></ref-example>"
+
+setTimeout(() => {
+  const el = document.querySelector("ref-example")
+
+  console.log(el.ref.current instanceof ComRef) // logs true
+
+  const h1 = el.querySelector("h1")
+
+  console.log(el.h1Ref.current === h1) // logs true
+}, 0)
+```
+
+If your `"ref"` type webcomponent attribute specifies a value, the value will be the name of a global function (like the `Function` prop type above) and be used as a callback reference, recieving the dom element the React component attaches it to as a parameter.
+
+```js
+window.globalRefFn = function (el) {
+  if (!el) {
+    // if the component rerenders the referenced element, the callback may run with el = null
+    return
+  }
+  console.log(el === this.querySelector("h1")) // logs true
+}
+
+body.innerHTML = "<ref-example h1-ref='globalRefFn'></ref-example>"
 ```

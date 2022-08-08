@@ -3,7 +3,7 @@ const shouldRenderSymbol = Symbol.for("r2wc.shouldRender")
 const rootSymbol = Symbol.for("r2wc.root")
 
 function toDashedStyle(camelCase = "") {
-  return camelCase.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase()
+  return camelCase.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()
 }
 
 const define = {
@@ -24,6 +24,7 @@ const define = {
 }
 
 interface React {
+  createRef: () => Record<string, unknown>
   createElement: (
     ReactComponent: object,
     data: object,
@@ -193,7 +194,12 @@ export default function (
   ) {
     const propertyName = attrPropMap[name] || name
     switch (propTypes[propertyName]) {
+      case "ref":
       case Function:
+        if (!newValue && propTypes[propertyName] === "ref") {
+          newValue = React.createRef()
+          break
+        }
         if (typeof window !== "undefined") {
           newValue = window[newValue] || newValue
         } else if (typeof global !== "undefined") {
