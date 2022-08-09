@@ -11,6 +11,44 @@ stache.addBindings(stacheBindings)
 
 import reactToWebComponent from "src/react-to-webcomponent"
 
+const reactEnv = __dirname.replace(/.*?([^\\\/]+\d+).*/g, "$1")
+// reactEnv = "react16" | "react17" | "react18" | "preact10"
+
+const requeueIfTruthy = (fn, maxChecks = 100) => {
+  let runCount = 0
+  return new Promise((r) => {
+    const waitInterval = setInterval(() => {
+      try {
+        const requeue = fn()
+        runCount++
+        if (!requeue) {
+          clearInterval(waitInterval)
+          r(runCount)
+        } else if (runCount >= maxChecks) {
+          clearInterval(waitInterval)
+          console.log(
+            "Max truthy checks reached, test never became ready:",
+            fn.toString(),
+            { reactEnv, runCount, maxChecks },
+          )
+          r(runCount)
+        }
+      } catch (err) {
+        clearInterval(waitInterval)
+        console.log("!! Threw at requeue function: ", fn.toString(), {
+          reactEnv,
+          runCount,
+          maxChecks,
+          err,
+        })
+        setTimeout(() => {
+          throw err // wait until next frame to rethrow or else the console log information above gets swallowed
+        }, 0)
+      }
+    }, 0)
+  })
+}
+
 beforeEach(() => {
   document.body.innerHTML = ""
 })
@@ -53,13 +91,13 @@ test("works with attributes set with propTypes", async () => {
   const body = document.body
   body.innerHTML = "<my-greeting name='Christopher'></my-greeting>"
 
-  await new Promise((r) => {
-    setTimeout(() => {
-      expect(body.firstElementChild.innerHTML).toEqual(
-        "<h1>Hello, Christopher</h1>",
-      )
-      r()
-    }, 0)
+  await requeueIfTruthy(() => {
+    if (!body.firstElementChild.innerHTML) {
+      return true
+    }
+    expect(body.firstElementChild.innerHTML).toEqual(
+      "<h1>Hello, Christopher</h1>",
+    )
   })
 })
 
@@ -87,13 +125,13 @@ test("works within can-stache and can-stache-bindings (propTypes are writable)",
   const myWelcome = frag.firstElementChild
   body.appendChild(frag)
 
-  await new Promise((r) => {
-    setTimeout(() => {
-      expect(myWelcome.nodeName).toEqual("CAN-WELCOME")
-      expect(myWelcome.childNodes.length).toEqual(1)
-      expect(myWelcome.childNodes[0].innerHTML).toEqual("Hello, Bohdi")
-      r()
-    }, 250)
+  await requeueIfTruthy(() => {
+    if (!myWelcome.innerHTML.length) {
+      return true
+    }
+    expect(myWelcome.nodeName).toEqual("CAN-WELCOME")
+    expect(myWelcome.childNodes.length).toEqual(1)
+    expect(myWelcome.children[0].innerHTML).toEqual("Hello, Bohdi")
   })
 })
 
@@ -118,23 +156,27 @@ test("works with shadow DOM `options.shadow === true`", async () => {
   const myWelcome = new MyWelcome()
   body.appendChild(myWelcome)
 
-  await new Promise((r) => {
-    setTimeout(() => {
-      expect(myWelcome.shadowRoot).not.toEqual(undefined)
-      expect(myWelcome.shadowRoot.children.length).toEqual(1)
+  await requeueIfTruthy(() => {
+    if (!myWelcome.shadowRoot || !myWelcome.shadowRoot.children.length) {
+      return true
+    }
+    expect(myWelcome.shadowRoot).not.toEqual(undefined)
+    expect(myWelcome.shadowRoot.children.length).toEqual(1)
 
-      let child = myWelcome.shadowRoot.childNodes[0]
+    const child = myWelcome.shadowRoot.childNodes[0]
 
-      expect(child.tagName).toEqual("H1")
-      expect(child.innerHTML).toEqual("Hello, ")
+    expect(child.tagName).toEqual("H1")
+    expect(child.innerHTML).toEqual("Hello, ")
 
-      myWelcome.name = "Justin"
-      child = myWelcome.shadowRoot.childNodes[0]
-      setTimeout(() => {
-        expect(child.innerHTML, "Hello, Justin")
-        r()
-      }, 0)
-    }, 0)
+    myWelcome.name = "Justin"
+  })
+
+  await requeueIfTruthy(() => {
+    const child = myWelcome.shadowRoot.childNodes[0]
+    if (!child.innerHTML) {
+      return true
+    }
+    expect(child.innerHTML, "Hello, Justin")
   })
 })
 
@@ -197,13 +239,13 @@ test("It converts dashed-attributes to camelCase", async () => {
   body.innerHTML =
     "<my-dashed-style-greeting camel-case-name='Christopher'></my-dashed-style-greeting>"
 
-  await new Promise((r) => {
-    setTimeout(() => {
-      expect(body.firstElementChild.innerHTML).toEqual(
-        "<h1>Hello, Christopher</h1>",
-      )
-      r()
-    }, 0)
+  await requeueIfTruthy(() => {
+    if (!body.firstElementChild.innerHTML) {
+      return true
+    }
+    expect(body.firstElementChild.innerHTML).toEqual(
+      "<h1>Hello, Christopher</h1>",
+    )
   })
 })
 
@@ -268,11 +310,11 @@ test("options.props can be used as an array of props instead of relying on keys 
   body.innerHTML =
     "<web-proptypes-not-required greeting='Ayy' camel-case-name='lmao'></web-proptypes-not-required>"
 
-  await new Promise((r) => {
-    setTimeout(() => {
-      expect(body.firstElementChild.innerHTML).toEqual("<h1>Ayy, lmao</h1>")
-      r()
-    }, 0)
+  await requeueIfTruthy(() => {
+    if (!body.firstElementChild.innerHTML) {
+      return true
+    }
+    expect(body.firstElementChild.innerHTML).toEqual("<h1>Ayy, lmao</h1>")
   })
 })
 
@@ -348,31 +390,31 @@ test("options.props can specify and will convert the String attribute value into
     ></attr-type-casting>
   `
 
-  await new Promise((r) => {
-    setTimeout(() => {
-      const {
-        stringProp,
-        numProp,
-        floatProp,
-        trueProp,
-        falseProp,
-        arrayProp,
-        objProp,
-      } = global.castedValues
-      expect(stringProp).toEqual("iloveyou")
-      expect(numProp).toEqual(360)
-      expect(floatProp).toEqual(0.5)
-      expect(trueProp).toEqual(true)
-      expect(falseProp).toEqual(false)
-      expect(arrayProp.length).toEqual(4)
-      expect(arrayProp[0]).toEqual(true)
-      expect(arrayProp[1]).toEqual(100.25)
-      expect(arrayProp[2]).toEqual("👽")
-      expect(arrayProp[3].aliens).toEqual("welcome")
-      expect(objProp.very).toEqual("object")
-      expect(objProp.such).toEqual("wow!")
-      r()
-    }, 0)
+  await requeueIfTruthy(() => {
+    if (!body.firstElementChild.innerHTML) {
+      return true
+    }
+    const {
+      stringProp,
+      numProp,
+      floatProp,
+      trueProp,
+      falseProp,
+      arrayProp,
+      objProp,
+    } = global.castedValues
+    expect(stringProp).toEqual("iloveyou")
+    expect(numProp).toEqual(360)
+    expect(floatProp).toEqual(0.5)
+    expect(trueProp).toEqual(true)
+    expect(falseProp).toEqual(false)
+    expect(arrayProp.length).toEqual(4)
+    expect(arrayProp[0]).toEqual(true)
+    expect(arrayProp[1]).toEqual(100.25)
+    expect(arrayProp[2]).toEqual("👽")
+    expect(arrayProp[3].aliens).toEqual("welcome")
+    expect(objProp.very).toEqual("object")
+    expect(objProp.such).toEqual("wow!")
   })
 })
 
