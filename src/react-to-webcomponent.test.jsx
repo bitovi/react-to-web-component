@@ -249,35 +249,74 @@ test("It converts dashed-attributes to camelCase", async () => {
   })
 })
 
-test("mounts and unmounts underlying react component", async () => {
+test("mounts and unmounts underlying react functional component", async () => {
+  if (reactEnv === "preact10") {
+    expect.assertions(0)
+    // does not work in preact - useEffect and the returned fn do not run on mount/unmount
+    return
+  }
   expect.assertions(2)
 
-  class RCom extends React.Component {
-    componentDidMount() {
-      expect(true)
-    }
-
-    componentWillUnmount() {
-      expect(true)
-    }
-
-    render() {
+  await new Promise((r) => {
+    function RCom () {
+      React.useEffect(() => {
+        // code here runs on mount
+        expect(true)
+      
+        return () => {
+          // code here runs on unmount
+          expect(true)
+          r()
+        }
+      }, [])
       return <h1>Hello, Goodbye</h1>
     }
-  }
 
-  class WebCom extends reactToWebComponent(RCom, React, ReactDOM) {}
-  customElements.define("mount-unmount", WebCom)
-  const webCom = new WebCom()
+    class WebCom extends reactToWebComponent(RCom, React, ReactDOM) {}
+    customElements.define("mount-unmount-func", WebCom)
+    const webCom = new WebCom()
 
-  const body = document.body
+    const body = document.body
 
-  await new Promise((r) => {
     setTimeout(() => {
       body.appendChild(webCom)
       setTimeout(() => {
         body.removeChild(webCom)
+      })
+    }, 0)
+  })
+})
+
+test("mounts and unmounts underlying react class component", async () => {
+  // also works in preact
+  expect.assertions(2)
+
+  await new Promise((r) => {
+    class RCom extends React.Component {
+      componentDidMount() {
+        expect(true)
+      }
+
+      componentWillUnmount() {
+        expect(true)
         r()
+      }
+
+      render() {
+        return <h1>Hello, Goodbye</h1>
+      }
+    }
+
+    class WebCom extends reactToWebComponent(RCom, React, ReactDOM) {}
+    customElements.define("mount-unmount", WebCom)
+    const webCom = new WebCom()
+
+    const body = document.body
+
+    setTimeout(() => {
+      body.appendChild(webCom)
+      setTimeout(() => {
+        body.removeChild(webCom)
       })
     }, 0)
   })
@@ -470,8 +509,87 @@ test("Props typed as Function convert the string value of attribute into global 
   })
 })
 
-test("Props typed as 'ref' work", async () => {
-  expect.assertions(8)
+test("Props typed as 'ref' work with functional components", async () => {
+  const notPreact = reactEnv !== "preact10" // preact doesn't have useImperativeHandle so no ref to functional components directly
+
+  expect.assertions(notPreact ? 10 : 7)
+
+  const RCom = React.forwardRef(function RCom(props, ref) {
+    const [Tag, setTag] = React.useState("h1")
+    notPreact &&
+      React.useImperativeHandle(ref, () => ({
+        Tag,
+        setTag,
+      }))
+    return (
+      <Tag ref={props.h1Ref} onClick={() => setTag("h2")}>
+        Ref
+      </Tag>
+    )
+  })
+
+  class WebCom extends reactToWebComponent(RCom, React, ReactDOM, {
+    props: {
+      ref: "ref",
+      h1Ref: "ref",
+    },
+  }) {}
+
+  customElements.define("ref-test-func", WebCom)
+
+  const body = document.body
+
+  await new Promise((r) => {
+    body.innerHTML = "<ref-test-func ref h1-ref></ref-test-func>"
+
+    setTimeout(() => {
+      const el = document.querySelector("ref-test-func")
+      notPreact && expect(el.ref.current.Tag).toEqual("h1")
+      notPreact && expect(typeof el.ref.current.setTag).toEqual("function")
+      const h1 = document.querySelector("ref-test-func h1")
+      expect(el.h1Ref.current).toEqual(h1)
+      h1.click()
+      setTimeout(() => {
+        const h2 = document.querySelector("ref-test-func h2")
+        notPreact && expect(el.ref.current.Tag).toEqual("h2")
+        expect(el.h1Ref.current).not.toEqual(h1)
+        expect(el.h1Ref.current).toEqual(h2)
+        r()
+      }, 0)
+    }, 0)
+  })
+
+  await new Promise((r) => {
+    const failUnlessCleared = setTimeout(() => {
+      delete global.globalRefFn
+      expect("globalRefFn was not called to clear the failure timeout").toEqual(
+        "not to fail because globalRefFn should have been called to clear the failure timeout",
+      )
+      r()
+    }, 1000)
+
+    global.globalRefFn = function (el) {
+      if (!el) {
+        // null before it switches to h2
+        return
+      }
+      expect(this).toEqual(document.querySelector("ref-test-func"))
+      expect(el).toEqual(this.querySelector("h1, h2"))
+      if (el.tagName.toLowerCase() === "h1") {
+        el.click()
+      } else {
+        delete global.globalRefFn
+        clearTimeout(failUnlessCleared)
+        r()
+      }
+    }
+
+    body.innerHTML = "<ref-test-func h1-ref='globalRefFn'></ref-test-func>"
+  })
+})
+
+test("Props typed as 'ref' work with class components", async () => {
+  expect.assertions(8) // full functionality with class components works in preact too
 
   class RCom extends React.Component {
     constructor(props) {

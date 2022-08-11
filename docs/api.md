@@ -67,10 +67,8 @@ var shadowContent = myGreeting.shadowRoot.children[0]
 If propTypes are defined on the underlying React component, dashed-attributes on the webcomponent are converted into the corresponding camelCase React props and the string attribute value is passed in.
 
 ```js
-class Greeting extends React.Component {
-  render() {
-    return <h1>Hello, {this.props.camelCaseName}</h1>
-  }
+function Greeting({ camelCaseName }) {
+  return <h1>Hello, {camelCaseName}</h1>
 }
 Greeting.propTypes = {
   camelCaseName: PropTypes.string.isRequired,
@@ -90,10 +88,8 @@ console.log(document.body.firstElementChild.innerHTML) // "<h1>Hello, Christophe
 If `options.props` is specified, R2WC will use those props instead of the keys from propTypes. If it's an array, all corresponding kebob-cased attr values will be passed as strings to the underlying React component.
 
 ```js
-class Greeting extends React.Component {
-  render() {
-    return <h1>Hello, {this.props.camelCaseName}</h1>
-  }
+function Greeting({ camelCaseName }) {
+  return <h1>Hello, {camelCaseName}</h1>
 }
 
 customElements.define(
@@ -118,11 +114,9 @@ If `options.props` is an object, the keys are the camelCased React props and the
 ### String | Number | Boolean | Object | Array props
 
 ```js
-class AttrPropTypeCasting extends React.Component {
-  render() {
-    console.log(this.props) // Note
-    return <h1>Oh my, {this.props.stringProp}</h1>
-  }
+function AttrPropTypeCasting(props) {
+  console.log(props) // Note
+  return <h1>Hello, {props.camelCaseName}</h1>
 }
 
 customElements.define(
@@ -153,7 +147,7 @@ document.body.innerHTML = `
 `
 
 /*
-  console.log(this.props) in the React render function produces this:
+  console.log(props) in the functions produces this:
   {
     stringProp: "iloveyou",
     numProp: 360,
@@ -207,15 +201,41 @@ setTimeout(
 
 ### "ref" props
 
-If the React component is a class type or has ref props, you can specify attributes as `"ref"` type and `React.createRef()` will automatically happen behind the scenes then attach the reference to the webcomponent instance.
+If the React component is can provide a ref to itself or has ref props, you can specify attributes as `"ref"` type.
+
+For example, given this class component:
 
 ```js
 class ComRef extends React.Component {
+  constructor(props) {
+    super(props)
+    this.exposedToParentByRef = true
+    this.h1Ref = props.h1Ref
+  }
   render() {
     return <h1 ref={this.props.h1Ref}>Ref</h1>
   }
 }
+```
 
+or given this functional component:
+
+```js
+/* note useImperativeHandle is not available in preact, but class component `ref` will work as expected in both preact and react */
+
+const ComRef = React.forwardRef(function ComRef(props, ref) {
+  // set up a reference obj to the component itself
+  React.useImperativeHandle(ref, () => ({
+    exposedToParentByRef: true,
+    h1Ref: props.h1Ref,
+  }))
+  return <h1 ref={props.h1Ref}>Ref</h1>
+})
+```
+
+Then `React.createRef()` will automatically happen behind the scenes then attach the reference to the webcomponent instance if it has the corresponding attribute.
+
+```js
 class WebComRef extends reactToWebComponent(ComRef, React, ReactDOM, {
   props: {
     ref: "ref",
@@ -225,18 +245,22 @@ class WebComRef extends reactToWebComponent(ComRef, React, ReactDOM, {
 
 customElements.define("ref-example", WebComRef)
 
+// add "ref" and "h1-ref" attrs to opt-in to having them attached to the webcomponent instance:
 document.body.innerHTML = "<ref-example ref h1-ref></ref-example>"
 
 setTimeout(() => {
   const el = document.querySelector("ref-example")
 
-  console.log(el.ref.current instanceof ComRef) // logs true
+  console.log(el.ref.current.exposedToParentByRef) // logs true using either the functional or class example above
+  console.log(el.ref.current instanceof ComRef) // logs true only if you used the class ComRef component example
 
   const h1 = el.querySelector("h1")
 
   console.log(el.h1Ref.current === h1) // logs true
 }, 0)
 ```
+
+#### Specifing a callback function for ref props
 
 If your `"ref"` type webcomponent attribute specifies a value, the value will be the name of a global function (like the `Function` prop type above) and be used as a callback reference, recieving the dom element the React component attaches it to as a parameter.
 
@@ -249,5 +273,8 @@ window.globalRefFn = function (el) {
   console.log(el === this.querySelector("h1")) // logs true
 }
 
+// opt-in to the h1-ref attr (h1Ref prop) and specify callback function to use:
 body.innerHTML = "<ref-example h1-ref='globalRefFn'></ref-example>"
 ```
+
+Note: React only supports callback references to elements, not to component instances
