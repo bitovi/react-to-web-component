@@ -258,11 +258,11 @@ test("mounts and unmounts underlying react functional component", async () => {
   expect.assertions(2)
 
   await new Promise((r) => {
-    function RCom () {
+    function RCom() {
       React.useEffect(() => {
         // code here runs on mount
         expect(true)
-      
+
         return () => {
           // code here runs on unmount
           expect(true)
@@ -664,5 +664,63 @@ test("Props typed as 'ref' work with class components", async () => {
     }
 
     body.innerHTML = "<ref-test h1-ref='globalRefFn'></ref-test>"
+  })
+})
+
+test("Supports text child nodes", async () => {
+  function Greeting({ children }) {
+    return <h1>Hello, {children}</h1>
+  }
+
+  Greeting.propTypes = {
+    children: PropTypes.node.isRequired,
+  }
+
+  const MyGreeting = reactToWebComponent(Greeting, React, ReactDOM)
+  customElements.define("greeting-child-text", MyGreeting)
+
+  const body = document.body
+  body.innerHTML = "<greeting-child-text>Christopher</greeting-child-text>"
+
+  await new Promise((r) => {
+    setTimeout(() => {
+      expect(body.firstElementChild.innerHTML).toEqual(
+        "<h1>Hello, Christopher</h1>",
+      )
+      r()
+    }, 0)
+  })
+})
+
+test("Supports nested html nodes", async () => {
+  function Greeting({ name, children }) {
+    return (
+      <div>
+        <h1>Hello, {name}</h1>
+        {children}
+      </div>
+    )
+  }
+
+  Greeting.propTypes = {
+    name: PropTypes.string.isRequired,
+    children: PropTypes.node.isRequired,
+  }
+
+  const MyGreeting = reactToWebComponent(Greeting, React, ReactDOM)
+  customElements.define("greeting-child-nodes", MyGreeting)
+
+  const body = document.body
+  body.innerHTML =
+    "<greeting-child-nodes name='Christopher'><p>Nested child</p></greeting-child-nodes>"
+
+  await new Promise((r) => {
+    setTimeout(() => {
+      expect(body.firstElementChild.innerHTML.replace(/\s/g, "")).toEqual(
+        `<div><h1>Hello, Christopher</h1><p>Nested child</p></div>
+        `.replace(/\s/g, ""),
+      )
+      r()
+    }, 0)
   })
 })
