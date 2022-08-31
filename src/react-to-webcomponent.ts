@@ -34,7 +34,14 @@ function mapChildren(React: React, node: Element) {
       ? c.nodeName.toLowerCase()
       : c.nodeName
     const children = flattenIfOne(mapChildren(React, c))
-    return React.createElement(nodeName, c.attributes, children)
+
+    // we need to format c.attributes before passing it to createElement
+    const attributes = {}
+    for (const attr of c.attributes) {
+      attributes[attr.name] = attr.value
+    }
+
+    return React.createElement(nodeName, attributes, children)
   })
 
   return flattenIfOne(arr)

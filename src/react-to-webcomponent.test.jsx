@@ -708,17 +708,15 @@ test("Supports nested html nodes", async () => {
   }
 
   const MyGreeting = reactToWebComponent(Greeting, React, ReactDOM)
-  customElements.define("greeting-child-nodes", MyGreeting)
+  customElements.define("child-greeting", MyGreeting)
 
   const body = document.body
-  body.innerHTML =
-    "<greeting-child-nodes name='Christopher'><p>Nested child</p></greeting-child-nodes>"
+  body.innerHTML = `<child-greeting name='Christopher'><a href="localhost">Nested child</a></child-greeting>`
 
   await new Promise((r) => {
     setTimeout(() => {
-      expect(body.firstElementChild.innerHTML.replace(/\s/g, "")).toEqual(
-        `<div><h1>Hello, Christopher</h1><p>Nested child</p></div>
-        `.replace(/\s/g, ""),
+      expect(body.firstElementChild.innerHTML).toEqual(
+        `<div><h1>Hello, Christopher</h1><a href="localhost">Nested child</a></div>`,
       )
       r()
     }, 0)
