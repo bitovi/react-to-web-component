@@ -6,6 +6,47 @@ function toDashedStyle(camelCase = "") {
   return camelCase.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()
 }
 
+function isAllCaps(word: string) {
+  return word.split("").every((c: string) => c.toUpperCase() === c)
+}
+
+function flattenIfOne(arr: object) {
+  if (!Array.isArray(arr)) {
+    return arr
+  }
+  if (arr.length === 1) {
+    return arr[0]
+  }
+  return arr
+}
+
+function mapChildren(React: React, node: Element) {
+  if (node.nodeType === Node.TEXT_NODE) {
+    return node.textContent.toString()
+  }
+
+  const arr = Array.from(node.childNodes).map((c: Element) => {
+    if (c.nodeType === Node.TEXT_NODE) {
+      return c.textContent.toString()
+    }
+    // BR = br, ReactElement = ReactElement
+    const nodeName = isAllCaps(c.nodeName)
+      ? c.nodeName.toLowerCase()
+      : c.nodeName
+    const children = flattenIfOne(mapChildren(React, c))
+
+    // we need to format c.attributes before passing it to createElement
+    const attributes = {}
+    for (const attr of c.attributes) {
+      attributes[attr.name] = attr.value
+    }
+
+    return React.createElement(nodeName, attributes, children)
+  })
+
+  return flattenIfOne(arr)
+}
+
 const define = {
   // Creates a getter/setter that re-renders everytime a property is set.
   expando: function (receiver: object, key: string, value: unknown) {
@@ -26,8 +67,9 @@ const define = {
 interface React {
   createRef: () => Record<string, unknown>
   createElement: (
-    ReactComponent: object,
+    ReactComponent: object | string,
     data: object,
+    children?: object,
   ) => Record<string, unknown>
 }
 
@@ -167,7 +209,9 @@ export default function (
       // Container is either shadow DOM or light DOM depending on `shadow` option.
       const container = options.shadow ? this.shadowRoot : this
 
-      const element = React.createElement(ReactComponent, data)
+      const children = flattenIfOne(mapChildren(React, this))
+
+      const element = React.createElement(ReactComponent, data, children)
 
       // Use react to render element in container
       if (typeof ReactDOM.createRoot === "function") {
