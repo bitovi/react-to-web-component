@@ -258,7 +258,7 @@ test("mounts and unmounts underlying react functional component", async () => {
   expect.assertions(2)
 
   await new Promise((r) => {
-    function RCom() {
+    function TestComponent() {
       React.useEffect(() => {
         // code here runs on mount
         expect(true)
@@ -272,7 +272,7 @@ test("mounts and unmounts underlying react functional component", async () => {
       return <h1>Hello, Goodbye</h1>
     }
 
-    class WebCom extends reactToWebComponent(RCom, React, ReactDOM) {}
+    class WebCom extends reactToWebComponent(TestComponent, React, ReactDOM) {}
     customElements.define("mount-unmount-func", WebCom)
     const webCom = new WebCom()
 
