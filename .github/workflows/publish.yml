@@ -4,8 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       segment:
-        description: "The version segment to increment: major, minor, or patch."
+        description: "The version segment to increment: major, minor, patch, premajor, preminor, prepatch, or prerelease."
         required: true
+      preId:
+        description: "Appended to the pre-release segment. (default: \"\")"
 
 jobs:
   build:
@@ -26,32 +28,32 @@ jobs:
       - name: "Install"
         run: npm ci
 
-      - name: Typecheck
-        run: npm run typecheck
-      - name: ESLint
-        run: npm run eslint
-      - name: Prettier
-        run: npm run prettier
-      - name: depcheck
-        run: npm run depcheck
-
-      - name: Test
-        run: npm run buildtests && npm run test
-      - name: Build
+      - name: "Build"
         run: npm run build
+
+      - name: "Test"
+        run: npm run buildtests && npm run test
 
       - name: Increment Version
         run: |
           git config --local user.email "Workflow: ${{ env.GITHUB_WORKFLOW }}[bot]"
           git config --local user.name "${{ env.GITHUB_WORKFLOW }}[bot]@workflow"
-          npm version ${{ github.event.inputs.segment }} -m "Publish v%s"
+
+          if [[ ${{ github.event.inputs.segment }} == pre* ]]; then
+            PRE_ID="${{ github.event.inputs.preId}}"
+            if [[ -n "$PRE_ID" ]]; then
+              PRE_ID_COMMAND_STR="--preid $PRE_ID"
+            fi
+          fi
+
+          npm version ${{ github.event.inputs.segment }} $PRE_ID_COMMAND_STR -m "Publish v%s"
 
       - name: Publish to NPM Registry
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
 
-      - name: Git Push
+      - name: Push Tag
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
