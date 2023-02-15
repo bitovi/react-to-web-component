@@ -79,7 +79,11 @@ export default function (ReactComponent, React, ReactDOM, options = {}) {
         renderAddedProperties[key] ||
         key in target
       ) {
-        return Reflect.set(target, key, value, receiver)
+        // If the property is already defined on the component, just set it.
+        if (this.has(target, key)) {
+          define.expando(receiver, key, value)
+        }
+        // Set it on the HTML element as well.
       } else {
         define.expando(receiver, key, value)
       }
