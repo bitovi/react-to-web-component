@@ -45,6 +45,7 @@ jobs:
               PRE_ID_COMMAND_STR="--preid $PRE_ID"
             fi
           fi
+
           npm version ${{ github.event.inputs.segment }} $PRE_ID_COMMAND_STR -m "Publish v%s"
 
       - name: Publish to NPM Registry
