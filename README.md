@@ -110,6 +110,12 @@ Greeting example in a [CodePen](https://codepen.io/weasyv/pen/BarBWvM?editors=10
 
 Greeting example in [CodeSandbox](https://codesandbox.io/s/react-to-webcomponent--basic-vqs8cl)
 
+## External Blog Posts
+
+R2WC with Vite [View Post] (https://www.bitovi.com/blog/react-everywhere-with-vite-and-react-to-webcomponent)
+
+R2WC with Create React App (CRA) [View Post](https://www.bitovi.com/blog/how-to-create-a-web-component-with-create-react-app)
+
 ## Bundled JS file available
 
 [https://unpkg.com/react-to-webcomponent/dist/react-to-webcomponent.js](https://unpkg.com/react-to-webcomponent/dist/react-to-webcomponent.js)
@@ -129,7 +135,7 @@ Also:
 - Enumerable properties and values on the custom element are used as the `props` passed to the React component.
 - The React component is not rendered until the custom element is inserted into the page.
 
-# tests
+# Tests
 
 To run tests, first run:
 
