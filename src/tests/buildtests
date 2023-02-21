@@ -17,3 +17,10 @@ cp src/react-to-webcomponent.test.jsx src/tests/react18
 cd src/tests/react18
 npm i
 cd ../../../
+
+
+sed -e 's/.*react-dom.*/import React from "preact\/compat"/g' -e '/import React from "react"/d' -e 's/ReactDOM/React/g' src/react-to-webcomponent.test.jsx > src/tests/preact10/react-to-webcomponent.test.jsx
+
+cd src/tests/preact10
+npm i
+cd ../../../
