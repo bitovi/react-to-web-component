@@ -159,6 +159,15 @@ export default function (
         renderAddedProperties[key] ||
         key in target
       ) {
+        // If the property is defined in the component props, just set it.
+        if (
+          ReactComponent.propTypes &&
+          key in ReactComponent.propTypes &&
+          typeof key === "string"
+        ) {
+          define.expando(receiver, key, value)
+        }
+        // Set it on the HTML element as well.
         return Reflect.set(target, key, value, receiver)
       } else {
         define.expando(receiver, key, value)
