@@ -112,7 +112,7 @@ Greeting example in [CodeSandbox](https://codesandbox.io/s/react-to-webcomponent
 
 ## External Blog Posts
 
-R2WC with Vite [View Post] (https://www.bitovi.com/blog/react-everywhere-with-vite-and-react-to-webcomponent)
+R2WC with Vite [View Post](https://www.bitovi.com/blog/react-everywhere-with-vite-and-react-to-webcomponent)
 
 R2WC with Create React App (CRA) [View Post](https://www.bitovi.com/blog/how-to-create-a-web-component-with-create-react-app)
 
