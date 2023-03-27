@@ -108,7 +108,7 @@ npm i react-to-webcomponent
 
 Greeting example in a [CodePen](https://codepen.io/bavinedwards/pen/jOveaGm)
 
-Greeting example in [CodeSandbox](https://codesandbox.io/s/sample-greeting-app-m6fc6ls)
+Greeting example in [CodeSandbox](https://codesandbox.io/s/sample-greeting-app-m6fc6l)
 
 ## External Blog Posts
 
