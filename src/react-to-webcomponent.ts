@@ -26,24 +26,26 @@ function mapChildren(React: React, node: Element) {
     return node.textContent?.toString()
   }
 
-  const arr = Array.from(node.childNodes as unknown as Element[]).map((c: Element) => {
-    if (c.nodeType === Node.TEXT_NODE) {
-      return c.textContent?.toString()
-    }
-    // BR = br, ReactElement = ReactElement
-    const nodeName = isAllCaps(c.nodeName)
-      ? c.nodeName.toLowerCase()
-      : c.nodeName
-    const children = flattenIfOne(mapChildren(React, c))
+  const arr = Array.from(node.childNodes as unknown as Element[]).map(
+    (c: Element) => {
+      if (c.nodeType === Node.TEXT_NODE) {
+        return c.textContent?.toString()
+      }
+      // BR = br, ReactElement = ReactElement
+      const nodeName = isAllCaps(c.nodeName)
+        ? c.nodeName.toLowerCase()
+        : c.nodeName
+      const children = flattenIfOne(mapChildren(React, c))
 
-    // we need to format c.attributes before passing it to createElement
-    const attributes: Record<string, string | null> = {}
-    for (const attr of c.getAttributeNames()) {
-      attributes[attr] = c.getAttribute(attr)
-    }
+      // we need to format c.attributes before passing it to createElement
+      const attributes: Record<string, string | null> = {}
+      for (const attr of c.getAttributeNames()) {
+        attributes[attr] = c.getAttribute(attr)
+      }
 
-    return React.createElement(nodeName, attributes, children)
-  })
+      return React.createElement(nodeName, attributes, children)
+    },
+  )
 
   return flattenIfOne(arr)
 }
@@ -89,7 +91,7 @@ export default function (
   React: React,
   ReactDOM: ReactDOM,
   options: R2WCOptions = {},
-): any {
+): CustomElementConstructor {
   const propTypes: Record<string, any> = {} // { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
   const propAttrMap: Record<string, any> = {} // @TODO: add option to specify for asymetric mapping (eg "className" from "class")
   const attrPropMap: Record<string, any> = {} // cached inverse of propAttrMap
@@ -117,9 +119,13 @@ export default function (
   let rendering = false
   // Create the web component "class"
   const WebComponent = function (this: any, ...args: any[]) {
-    const self = Reflect.construct(HTMLElement, args, this.constructor)
+    const self: HTMLElement = Reflect.construct(
+      HTMLElement,
+      args,
+      this.constructor,
+    )
     if (typeof options.shadow === "string") {
-      self.attachShadow({ mode: options.shadow })
+      self.attachShadow({ mode: options.shadow } as ShadowRoot)
     } else if (options.shadow) {
       console.warn(
         'Specifying the "shadow" option as a boolean is deprecated and will be removed in a future version.',
@@ -271,5 +277,5 @@ export default function (
     this[propertyName] = newValue
   }
 
-  return WebComponent
+  return WebComponent as unknown as CustomElementConstructor
 }

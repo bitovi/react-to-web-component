@@ -55,3 +55,7 @@ interface React {
     children?: any,
   ) => ReactElement<any, any> | null | any
 }
+
+interface CustomElementConstructor {
+    new (...params: any[]): HTMLElement;
+  }
