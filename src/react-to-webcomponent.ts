@@ -26,7 +26,7 @@ function mapChildren(React: React, node: Element) {
     return node.textContent?.toString()
   }
 
-  const arr = Array.from(node.childNodes).map((c: ChildNode) => {
+  const arr = Array.from(node.childNodes as unknown as Element[]).map((c: Element) => {
     if (c.nodeType === Node.TEXT_NODE) {
       return c.textContent?.toString()
     }
@@ -34,13 +34,12 @@ function mapChildren(React: React, node: Element) {
     const nodeName = isAllCaps(c.nodeName)
       ? c.nodeName.toLowerCase()
       : c.nodeName
-    const children = flattenIfOne(mapChildren(React, c as Element))
+    const children = flattenIfOne(mapChildren(React, c))
 
     // we need to format c.attributes before passing it to createElement
     const attributes: Record<string, string | null> = {}
-    const cAsElement = c as Element
-    for (const attr of cAsElement.getAttributeNames()) {
-      attributes[attr] = cAsElement.getAttribute(attr)
+    for (const attr of c.getAttributeNames()) {
+      attributes[attr] = c.getAttribute(attr)
     }
 
     return React.createElement(nodeName, attributes, children)
