@@ -36,6 +36,16 @@ interface FC<P = Record<string, unknown>> {
   displayName?: string
 }
 
+interface ComponentClass<P = Record<string, unknonwn>> {
+    new (props: P, context?: any): any
+    propTypes?: any;
+    contextType?: any;
+    contextTypes?: any;
+    childContextTypes?: any;
+    defaultProps?: Partial<P> | undefined;
+    displayName?: string | undefined;
+  }
+
 type Container = Element | Document | DocumentFragment
 
 interface ReactDOM {
@@ -50,7 +60,7 @@ interface ReactDOM {
 interface React {
   createRef: () => RefObject<unknown>
   createElement: (
-    type: string | FC<any>,
+    type: string | FC<any> | ComponentClass<any>,
     data: any,
     children?: any,
   ) => ReactElement<any, any> | null | any

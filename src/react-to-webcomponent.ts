@@ -87,7 +87,7 @@ interface R2WCOptions {
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function (
-  ReactComponent: FC<any>,
+  ReactComponent: FC<any> | ComponentClass<any>,
   React: React,
   ReactDOM: ReactDOM,
   options: R2WCOptions = {},
