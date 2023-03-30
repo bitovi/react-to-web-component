@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const renderSymbol = Symbol.for("r2wc.reactRender")
 const shouldRenderSymbol = Symbol.for("r2wc.shouldRender")
 const rootSymbol = Symbol.for("r2wc.root")
@@ -22,34 +23,40 @@ function flattenIfOne(arr: object) {
 
 function mapChildren(React: React, node: Element) {
   if (node.nodeType === Node.TEXT_NODE) {
-    return node.textContent.toString()
+    return node.textContent?.toString()
   }
 
-  const arr = Array.from(node.childNodes).map((c: Element) => {
-    if (c.nodeType === Node.TEXT_NODE) {
-      return c.textContent.toString()
-    }
-    // BR = br, ReactElement = ReactElement
-    const nodeName = isAllCaps(c.nodeName)
-      ? c.nodeName.toLowerCase()
-      : c.nodeName
-    const children = flattenIfOne(mapChildren(React, c))
+  const arr = Array.from(node.childNodes as unknown as Element[]).map(
+    (c: Element) => {
+      if (c.nodeType === Node.TEXT_NODE) {
+        return c.textContent?.toString()
+      }
+      // BR = br, ReactElement = ReactElement
+      const nodeName = isAllCaps(c.nodeName)
+        ? c.nodeName.toLowerCase()
+        : c.nodeName
+      const children = flattenIfOne(mapChildren(React, c))
 
-    // we need to format c.attributes before passing it to createElement
-    const attributes = {}
-    for (const attr of c.attributes) {
-      attributes[attr.name] = attr.value
-    }
+      // we need to format c.attributes before passing it to createElement
+      const attributes: Record<string, string | null> = {}
+      for (const attr of c.getAttributeNames()) {
+        attributes[attr] = c.getAttribute(attr)
+      }
 
-    return React.createElement(nodeName, attributes, children)
-  })
+      return React.createElement(nodeName, attributes, children)
+    },
+  )
 
   return flattenIfOne(arr)
 }
 
 const define = {
   // Creates a getter/setter that re-renders everytime a property is set.
-  expando: function (receiver: object, key: string, value: unknown) {
+  expando: function (
+    receiver: Record<typeof renderSymbol, any>,
+    key: string,
+    value: unknown,
+  ) {
     Object.defineProperty(receiver, key, {
       enumerable: true,
       get: function () {
@@ -62,24 +69,6 @@ const define = {
     })
     receiver[renderSymbol]()
   },
-}
-
-interface React {
-  createRef: () => Record<string, unknown>
-  createElement: (
-    ReactComponent: object | string,
-    data: object,
-    children?: object,
-  ) => Record<string, unknown>
-}
-
-interface ReactDOM {
-  createRoot?: (container: unknown) => unknown
-  unmountComponentAtNode: (obj: Record<string, unknown>) => unknown
-  render: (
-    element: Record<string, unknown>,
-    container: Record<string, unknown>,
-  ) => unknown
 }
 
 interface R2WCOptions {
@@ -98,37 +87,45 @@ interface R2WCOptions {
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function (
-  ReactComponent: { propTypes?: object },
+  ReactComponent: FC<any> | ComponentClass<any>,
   React: React,
   ReactDOM: ReactDOM,
   options: R2WCOptions = {},
-) {
-  const propTypes = {} // { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
-  const propAttrMap = {} // @TODO: add option to specify for asymetric mapping (eg "className" from "class")
-  const attrPropMap = {} // cached inverse of propAttrMap
+): CustomElementConstructor {
+  const propTypes: Record<string, any> = {} // { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
+  const propAttrMap: Record<string, any> = {} // @TODO: add option to specify for asymetric mapping (eg "className" from "class")
+  const attrPropMap: Record<string, any> = {} // cached inverse of propAttrMap
+
   if (!options.props) {
     options.props = ReactComponent.propTypes
       ? Object.keys(ReactComponent.propTypes)
       : []
   }
+
   const propKeys = Array.isArray(options.props)
     ? options.props.slice()
     : Object.keys(options.props)
-  const optionsPropsIsArray = Array.isArray(options.props)
+
   propKeys.forEach((key) => {
-    propTypes[key] = optionsPropsIsArray ? String : options.props[key]
+    propTypes[key] = Array.isArray(options.props)
+      ? String
+      : options.props?.[key]
     propAttrMap[key] = toDashedStyle(key)
     attrPropMap[propAttrMap[key]] = key
   })
-  const renderAddedProperties = {
+  const renderAddedProperties: Record<string, boolean> = {
     isConnected: "isConnected" in HTMLElement.prototype,
   }
   let rendering = false
   // Create the web component "class"
-  const WebComponent = function (...args) {
-    const self = Reflect.construct(HTMLElement, args, this.constructor)
+  const WebComponent = function (this: any, ...args: any[]) {
+    const self: HTMLElement = Reflect.construct(
+      HTMLElement,
+      args,
+      this.constructor,
+    )
     if (typeof options.shadow === "string") {
-      self.attachShadow({ mode: options.shadow })
+      self.attachShadow({ mode: options.shadow } as ShadowRoot)
     } else if (options.shadow) {
       console.warn(
         'Specifying the "shadow" option as a boolean is deprecated and will be removed in a future version.',
@@ -151,7 +148,7 @@ export default function (
     // when any undefined property is set, create a getter/setter that re-renders
     set: function (target, key, value, receiver) {
       if (rendering) {
-        renderAddedProperties[key] = true
+        renderAddedProperties[key as string] = true
       }
 
       if (
@@ -200,16 +197,16 @@ export default function (
     this[renderSymbol]()
   }
   targetPrototype.disconnectedCallback = function () {
-    if (typeof ReactDOM.createRoot === "function") {
+    if (ReactDOM.createRoot && typeof ReactDOM.createRoot === "function") {
       this[rootSymbol].unmount()
-    } else {
+    } else if (ReactDOM.unmountComponentAtNode) {
       ReactDOM.unmountComponentAtNode(this)
     }
   }
   targetPrototype[renderSymbol] = function () {
     if (this[shouldRenderSymbol] === true) {
-      const data = {}
-      Object.keys(this).forEach(function (key) {
+      const data: Record<string, any> = {}
+      Object.keys(this).forEach(function (this: any, key) {
         if (renderAddedProperties[key] !== false) {
           data[key] = this[key]
         }
@@ -223,13 +220,13 @@ export default function (
       const element = React.createElement(ReactComponent, data, children)
 
       // Use react to render element in container
-      if (typeof ReactDOM.createRoot === "function") {
+      if (ReactDOM.createRoot && typeof ReactDOM.createRoot === "function") {
         if (!this[rootSymbol]) {
           this[rootSymbol] = ReactDOM.createRoot(container)
         }
 
         this[rootSymbol].render(element)
-      } else {
+      } else if (ReactDOM.render) {
         ReactDOM.render(element, container)
       }
 
@@ -242,8 +239,8 @@ export default function (
 
   targetPrototype.attributeChangedCallback = function (
     name: string,
-    oldValue,
-    newValue,
+    oldValue: any,
+    newValue: any,
   ) {
     const propertyName = attrPropMap[name] || name
     switch (propTypes[propertyName]) {
@@ -280,5 +277,5 @@ export default function (
     this[propertyName] = newValue
   }
 
-  return WebComponent
+  return WebComponent as unknown as CustomElementConstructor
 }
