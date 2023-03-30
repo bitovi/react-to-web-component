@@ -71,11 +71,6 @@ const define = {
   },
 }
 
-interface R2WCOptions {
-  shadow?: string | boolean
-  props?: Array<string> | Record<string, unknown>
-}
-
 /**
  * Converts a React component into a webcomponent by wrapping it in a Proxy object.
  * @param {ReactComponent}

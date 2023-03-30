@@ -37,14 +37,14 @@ interface FC<P = Record<string, unknown>> {
 }
 
 interface ComponentClass<P = Record<string, unknonwn>> {
-    new (props: P, context?: any): any
-    propTypes?: any;
-    contextType?: any;
-    contextTypes?: any;
-    childContextTypes?: any;
-    defaultProps?: Partial<P> | undefined;
-    displayName?: string | undefined;
-  }
+  new (props: P, context?: any): any
+  propTypes?: any
+  contextType?: any
+  contextTypes?: any
+  childContextTypes?: any
+  defaultProps?: Partial<P> | undefined
+  displayName?: string | undefined
+}
 
 type Container = Element | Document | DocumentFragment
 
@@ -67,5 +67,10 @@ interface React {
 }
 
 interface CustomElementConstructor {
-    new (...params: any[]): HTMLElement;
-  }
+  new (...params: any[]): HTMLElement
+}
+
+interface R2WCOptions {
+  shadow?: string | boolean
+  props?: Array<string> | Record<string, unknown>
+}
