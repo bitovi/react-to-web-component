@@ -1,6 +1,6 @@
 # react-to-webcomponent
 
-`react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that __don't__ require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
+`react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
 `react-to-webcomponent`:
 
@@ -26,10 +26,8 @@ import * as ReactDOM from "react-dom/client"
 // When using React 16 and 17 import ReactDom with the commented statement below instead:
 // import ReactDom from "react-dom"
 
-const Greeting = ({name}) => {
-  return (
-    <h1>Hello, {name}</h1>
-  )
+const Greeting = ({ name }) => {
+  return <h1>Hello, {name}</h1>
 }
 ```
 
@@ -55,7 +53,6 @@ Now we can use `<web-greeting>` like any other HTML element!
 
 Note that by using React 18, `reactToWebComponent` will use the new root API. If your application needs the legacy API, please use React 17
 
-
 In the above case, the web-greeting custom element is not making use of the `name` property from our `Greeting` component.
 
 ## Working with Attributes
@@ -71,13 +68,11 @@ import PropTypes from "prop-types"
 import * as ReactDOM from "react-dom/client"
 
 const Greeting = ({ name }) => {
-  return (
-    <h1>Hello, {name}</h1>
-  )
+  return <h1>Hello, {name}</h1>
 }
 
 Greeting.propTypes = {
-  name: PropTypes.string.isRequired
+  name: PropTypes.string.isRequired,
 }
 ```
 
@@ -92,7 +87,7 @@ as follows:
 </body>
 ```
 
-For projects needing more advanced usage of the web components, see our [prgramatic usage and declarative demos](docs/programatic-usage.md).
+For projects needing more advanced usage of the web components, see our [programatic usage and declarative demos](docs/programatic-usage.md).
 
 We also have a [complete example using a third party library](docs/complete-example.md).
 

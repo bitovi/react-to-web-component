@@ -1,6 +1,6 @@
 {
   "name": "react-to-webcomponent",
-  "version": "2.0.0-0",
+  "version": "2.0.0-alpha.0",
   "description": "Convert react components to native Web Components.",
   "main": "./dist/react-to-webcomponent.es.js",
   "module": "./dist/react-to-webcomponent.es.js",
@@ -40,8 +40,8 @@
     "test": "vitest src/tests/**/react-to-webcomponent.test.jsx",
     "start": "http-server -c-1",
     "typecheck": "tsc --noEmit",
-    "eslint": "eslint ./src/*.js",
-    "prettier": "prettier --check ./src/*.js",
+    "eslint": "eslint ./src/*.ts",
+    "prettier": "prettier --check ./src/*.ts",
     "depcheck": "depcheck ."
   },
   "repository": {
