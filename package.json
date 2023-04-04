@@ -34,7 +34,7 @@
     "vitest": "^0.19.1"
   },
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && chmod +x build.sh && ./build.sh",
     "ci": "npm run test",
     "buildtests": "chmod +x src/tests/buildtests && ./src/tests/buildtests",
     "test": "vitest src/tests/**/react-to-webcomponent.test.jsx",

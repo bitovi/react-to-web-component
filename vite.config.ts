@@ -6,7 +6,7 @@ export default defineConfig((configEnv) => ({
   plugins: [typescript()],
   build: {
     lib: {
-      formats: ["es", "umd"],
+      formats: ["es", "umd", "cjs"],
       entry: resolve(__dirname, "src/react-to-webcomponent.js"),
       name: "react-to-webcomponent",
       fileName: (format) => `react-to-webcomponent.${format}.js`,
