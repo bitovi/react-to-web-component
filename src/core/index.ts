@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react"
-import ReactDOM from "react-dom/client"
+import React from "react18"
+
 const renderSymbol = Symbol.for("r2wc.reactRender")
 const shouldRenderSymbol = Symbol.for("r2wc.shouldRender")
-const rootSymbol = Symbol.for("r2wc.root")
 
 function toDashedStyle(camelCase = "") {
   return camelCase.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()
@@ -23,7 +22,7 @@ function flattenIfOne(arr: object) {
   return arr
 }
 
-function mapChildren(React: React, node: Element) {
+function mapChildren(node: Element) {
   if (node.nodeType === Node.TEXT_NODE) {
     return node.textContent?.toString()
   }
@@ -37,7 +36,7 @@ function mapChildren(React: React, node: Element) {
       const nodeName = isAllCaps(c.nodeName)
         ? c.nodeName.toLowerCase()
         : c.nodeName
-      const children = flattenIfOne(mapChildren(React, c))
+      const children = flattenIfOne(mapChildren(c))
 
       // we need to format c.attributes before passing it to createElement
       const attributes: Record<string, string | null> = {}
@@ -76,33 +75,32 @@ const define = {
 /**
  * Converts a React component into a webcomponent by wrapping it in a Proxy object.
  * @param {ReactComponent}
- * @param {Object} options - Optional parameters
- * @param {String?} options.shadow - Shadow DOM mode as either open or closed.
- * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
+ * @param {Object} config - Optional parameters
+ * @param {String?} config.shadow - Shadow DOM mode as either open or closed.
+ * @param {Object|Array?} config.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function (
   ReactComponent: FC<any> | ComponentClass<any>,
-  options: R2WCOptions = {},
+  config: R2WCOptions = {},
+  renderer: Renderer<ReturnType<typeof React.createElement>>,
 ): CustomElementConstructor {
   const propTypes: Record<string, any> = {} // { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
   const propAttrMap: Record<string, any> = {} // @TODO: add option to specify for asymetric mapping (eg "className" from "class")
   const attrPropMap: Record<string, any> = {} // cached inverse of propAttrMap
 
-  if (!options.props) {
-    options.props = ReactComponent.propTypes
+  if (!config.props) {
+    config.props = ReactComponent.propTypes
       ? Object.keys(ReactComponent.propTypes)
       : []
   }
 
-  const propKeys = Array.isArray(options.props)
-    ? options.props.slice()
-    : Object.keys(options.props)
+  const propKeys = Array.isArray(config.props)
+    ? config.props.slice()
+    : Object.keys(config.props)
 
   propKeys.forEach((key) => {
-    propTypes[key] = Array.isArray(options.props)
-      ? String
-      : options.props?.[key]
+    propTypes[key] = Array.isArray(config.props) ? String : config.props?.[key]
     propAttrMap[key] = toDashedStyle(key)
     attrPropMap[propAttrMap[key]] = key
   })
@@ -117,9 +115,9 @@ export default function (
       args,
       this.constructor,
     )
-    if (typeof options.shadow === "string") {
-      self.attachShadow({ mode: options.shadow } as ShadowRoot)
-    } else if (options.shadow) {
+    if (typeof config.shadow === "string") {
+      self.attachShadow({ mode: config.shadow } as ShadowRoot)
+    } else if (config.shadow) {
       console.warn(
         'Specifying the "shadow" option as a boolean is deprecated and will be removed in a future version.',
       )
@@ -190,8 +188,7 @@ export default function (
     this[renderSymbol]()
   }
   targetPrototype.disconnectedCallback = function () {
-    // Unmount react component when disconnected
-    this[rootSymbol].unmount()
+    renderer.unmount(this)
   }
   targetPrototype[renderSymbol] = function () {
     if (this[shouldRenderSymbol] === true) {
@@ -203,17 +200,15 @@ export default function (
       }, this)
       rendering = true
       // Container is either shadow DOM or light DOM depending on `shadow` option.
-      const container = options.shadow ? this.shadowRoot : this
+      const container = config.shadow ? this.shadowRoot : this
 
-      const children = flattenIfOne(mapChildren(React, this))
+      const children = flattenIfOne(mapChildren(this))
 
       const element = React.createElement(ReactComponent, data, children)
 
       // Use react to render element in container
-      if (!this[rootSymbol]) {
-        this[rootSymbol] = ReactDOM.createRoot(container)
-      }
-      this[rootSymbol].render(element)
+
+      renderer.mount(container, element)
       rendering = false
     }
   }

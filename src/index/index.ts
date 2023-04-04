@@ -1,2 +1,2 @@
-import ReactToWebComponent from "../root/react-to-webcomponent"
-export default ReactToWebComponent;
+import ReactToWebComponent from "../root"
+export default ReactToWebComponent

@@ -1,8 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-interface RefObject<T> {
-  current: T | null
-}
-
 interface ReactElement<P = any, T extends string | any = string | any> {
   type: T
   props: P
@@ -48,24 +44,6 @@ interface ComponentClass<P = Record<string, unknown>> {
 
 type Container = Element | Document | DocumentFragment
 
-interface ReactDOM {
-  createRoot?: (container: Element | DocumentFragment, options?: any) => unknown
-  unmountComponentAtNode?: (container: Element | DocumentFragment) => boolean
-  render?: (
-    element: ReactElement<any, any> | null | any,
-    container: Container | null,
-  ) => unknown
-}
-
-interface React {
-  createRef: () => RefObject<unknown>
-  createElement: (
-    type: string | FC<any> | ComponentClass<any>,
-    data: any,
-    children?: any,
-  ) => ReactElement<any, any> | null | any
-}
-
 interface CustomElementConstructor {
   new (...params: any[]): HTMLElement
 }
@@ -73,4 +51,9 @@ interface CustomElementConstructor {
 interface R2WCOptions {
   shadow?: string | boolean
   props?: Array<string> | Record<string, unknown>
+}
+
+interface Renderer<T> {
+  mount: (container: HTMLElement, element: T) => any
+  unmount: (container: HTMLElement) => any
 }

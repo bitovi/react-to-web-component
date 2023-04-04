@@ -19,8 +19,10 @@
   "devDependencies": {
     "@bitovi/eslint-config": "^1.3.0",
     "@rollup/plugin-typescript": "^8.3.4",
-    "@types/react": "^18.0.32",
-    "@types/react-dom": "^18.0.11",
+    "@types/react-dom17": "npm:@types/react-dom@^17.0.19",
+    "@types/react-dom18": "npm:@types/react-dom@^18.0.11",
+    "@types/react17": "npm:@types/react@^17.0.56",
+    "@types/react18": "npm:@types/react@^18.0.33",
     "@webcomponents/custom-elements": "^1.2.4",
     "can-stache": "^4.17.20",
     "can-stache-bindings": "^4.10.9",
@@ -66,7 +68,9 @@
     "trailingComma": "all"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom17": "npm:react-dom@^17.0.2",
+    "react-dom18": "npm:react-dom@^18.2.0",
+    "react17": "npm:react@^17.0.2",
+    "react18": "npm:react@^18.2.0"
   }
 }
