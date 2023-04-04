@@ -42,8 +42,8 @@
     "test": "vitest src/tests/**/react-to-webcomponent.test.jsx",
     "start": "http-server -c-1",
     "typecheck": "tsc --noEmit",
-    "eslint": "eslint ./src/*.ts",
-    "prettier": "prettier --check ./src/*.ts",
+    "eslint": "eslint ./src/**/*.ts",
+    "prettier": "prettier --check ./src/**/*.ts",
     "depcheck": "depcheck ."
   },
   "repository": {
