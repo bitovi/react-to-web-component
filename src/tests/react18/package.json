@@ -7,7 +7,7 @@
     "prop-types": "^15.7.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "react-to-webcomponent": "file:.."
+    "react-to-webcomponent": "file:../index"
   },
   "devDependencies": {
     "typescript": "^4.3.5",

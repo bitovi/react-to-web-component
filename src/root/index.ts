@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ReactNode, ComponentType } from "react18"
-import ReactDOM from "react-dom18/client"
+import { ReactNode } from "react"
+import ReactDOM from "react-dom/client"
 
 import r2wc from "../core"
 
@@ -15,14 +15,14 @@ function mount(this: any, container: HTMLElement, element: ReactNode) {
   }
 }
 
-function unmount(this: any, container: HTMLElement) {
+function unmount(this: any, _container: HTMLElement) {
   if (ReactDOM.createRoot && typeof ReactDOM.createRoot === "function") {
     this[rootSymbol].unmount()
   }
 }
 
 export default function reactToWebComponentRoot(
-  ReactComponent: ComponentType<any>,
+  ReactComponent: FC<any> | ComponentClass<any>,
   config: R2WCOptions = {},
 ): CustomElementConstructor {
   return r2wc(ReactComponent, config, { mount, unmount })
