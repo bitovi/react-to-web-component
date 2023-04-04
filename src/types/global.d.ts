@@ -36,7 +36,7 @@ interface FC<P = Record<string, unknown>> {
   displayName?: string
 }
 
-interface ComponentClass<P = Record<string, unknonwn>> {
+interface ComponentClass<P = Record<string, unknown>> {
   new (props: P, context?: any): any
   propTypes?: any
   contextType?: any
