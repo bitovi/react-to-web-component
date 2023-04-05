@@ -2,13 +2,13 @@
   "name": "react-to-webcomponent",
   "version": "1.7.4",
   "description": "Convert react components to native Web Components.",
-  "main": "./dist/react-to-webcomponent.es.js",
-  "module": "./dist/react-to-webcomponent.es.js",
+  "main": "./dist/react-to-webcomponent.cjs",
+  "module": "./dist/react-to-webcomponent.mjs",
   "types": "./dist/react-to-webcomponent.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/react-to-webcomponent.es.js",
-      "require": "./dist/react-to-webcomponent.umd.js"
+      "import": "./dist/react-to-webcomponent.mjs",
+      "require": "./dist/react-to-webcomponent.cjs"
     }
   },
   "files": [
@@ -51,7 +51,7 @@
   "keywords": [
     "React",
     "Preact",
-    "WebComponents"
+    "Web Component"
   ],
   "author": "Bitovi",
   "license": "MIT",

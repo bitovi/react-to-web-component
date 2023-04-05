@@ -29,7 +29,10 @@ jobs:
         run: npm ci
 
       - name: "Build"
-        run: npm run build
+        run: |
+          npm run build
+          cp dist/react-to-webcomponent.es.js dist/react-to-webcomponent.mjs
+          cp dist/react-to-webcomponent.cjs.js dist/react-to-webcomponent.cjs
 
       - name: "Test"
         run: npm run buildtests && npm run test
