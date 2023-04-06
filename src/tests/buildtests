@@ -4,18 +4,21 @@ sed "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" src/react-to-webcompone
 
 cd src/tests/react16
 npm i
+npm install --install-links ../../..
 cd ../../../
 
 sed "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" src/react-to-webcomponent.test.jsx > src/tests/react17/react-to-webcomponent.test.jsx
 
 cd src/tests/react17
 npm i
+npm install --install-links ../../..
 cd ../../../
 
 cp src/react-to-webcomponent.test.jsx src/tests/react18
 
 cd src/tests/react18
 npm i
+npm install --install-links ../../..
 cd ../../../
 
 
@@ -23,4 +26,5 @@ sed -e 's/.*react-dom.*/import React from "preact\/compat"/g' -e '/import React 
 
 cd src/tests/preact10
 npm i
+npm install --install-links ../../..
 cd ../../../
