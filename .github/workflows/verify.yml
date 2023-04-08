@@ -31,5 +31,4 @@ jobs:
         run: npm run build
 
       - name: Test
-        # run: npm run buildtests && npm run test
-        run: npm run test:core && npm run test:root
+        run: npm run buildtests && npm run test

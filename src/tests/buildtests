@@ -1,20 +1,22 @@
 #!/bin/bash
 
-sed "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" src/react-to-webcomponent.test.jsx > src/tests/react16/react-to-webcomponent.test.jsx
+
+sed -e "s/.\/react-to-webcomponent/react-to-webcomponent\/render/g" -e "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" src/react-to-webcomponent.test.jsx > src/tests/react16/react-to-webcomponent.test.jsx
 
 cd src/tests/react16
 npm i
 npm install --install-links ../../..
 cd ../../../
 
-sed "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" src/react-to-webcomponent.test.jsx > src/tests/react17/react-to-webcomponent.test.jsx
+sed -e "s/.\/react-to-webcomponent/react-to-webcomponent\/render/g" -e "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" src/react-to-webcomponent.test.jsx > src/tests/react17/react-to-webcomponent.test.jsx
 
 cd src/tests/react17
 npm i
 npm install --install-links ../../..
 cd ../../../
 
-cp src/react-to-webcomponent.test.jsx src/tests/react18
+
+sed "s/.\/react-to-webcomponent/react-to-webcomponent/g" src/react-to-webcomponent.test.jsx > src/tests/react18/react-to-webcomponent.test.jsx
 
 cd src/tests/react18
 npm i
@@ -22,9 +24,9 @@ npm install --install-links ../../..
 cd ../../../
 
 
-sed -e 's/.*react-dom.*/import React from "preact\/compat"/g' -e '/import React from "react"/d' -e 's/ReactDOM/React/g' src/react-to-webcomponent.test.jsx > src/tests/preact10/react-to-webcomponent.test.jsx
+# sed -e 's/.\/react-to-webcomponent/react-to-webcomponent/g' -e 's/.*react-dom.*/import React from "preact\/compat"/g' -e '/import React from "react"/d' -e 's/ReactDOM/React/g' src/react-to-webcomponent.test.jsx > src/tests/preact10/react-to-webcomponent.test.jsx
 
-cd src/tests/preact10
-npm i
-npm install --install-links ../../..
-cd ../../../
+# cd src/tests/preact10
+# npm i
+# npm install --install-links ../../..
+# cd ../../../

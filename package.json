@@ -4,13 +4,20 @@
   "description": "Convert react components to native Web Components.",
   "type": "module",
   "exports": {
+    ".": {
+      "import": "./dist/root.js",
+      "require": "./dist/root.cjs",
+      "types": "./dist/root.d.ts"
+    },
     "./root": {
       "import": "./dist/root.js",
-      "require": "./dist/root.cjs"
+      "require": "./dist/root.cjs",
+      "types": "./dist/root.d.ts"
     },
     "./render": {
       "import": "./dist/render.js",
-      "require": "./dist/render.cjs"
+      "require": "./dist/render.cjs",
+      "types": "./dist/render.d.ts"
     }
   },
   "files": [
@@ -43,7 +50,7 @@
     "ci": "npm run test",
     "buildtests": "chmod +x src/tests/buildtests && ./src/tests/buildtests",
     "test": "vitest src/tests/**/react-to-webcomponent.test.jsx",
-    "test:react18": "vitest src/tests/react18/react-to-webcomponent.test.jsx",
+    "test:react18": "vitest src/tests/react18/react-to-webcomponent.test.jsx && npm run test:core && npm run test:root",
     "test:core": "vitest src/core/core.test.tsx",
     "test:root": "vitest src/root/root.test.tsx",
     "start": "http-server -c-1",
