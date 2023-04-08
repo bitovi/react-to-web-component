@@ -1,21 +1,31 @@
 import { resolve } from "path"
 import { defineConfig } from "vite"
 import typescript from "@rollup/plugin-typescript"
+import dts from "vite-plugin-dts"
 
 export default defineConfig((configEnv) => ({
-  plugins: [typescript()],
+  plugins: [
+    typescript(),
+    dts({
+      insertTypesEntry: true,
+      outputDir: "dist",
+    }),
+  ],
   build: {
+    emptyOutDir: false,
     lib: {
-      formats: ["es", "umd"],
-      entry: resolve(__dirname, "src/react-to-webcomponent.ts"),
-      name: "react-to-webcomponent",
-      fileName: (format) => `react-to-webcomponent.${format}.js`,
+      entry: {
+        root: resolve(__dirname, "src/root/root.ts"),
+        render: resolve(__dirname, "src/render/render.ts"),
+      },
+      formats: ["es", "cjs"],
     },
     rollupOptions: {
-      external: ["react"],
+      external: ["react", "react-dom"],
       output: {
         globals: {
           react: "react",
+          "react-dom": "react-dom",
         },
       },
     },
