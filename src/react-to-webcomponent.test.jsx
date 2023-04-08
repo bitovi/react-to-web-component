@@ -283,7 +283,7 @@ test("mounts and unmounts underlying react functional component", async () => {
       body.appendChild(webCom)
       setTimeout(() => {
         body.removeChild(webCom)
-      })
+      }, 0)
     }, 0)
   })
 })

@@ -207,7 +207,6 @@ export default function (
       const element = React.createElement(ReactComponent, data, children)
 
       // Use react to render element in container
-      // renderer.mount.bind(this)
       renderer.mount(container, element)
       rendering = false
     }

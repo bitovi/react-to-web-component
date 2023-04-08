@@ -32,15 +32,16 @@
     "prettier": "^2.7.1",
     "prop-types": "^15.7.2",
     "typescript": "^4.3.5",
-    "vite": "^3.0.3",
-    "vitest": "^0.19.1"
+    "vite": "^3.2.5",
+    "vitest": "^0.29.8"
   },
   "scripts": {
     "build": "vite build",
     "ci": "npm run test",
     "buildtests": "chmod +x src/tests/buildtests && ./src/tests/buildtests",
     "test": "vitest src/tests/**/react-to-webcomponent.test.jsx",
-    "test-18": "vitest src/tests/react18/react-to-webcomponent.test.jsx",
+    "test:core": "vitest src/core/core.test.tsx",
+    "test:root": "vitest src/root/root.test.tsx",
     "start": "http-server -c-1",
     "typecheck": "tsc --noEmit",
     "eslint": "eslint ./src/**/*.ts",
