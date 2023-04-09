@@ -10,7 +10,7 @@ import stache from "can-stache"
 import stacheBindings from "can-stache-bindings"
 stache.addBindings(stacheBindings)
 
-import reactToWebComponent from "./react-to-webcomponent"
+import reactToWebComponent from "./legacy/react-to-webcomponent"
 
 const reactEnv = __dirname.replace(/.*?([^\\/]+\d+).*/g, "$1")
 // reactEnv = "react16" | "react17" | "react18" | "preact10"

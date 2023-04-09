@@ -1,4 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+interface RefObject<T> {
+  current: T | null
+}
+
 interface ReactElement<P = any, T extends string | any = string | any> {
   type: T
   props: P

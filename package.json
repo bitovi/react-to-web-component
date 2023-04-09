@@ -7,17 +7,22 @@
     ".": {
       "import": "./dist/root.js",
       "require": "./dist/root.cjs",
-      "types": "./dist/root.d.ts"
+      "types": "./dist/root/root.d.ts"
     },
     "./root": {
       "import": "./dist/root.js",
       "require": "./dist/root.cjs",
-      "types": "./dist/root.d.ts"
+      "types": "./dist/root/root.d.ts"
     },
     "./render": {
       "import": "./dist/render.js",
       "require": "./dist/render.cjs",
-      "types": "./dist/render.d.ts"
+      "types": "./dist/render/render.d.ts"
+    },
+    "./legacy": {
+      "import": "./dist/legacy.js",
+      "require": "./dist/legacy.cjs",
+      "types": "./dist/legacy/react-to-webcomponent.d.ts"
     }
   },
   "files": [
@@ -42,15 +47,13 @@
     "prop-types": "^15.7.2",
     "typescript": "^4.3.5",
     "vite": "^3.2.5",
-    "vite-plugin-dts": "^2.2.0",
     "vitest": "^0.29.8"
   },
   "scripts": {
     "build": "vite build",
     "ci": "npm run test",
     "buildtests": "chmod +x src/tests/buildtests && ./src/tests/buildtests",
-    "test": "vitest src/tests/**/react-to-webcomponent.test.jsx",
-    "test:react18": "vitest src/tests/react18/react-to-webcomponent.test.jsx && npm run test:core && npm run test:root",
+    "test": "vitest src/tests/**/react-to-webcomponent.test.jsx && npm run test:core && npm run test:root",
     "test:core": "vitest src/core/core.test.tsx",
     "test:root": "vitest src/root/root.test.tsx",
     "start": "http-server -c-1",

@@ -1,11 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react"
-import * as ReactDOMClient from "react-dom/client"
-import ReactDOM from "react-dom"
-
 const renderSymbol = Symbol.for("r2wc.reactRender")
 const shouldRenderSymbol = Symbol.for("r2wc.shouldRender")
 const rootSymbol = Symbol.for("r2wc.root")
+
+interface ReactDOMType {
+  createRoot?: (container: Element | DocumentFragment, options?: any) => unknown
+  unmountComponentAtNode?: (container: Element | DocumentFragment) => boolean
+  render?: (
+    element: ReactElement<any, any> | null | any,
+    container: Container | null,
+  ) => unknown
+}
+
+interface ReactType {
+  createRef: () => RefObject<unknown>
+  createElement: (
+    type: string | FC<any> | ComponentClass<any>,
+    data: any,
+    children?: any,
+  ) => ReactElement<any, any> | null | any
+}
 
 function toDashedStyle(camelCase = "") {
   return camelCase.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()
@@ -25,7 +39,7 @@ function flattenIfOne(arr: object) {
   return arr
 }
 
-function mapChildren(node: Element) {
+function mapChildren(React: ReactType, node: Element) {
   if (node.nodeType === Node.TEXT_NODE) {
     return node.textContent?.toString()
   }
@@ -39,7 +53,7 @@ function mapChildren(node: Element) {
       const nodeName = isAllCaps(c.nodeName)
         ? c.nodeName.toLowerCase()
         : c.nodeName
-      const children = flattenIfOne(mapChildren(c))
+      const children = flattenIfOne(mapChildren(React, c))
 
       // we need to format c.attributes before passing it to createElement
       const attributes: Record<string, string | null> = {}
@@ -78,6 +92,8 @@ const define = {
 /**
  * Converts a React component into a webcomponent by wrapping it in a Proxy object.
  * @param {ReactComponent}
+ * @param {React}
+ * @param {ReactDOM}
  * @param {Object} options - Optional parameters
  * @param {String?} options.shadow - Shadow DOM mode as either open or closed.
  * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
@@ -85,6 +101,8 @@ const define = {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function (
   ReactComponent: FC<any> | ComponentClass<any>,
+  React: ReactType,
+  ReactDOM: ReactDOMType,
   options: R2WCOptions = {},
 ): CustomElementConstructor {
   const propTypes: Record<string, any> = {} // { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
@@ -192,7 +210,7 @@ export default function (
     this[renderSymbol]()
   }
   targetPrototype.disconnectedCallback = function () {
-    if (ReactDOMClient.createRoot && typeof ReactDOMClient.createRoot === "function") {
+    if (ReactDOM.createRoot && typeof ReactDOM.createRoot === "function") {
       this[rootSymbol].unmount()
     } else if (ReactDOM.unmountComponentAtNode) {
       ReactDOM.unmountComponentAtNode(this)
@@ -210,14 +228,14 @@ export default function (
       // Container is either shadow DOM or light DOM depending on `shadow` option.
       const container = options.shadow ? this.shadowRoot : this
 
-      const children = flattenIfOne(mapChildren(this))
+      const children = flattenIfOne(mapChildren(React, this))
 
       const element = React.createElement(ReactComponent, data, children)
 
       // Use react to render element in container
-      if (ReactDOMClient.createRoot && typeof ReactDOMClient.createRoot === "function") {
+      if (ReactDOM.createRoot && typeof ReactDOM.createRoot === "function") {
         if (!this[rootSymbol]) {
-          this[rootSymbol] = ReactDOMClient.createRoot(container)
+          this[rootSymbol] = ReactDOM.createRoot(container)
         }
 
         this[rootSymbol].render(element)
