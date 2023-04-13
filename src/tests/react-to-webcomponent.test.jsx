@@ -10,7 +10,7 @@ import stache from "can-stache"
 import stacheBindings from "can-stache-bindings"
 stache.addBindings(stacheBindings)
 
-import reactToWebComponent from "./legacy/react-to-webcomponent"
+import reactToWebComponent from "../legacy/react-to-webcomponent"
 
 const reactEnv = __dirname.replace(/.*?([^\\/]+\d+).*/g, "$1")
 // reactEnv = "react16" | "react17" | "react18" | "preact10"
@@ -551,34 +551,6 @@ test("Props typed as 'ref' work with functional components", async () => {
       }, 0)
     }, 0)
   })
-
-  // await new Promise((r) => {
-  //   const failUnlessCleared = setTimeout(() => {
-  //     delete global.globalRefFn
-  //     expect("globalRefFn was not called to clear the failure timeout").toEqual(
-  //       "not to fail because globalRefFn should have been called to clear the failure timeout",
-  //     )
-  //     r()
-  //   }, 1000)
-
-  //   global.globalRefFn = function (el) {
-  //     if (!el) {
-  //       // null before it switches to h2
-  //       return
-  //     }
-  //     expect(this).toEqual(document.querySelector("ref-test-func"))
-  //     expect(el).toEqual(this.querySelector("h1, h2"))
-  //     if (el.tagName.toLowerCase() === "h1") {
-  //       el.click()
-  //     } else {
-  //       delete global.globalRefFn
-  //       clearTimeout(failUnlessCleared)
-  //       r()
-  //     }
-  //   }
-
-  //   body.innerHTML = "<ref-test-func h1-ref='globalRefFn'></ref-test-func>"
-  // })
 })
 
 test("Props typed as 'ref' work with class components", async () => {
@@ -630,34 +602,6 @@ test("Props typed as 'ref' work with class components", async () => {
       }, 0)
     }, 0)
   })
-
-  // await new Promise((r) => {
-  //   const failUnlessCleared = setTimeout(() => {
-  //     delete global.globalRefFn
-  //     expect("globalRefFn was not called to clear the failure timeout").toEqual(
-  //       "not to fail because globalRefFn should have been called to clear the failure timeout",
-  //     )
-  //     r()
-  //   }, 1000)
-
-  //   global.globalRefFn = function (el) {
-  //     if (!el) {
-  //       // null before it switches to h2
-  //       return
-  //     }
-  //     expect(this).toEqual(document.querySelector("ref-test"))
-  //     expect(el).toEqual(this.querySelector("h1, h2"))
-  //     if (el.tagName.toLowerCase() === "h1") {
-  //       el.click()
-  //     } else {
-  //       delete global.globalRefFn
-  //       clearTimeout(failUnlessCleared)
-  //       r()
-  //     }
-  //   }
-
-  //   body.innerHTML = "<ref-test h1-ref='globalRefFn'></ref-test>"
-  // })
 })
 
 test("Supports text child nodes", async () => {
