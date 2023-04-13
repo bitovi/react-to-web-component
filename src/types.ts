@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-interface RefObject<T> {
+export interface RefObject<T> {
   current: T | null
 }
 
-interface ReactElement<P = any, T extends string | any = string | any> {
+export interface ReactElement<P = any, T extends string | any = string | any> {
   type: T
   props: P
   key: string | number | null
 }
 
-interface ReactPortal extends ReactElement {
+export interface ReactPortal extends ReactElement {
   key: string | number | null
   children: ReactNode
 }
 
-type ReactFragment = Iterable<ReactNode>
-type ReactNode =
+export type ReactFragment = Iterable<ReactNode>
+export type ReactNode =
   | ReactElement
   | string
   | number
@@ -26,7 +26,7 @@ type ReactNode =
   | null
   | undefined
 
-interface FC<P = Record<string, unknown>> {
+export interface FC<P = Record<string, unknown>> {
   (props: P & { children?: ReactNode }, context?: any): ReactElement<
     any,
     any
@@ -37,7 +37,7 @@ interface FC<P = Record<string, unknown>> {
   displayName?: string
 }
 
-interface ComponentClass<P = Record<string, unknown>> {
+export interface ComponentClass<P = Record<string, unknown>> {
   new (props: P, context?: any): any
   propTypes?: any
   contextType?: any
@@ -47,18 +47,18 @@ interface ComponentClass<P = Record<string, unknown>> {
   displayName?: string | undefined
 }
 
-type Container = Element | Document | DocumentFragment
+export type Container = Element | Document | DocumentFragment
 
-interface CustomElementConstructor {
+export interface CustomElementConstructor {
   new (...params: any[]): HTMLElement
 }
 
-interface R2WCOptions {
+export interface R2WCOptions {
   shadow?: string | boolean
   props?: Array<string> | Record<string, unknown>
 }
 
-interface Renderer<T> {
+export interface Renderer<T> {
   mount: (container: HTMLElement, element: T) => any
   unmount: (container: HTMLElement) => any
 }

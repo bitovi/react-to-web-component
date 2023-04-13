@@ -3,6 +3,7 @@ import React from "react"
 import ReactDOM from "react-dom"
 
 import r2wc from "../core"
+import { ComponentClass, FC, R2WCOptions } from "../types"
 
 function mount(
   container: HTMLElement,

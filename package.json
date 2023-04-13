@@ -3,26 +3,23 @@
   "version": "2.0.0-alpha.0",
   "description": "Convert react components to native Web Components.",
   "type": "module",
+  "types": "dist/types.d.ts",
   "exports": {
     ".": {
       "import": "./dist/root.js",
-      "require": "./dist/root.cjs",
-      "types": "./dist/root/root.d.ts"
+      "require": "./dist/root.cjs"
     },
     "./root": {
       "import": "./dist/root.js",
-      "require": "./dist/root.cjs",
-      "types": "./dist/root/root.d.ts"
+      "require": "./dist/root.cjs"
     },
     "./render": {
       "import": "./dist/render.js",
-      "require": "./dist/render.cjs",
-      "types": "./dist/render/render.d.ts"
+      "require": "./dist/render.cjs"
     },
     "./legacy": {
       "import": "./dist/legacy.js",
-      "require": "./dist/legacy.cjs",
-      "types": "./dist/legacy/react-to-webcomponent.d.ts"
+      "require": "./dist/legacy.cjs"
     }
   },
   "files": [
