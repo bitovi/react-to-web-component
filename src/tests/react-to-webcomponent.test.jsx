@@ -10,6 +10,7 @@ import stache from "can-stache"
 import stacheBindings from "can-stache-bindings"
 stache.addBindings(stacheBindings)
 
+import { CamelCaseGreeting, Greeting } from "./components"
 import reactToWebComponent from "../legacy/react-to-webcomponent"
 
 const reactEnv = __dirname.replace(/.*?([^\\/]+\d+).*/g, "$1")
@@ -55,11 +56,8 @@ beforeEach(() => {
 })
 
 test("basics with react", () => {
-  const Welcome = ({ name }) => {
-    return <h1>Hello, {name}</h1>
-  }
 
-  const MyWelcome = reactToWebComponent(Welcome)
+  const MyWelcome = reactToWebComponent(Greeting)
   customElements.define("my-welcome", MyWelcome)
 
   const myWelcome = new MyWelcome()
@@ -70,11 +68,8 @@ test("basics with react", () => {
 })
 
 test("works with attributes set with propTypes", async () => {
-  expect.assertions(1)
-  function Greeting({ name }) {
-    return <h1>Hello, {name}</h1>
-  }
-
+  // expect.assertions(1)
+  
   Greeting.propTypes = {
     name: PropTypes.string.isRequired,
   }
@@ -91,6 +86,9 @@ test("works with attributes set with propTypes", async () => {
 
   const body = document.body
   body.innerHTML = "<my-greeting name='Christopher'></my-greeting>"
+
+  console.log("body.firstElementChild.innerHTML", body.firstElementChild.innerHTML)
+
 
   await requeueIfTruthy(() => {
     if (!body.firstElementChild.innerHTML) {
@@ -139,15 +137,7 @@ test("works within can-stache and can-stache-bindings (propTypes are writable)",
 test("works with shadow DOM `options.shadow === true`", async () => {
   expect.assertions(5)
 
-  function Welcome({ name }) {
-    return <h1>Hello, {name}</h1>
-  }
-
-  Welcome.propTypes = {
-    user: PropTypes.string,
-  }
-
-  const MyWelcome = reactToWebComponent(Welcome, {
+  const MyWelcome = reactToWebComponent(Greeting, {
     shadow: true,
   })
 
@@ -184,15 +174,7 @@ test("works with shadow DOM `options.shadow === true`", async () => {
 test('It works without shadow option set to "true"', async () => {
   expect.assertions(1)
 
-  function Welcome({ name }) {
-    return <h1>Hello, {name}</h1>
-  }
-
-  Welcome.propTypes = {
-    user: PropTypes.string,
-  }
-
-  const MyWelcome = reactToWebComponent(Welcome)
+  const MyWelcome = reactToWebComponent(Greeting)
 
   customElements.define("my-noshadow-welcome", MyWelcome)
 
@@ -212,15 +194,11 @@ test('It works without shadow option set to "true"', async () => {
 test("It converts dashed-attributes to camelCase", async () => {
   expect.assertions(1)
 
-  function Greeting({ camelCaseName }) {
-    return <h1>Hello, {camelCaseName}</h1>
-  }
-
-  Greeting.propTypes = {
+  CamelCaseGreeting.propTypes = {
     camelCaseName: PropTypes.string.isRequired,
   }
 
-  const MyGreeting = reactToWebComponent(Greeting, {})
+  const MyGreeting = reactToWebComponent(CamelCaseGreeting, {})
 
   customElements.define("my-dashed-style-greeting", MyGreeting)
 

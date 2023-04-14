@@ -3,23 +3,27 @@
   "version": "2.0.0-alpha.0",
   "description": "Convert react components to native Web Components.",
   "type": "module",
-  "types": "dist/types.d.ts",
+  "types": "dist/root/root.d.ts",
   "exports": {
     ".": {
       "import": "./dist/root.js",
-      "require": "./dist/root.cjs"
+      "require": "./dist/root.cjs",
+      "types": "./dist/root/root.d.ts"
     },
     "./root": {
       "import": "./dist/root.js",
-      "require": "./dist/root.cjs"
+      "require": "./dist/root.cjs",
+      "types": "./dist/root/root.d.ts"
     },
     "./render": {
       "import": "./dist/render.js",
-      "require": "./dist/render.cjs"
+      "require": "./dist/render.cjs",
+      "types": "./dist/render/render.d.ts"
     },
     "./legacy": {
       "import": "./dist/legacy.js",
-      "require": "./dist/legacy.cjs"
+      "require": "./dist/legacy.cjs",
+      "types": "./dist/legacy/react-to-webcomponent.d.ts"
     }
   },
   "files": [
@@ -53,6 +57,7 @@
     "test": "vitest src/tests/environments/**/react-to-webcomponent.test.jsx && npm run test:core && npm run test:root",
     "test:core": "vitest src/core/core.test.tsx",
     "test:root": "vitest src/root/root.test.tsx",
+    "test:react18": "vitest src/tests/environments/react18/react-to-webcomponent.test.jsx",
     "start": "http-server -c-1",
     "typecheck": "tsc --noEmit",
     "eslint": "eslint ./src/**/*.ts",

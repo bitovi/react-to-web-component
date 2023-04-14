@@ -1,24 +1,27 @@
 #!/bin/bash
 
 
-sed -e "s/..\/legacy\/react-to-webcomponent/react-to-webcomponent\/render/g" -e "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" src/tests/react-to-webcomponent.test.jsx > src/tests/environments/react16/react-to-webcomponent.test.jsx
+# sed -e "s/..\/legacy\/react-to-webcomponent/react-to-webcomponent\/render/g" -e "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" src/tests/react-to-webcomponent.test.jsx > src/tests/environments/react16/react-to-webcomponent.test.jsx
 
 cd src/tests/environments/react16
+node copyTest.js
 npm i
 npm install --install-links ../../../..
 cd ../../../../
 
-sed -e "s/..\/legacy\/react-to-webcomponent/react-to-webcomponent\/render/g" -e "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" src/tests/react-to-webcomponent.test.jsx > src/tests/environments/react17/react-to-webcomponent.test.jsx
+# sed -e "s/..\/legacy\/react-to-webcomponent/react-to-webcomponent\/render/g" -e "s/.*react-dom.*/import ReactDOM from 'react-dom'/g" src/tests/react-to-webcomponent.test.jsx > src/tests/environments/react17/react-to-webcomponent.test.jsx
 
 cd src/tests/environments/react17
+node copyTest.js
 npm i
 npm install --install-links ../../../..
 cd ../../../../
 
 
-sed "s/..\/legacy\/react-to-webcomponent/react-to-webcomponent/g" src/tests/react-to-webcomponent.test.jsx > src/tests/environments/react18/react-to-webcomponent.test.jsx
+# sed "s/..\/legacy\/react-to-webcomponent/react-to-webcomponent/g" src/tests/react-to-webcomponent.test.jsx > src/tests/environments/react18/react-to-webcomponent.test.jsx
 
 cd src/tests/environments/react18
+node copyTest.js
 npm i
 npm install --install-links ../../../..
 cd ../../../../
