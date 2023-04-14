@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const fs = require("fs")
 
-const TEST_PATH = "src/tests/react-to-webcomponent.test.jsx"
-const REACT16_TEST_PATH =
-  "src/tests/environments/react16/react-to-webcomponent.test.jsx"
+const TEST_PATH = "../../react-to-webcomponent.test.jsx"
+const REACT16_TEST_PATH = "./react-to-webcomponent.test.jsx"
 
 // copy test file from tests folder to react16 folder
 fs.copyFileSync(TEST_PATH, REACT16_TEST_PATH)
