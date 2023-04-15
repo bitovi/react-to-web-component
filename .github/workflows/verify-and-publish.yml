@@ -70,9 +70,9 @@ jobs:
         id: tag
         run: |
           if [[ ${{ github.event.inputs.segment }} == pre* ]]; then
-            echo "::set-output name=tag::next"
+            echo "tag=next" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=tag::latest"
+            echo "tag=latest" >> $GITHUB_OUTPUT
           fi
 
       - name: Works?
