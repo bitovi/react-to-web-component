@@ -71,17 +71,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Determine Tag
-        id: tag
-        run: |
-          if [[ ${{ github.event.inputs.segment }} == pre* ]]; then
-            echo "::set-output name=tag::next"
-          else
-            echo "::set-output name=tag::latest"
-          fi
+      # - name: Determine Tag
+      #   id: tag
+      #   run: |
+      #     if [[ ${{ github.event.inputs.segment }} == pre* ]]; then
+      #       echo "::set-output name=tag::next"
+      #     else
+      #       echo "::set-output name=tag::latest"
+      #     fi
 
-      - name: Works?
-        run: echo ${{ steps.tag.outputs.tag }}
+      # - name: Works?
+      #   run: echo ${{ steps.tag.outputs.tag }}
 
 
       # - name: Increment Version
