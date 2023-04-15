@@ -75,33 +75,29 @@ jobs:
             echo "tag=latest" >> $GITHUB_OUTPUT
           fi
 
-      - name: Works?
-        run: echo ${{ steps.tag.outputs.tag }}
+      - name: Increment Version
+        run: |
+          git config --local user.email "Workflow: ${{ env.GITHUB_WORKFLOW }}[bot]"
+          git config --local user.name "${{ env.GITHUB_WORKFLOW }}[bot]@workflow"
 
+          if [[ ${{ github.event.inputs.segment }} == pre* ]]; then
+            PRE_ID="${{ github.event.inputs.preId }}"
+            if [[ -n "$PRE_ID" ]]; then
+              PRE_ID_COMMAND_STR="--preid $PRE_ID"
+            fi
+          fi
 
-      # - name: Increment Version
-      #   run: |
-      #     git config --local user.email "Workflow: ${{ env.GITHUB_WORKFLOW }}[bot]"
-      #     git config --local user.name "${{ env.GITHUB_WORKFLOW }}[bot]@workflow"
+          npm version ${{ github.event.inputs.segment }} $PRE_ID_COMMAND_STR -m "Publish v%s"
 
-      #     if [[ ${{ github.event.inputs.segment }} == pre* ]]; then
-      #       PRE_ID="${{ github.event.inputs.preId }}"
-      #       if [[ -n "$PRE_ID" ]]; then
-      #         PRE_ID_COMMAND_STR="--preid $PRE_ID"
-      #       fi
-      #     fi
+      - name: Publish to NPM Registry
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          tag: ${{ steps.tag.outputs.tag }}
 
-      #     npm version ${{ github.event.inputs.segment }} $PRE_ID_COMMAND_STR -m "Publish v%s"
-
-      # - name: Publish to NPM Registry
-      #   uses: JS-DevTools/npm-publish@v1
-      #   with:
-      #     token: ${{ secrets.NPM_TOKEN }}
-      #     tag: ${{ steps.tag.outputs.tag }}
-
-      # - name: Push Tag
-      #   uses: ad-m/github-push-action@master
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     branch: ${{ github.ref }}
-      #     tags: true
+      - name: Push Tag
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          tags: true
