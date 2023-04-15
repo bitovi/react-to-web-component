@@ -45,6 +45,10 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     needs: verify
 
+    concurrency:
+      group: "publish"
+      cancel-in-progress: false
+
     runs-on: ubuntu-latest
     permissions:
       contents: write
