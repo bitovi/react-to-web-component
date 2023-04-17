@@ -39,4 +39,5 @@ cd ../../../../
 cd src/tests/builds/vite
 npm i
 npm install --install-links ../../../..
+npm run build
 cd ../../..
