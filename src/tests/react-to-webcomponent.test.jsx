@@ -83,11 +83,6 @@ describe("react-to-webcomponent", () => {
     const body = document.body
     body.innerHTML = "<my-greeting name='Christopher'></my-greeting>"
 
-    console.log(
-      "body.firstElementChild.innerHTML",
-      body.firstElementChild.innerHTML,
-    )
-
     await requeueIfTruthy(() => {
       if (!body.firstElementChild.innerHTML) {
         return true

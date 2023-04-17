@@ -33,3 +33,10 @@ cd ../../../../
 # npm i
 # npm install --install-links ../../../..
 # cd ../../../../
+
+
+# builds
+cd src/tests/builds/vite
+npm i
+npm install --install-links ../../../..
+cd ../../..
