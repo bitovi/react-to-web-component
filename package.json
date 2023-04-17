@@ -56,7 +56,7 @@
     "test:core": "vitest src/core/core.test.tsx",
     "test:build-vite": "vitest src/tests/builds/vite/vite-build.test.ts",
     "start": "http-server -c-1",
-    "typecheck": "tsc --excludeDirectories ./src/tests/builds --noEmit",
+    "typecheck": "tsc --noEmit",
     "eslint": "eslint ./src/**/*.ts",
     "prettier": "prettier --check ./src/**/*.ts",
     "depcheck": "depcheck ."
