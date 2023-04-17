@@ -1,5 +1,6 @@
 node_modules/
 dist/
+dist-swc/
 
 src/tests/*/react-to-webcomponent.test.jsx
 
