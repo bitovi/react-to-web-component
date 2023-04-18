@@ -3,6 +3,24 @@ const renderSymbol = Symbol.for("r2wc.reactRender")
 const shouldRenderSymbol = Symbol.for("r2wc.shouldRender")
 const rootSymbol = Symbol.for("r2wc.root")
 
+interface ReactDOMType {
+  createRoot?: (container: Element | DocumentFragment, options?: any) => unknown
+  unmountComponentAtNode?: (container: Element | DocumentFragment) => boolean
+  render?: (
+    element: ReactElement<any, any> | null | any,
+    container: Container | null,
+  ) => unknown
+}
+
+interface ReactType {
+  createRef: () => RefObject<unknown>
+  createElement: (
+    type: string | FC<any> | ComponentClass<any>,
+    data: any,
+    children?: any,
+  ) => ReactElement<any, any> | null | any
+}
+
 function toDashedStyle(camelCase = "") {
   return camelCase.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()
 }
@@ -21,7 +39,7 @@ function flattenIfOne(arr: object) {
   return arr
 }
 
-function mapChildren(React: React, node: Element) {
+function mapChildren(React: ReactType, node: Element) {
   if (node.nodeType === Node.TEXT_NODE) {
     return node.textContent?.toString()
   }
@@ -83,8 +101,8 @@ const define = {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function (
   ReactComponent: FC<any> | ComponentClass<any>,
-  React: React,
-  ReactDOM: ReactDOM,
+  React: ReactType,
+  ReactDOM: ReactDOMType,
   options: R2WCOptions = {},
 ): CustomElementConstructor {
   const propTypes: Record<string, any> = {} // { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }

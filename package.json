@@ -2,23 +2,39 @@
   "name": "react-to-webcomponent",
   "version": "2.0.0-alpha.3",
   "description": "Convert react components to native Web Components.",
-  "main": "./dist/react-to-webcomponent.es.js",
-  "module": "./dist/react-to-webcomponent.es.js",
-  "types": "./dist/react-to-webcomponent.d.ts",
+  "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/react-to-webcomponent.es.js",
-      "require": "./dist/react-to-webcomponent.umd.js"
+      "import": "./dist/root.js",
+      "require": "./dist/root.cjs",
+      "types": "./dist/root/root.d.ts"
+    },
+    "./root": {
+      "import": "./dist/root.js",
+      "require": "./dist/root.cjs",
+      "types": "./dist/root/root.d.ts"
+    },
+    "./render": {
+      "import": "./dist/render.js",
+      "require": "./dist/render.cjs",
+      "types": "./dist/render/render.d.ts"
+    },
+    "./legacy": {
+      "import": "./dist/legacy.js",
+      "require": "./dist/legacy.cjs",
+      "types": "./dist/legacy/react-to-webcomponent.d.ts"
     }
   },
   "files": [
-    "dist/",
+    "dist/*",
     "src/",
     "!src/tests/"
   ],
   "devDependencies": {
     "@bitovi/eslint-config": "^1.3.0",
     "@rollup/plugin-typescript": "^8.3.4",
+    "@types/react": "^18.0.33",
+    "@types/react-dom": "^18.0.11",
     "@webcomponents/custom-elements": "^1.2.4",
     "can-stache": "^4.17.20",
     "can-stache-bindings": "^4.10.9",
@@ -30,18 +46,20 @@
     "prettier": "^2.7.1",
     "prop-types": "^15.7.2",
     "typescript": "^4.3.5",
-    "vite": "^3.0.3",
-    "vitest": "^0.19.1"
+    "vite": "^3.2.5",
+    "vitest": "^0.29.8"
   },
   "scripts": {
     "build": "vite build",
     "ci": "npm run test",
     "buildtests": "chmod +x src/tests/buildtests && ./src/tests/buildtests",
-    "test": "vitest src/tests/**/react-to-webcomponent.test.jsx",
+    "test": "vitest src/tests/**/react-to-webcomponent.test.jsx && npm run test:core && npm run test:root",
+    "test:core": "vitest src/core/core.test.tsx",
+    "test:root": "vitest src/root/root.test.tsx",
     "start": "http-server -c-1",
     "typecheck": "tsc --noEmit",
-    "eslint": "eslint ./src/*.ts",
-    "prettier": "prettier --check ./src/*.ts",
+    "eslint": "eslint ./src/**/*.ts",
+    "prettier": "prettier --check ./src/**/*.ts",
     "depcheck": "depcheck ."
   },
   "repository": {
@@ -62,5 +80,9 @@
   "prettier": {
     "semi": false,
     "trailingComma": "all"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^17.0.0 || ^16.0.0",
+    "react-dom": "^18.0.0 || ^17.0.0 || ^16.0.0"
   }
 }

@@ -35,11 +35,11 @@ jobs:
       - name: depcheck
         run: npm run depcheck
 
-      - name: Test
-        run: npm run buildtests && npm run test
-
       - name: Build
         run: npm run build
+
+      - name: Test
+        run: npm run buildtests && npm run test
 
   publish:
     if: github.event_name == 'workflow_dispatch'

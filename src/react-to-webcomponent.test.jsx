@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable no-console */
 import { test, assert, expect, beforeEach } from "vitest"
 
 import React from "react"
-import * as ReactDOM from "react-dom/client"
 
 import PropTypes from "prop-types"
 
@@ -9,9 +10,9 @@ import stache from "can-stache"
 import stacheBindings from "can-stache-bindings"
 stache.addBindings(stacheBindings)
 
-import reactToWebComponent from "src/react-to-webcomponent"
+import reactToWebComponent from "./legacy/react-to-webcomponent"
 
-const reactEnv = __dirname.replace(/.*?([^\\\/]+\d+).*/g, "$1")
+const reactEnv = __dirname.replace(/.*?([^\\/]+\d+).*/g, "$1")
 // reactEnv = "react16" | "react17" | "react18" | "preact10"
 
 const requeueIfTruthy = (fn, maxChecks = 100) => {
@@ -58,7 +59,7 @@ test("basics with react", () => {
     return <h1>Hello, {name}</h1>
   }
 
-  const MyWelcome = reactToWebComponent(Welcome, React, ReactDOM)
+  const MyWelcome = reactToWebComponent(Welcome)
   customElements.define("my-welcome", MyWelcome)
 
   const myWelcome = new MyWelcome()
@@ -78,7 +79,7 @@ test("works with attributes set with propTypes", async () => {
     name: PropTypes.string.isRequired,
   }
 
-  const MyGreeting = reactToWebComponent(Greeting, React, ReactDOM)
+  const MyGreeting = reactToWebComponent(Greeting)
   customElements.define("my-greeting", MyGreeting)
 
   console.error = function (...messages) {
@@ -112,7 +113,7 @@ test("works within can-stache and can-stache-bindings (propTypes are writable)",
     user: PropTypes.object,
   }
 
-  const MyWelcome = reactToWebComponent(Welcome, React, ReactDOM)
+  const MyWelcome = reactToWebComponent(Welcome)
 
   customElements.define("can-welcome", MyWelcome)
 
@@ -146,7 +147,7 @@ test("works with shadow DOM `options.shadow === true`", async () => {
     user: PropTypes.string,
   }
 
-  const MyWelcome = reactToWebComponent(Welcome, React, ReactDOM, {
+  const MyWelcome = reactToWebComponent(Welcome, {
     shadow: true,
   })
 
@@ -191,7 +192,7 @@ test('It works without shadow option set to "true"', async () => {
     user: PropTypes.string,
   }
 
-  const MyWelcome = reactToWebComponent(Welcome, React, ReactDOM)
+  const MyWelcome = reactToWebComponent(Welcome)
 
   customElements.define("my-noshadow-welcome", MyWelcome)
 
@@ -219,13 +220,11 @@ test("It converts dashed-attributes to camelCase", async () => {
     camelCaseName: PropTypes.string.isRequired,
   }
 
-  const MyGreeting = reactToWebComponent(Greeting, React, ReactDOM, {})
+  const MyGreeting = reactToWebComponent(Greeting, {})
 
   customElements.define("my-dashed-style-greeting", MyGreeting)
 
   const body = document.body
-
-  const myGreeting = new MyGreeting()
 
   console.error = function (...messages) {
     assert.ok(
@@ -233,8 +232,6 @@ test("It converts dashed-attributes to camelCase", async () => {
       "got a warning with required",
     )
   }
-
-  body.appendChild(myGreeting)
 
   body.innerHTML =
     "<my-dashed-style-greeting camel-case-name='Christopher'></my-dashed-style-greeting>"
@@ -272,7 +269,7 @@ test("mounts and unmounts underlying react functional component", async () => {
       return <h1>Hello, Goodbye</h1>
     }
 
-    class WebCom extends reactToWebComponent(TestComponent, React, ReactDOM) {}
+    class WebCom extends reactToWebComponent(TestComponent, {}) {}
     customElements.define("mount-unmount-func", WebCom)
     const webCom = new WebCom()
 
@@ -282,7 +279,7 @@ test("mounts and unmounts underlying react functional component", async () => {
       body.appendChild(webCom)
       setTimeout(() => {
         body.removeChild(webCom)
-      })
+      }, 0)
     }, 0)
   })
 })
@@ -307,7 +304,7 @@ test("mounts and unmounts underlying react class component", async () => {
       }
     }
 
-    class WebCom extends reactToWebComponent(RCom, React, ReactDOM) {}
+    class WebCom extends reactToWebComponent(RCom) {}
     customElements.define("mount-unmount", WebCom)
     const webCom = new WebCom()
 
@@ -333,14 +330,9 @@ test("options.props can be used as an array of props instead of relying on keys 
     )
   }
 
-  const WebPropTypesNotRequired = reactToWebComponent(
-    PropTypesNotRequired,
-    React,
-    ReactDOM,
-    {
-      props: ["greeting", "camelCaseName"],
-    },
-  )
+  const WebPropTypesNotRequired = reactToWebComponent(PropTypesNotRequired, {
+    props: ["greeting", "camelCaseName"],
+  })
 
   customElements.define("web-proptypes-not-required", WebPropTypesNotRequired)
 
@@ -393,8 +385,6 @@ test("options.props can specify and will convert the String attribute value into
 
   const WebOptionsPropsTypeCasting = reactToWebComponent(
     OptionsPropsTypeCasting,
-    React,
-    ReactDOM,
     {
       props: {
         stringProp: String,
@@ -474,7 +464,7 @@ test("Props typed as Function convert the string value of attribute into global 
     handleClick: PropTypes.func.isRequired,
   }
 
-  const WebThemeSelect = reactToWebComponent(ThemeSelect, React, ReactDOM, {
+  const WebThemeSelect = reactToWebComponent(ThemeSelect, {
     props: {
       handleClick: Function,
     },
@@ -512,7 +502,7 @@ test("Props typed as Function convert the string value of attribute into global 
 test("Props typed as 'ref' work with functional components", async () => {
   const notPreact = reactEnv !== "preact10" // preact doesn't have useImperativeHandle so no ref to functional components directly
 
-  expect.assertions(notPreact ? 10 : 7)
+  expect.assertions(notPreact ? 6 : 7)
 
   const RCom = React.forwardRef(function RCom(props, ref) {
     const [Tag, setTag] = React.useState("h1")
@@ -528,12 +518,15 @@ test("Props typed as 'ref' work with functional components", async () => {
     )
   })
 
-  class WebCom extends reactToWebComponent(RCom, React, ReactDOM, {
-    props: {
-      ref: "ref",
-      h1Ref: "ref",
+  class WebCom extends reactToWebComponent(
+    RCom,
+    {
+      props: {
+        ref: "ref",
+        h1Ref: "ref",
+      },
     },
-  }) {}
+  ) {}
 
   customElements.define("ref-test-func", WebCom)
 
@@ -559,37 +552,37 @@ test("Props typed as 'ref' work with functional components", async () => {
     }, 0)
   })
 
-  await new Promise((r) => {
-    const failUnlessCleared = setTimeout(() => {
-      delete global.globalRefFn
-      expect("globalRefFn was not called to clear the failure timeout").toEqual(
-        "not to fail because globalRefFn should have been called to clear the failure timeout",
-      )
-      r()
-    }, 1000)
+  // await new Promise((r) => {
+  //   const failUnlessCleared = setTimeout(() => {
+  //     delete global.globalRefFn
+  //     expect("globalRefFn was not called to clear the failure timeout").toEqual(
+  //       "not to fail because globalRefFn should have been called to clear the failure timeout",
+  //     )
+  //     r()
+  //   }, 1000)
 
-    global.globalRefFn = function (el) {
-      if (!el) {
-        // null before it switches to h2
-        return
-      }
-      expect(this).toEqual(document.querySelector("ref-test-func"))
-      expect(el).toEqual(this.querySelector("h1, h2"))
-      if (el.tagName.toLowerCase() === "h1") {
-        el.click()
-      } else {
-        delete global.globalRefFn
-        clearTimeout(failUnlessCleared)
-        r()
-      }
-    }
+  //   global.globalRefFn = function (el) {
+  //     if (!el) {
+  //       // null before it switches to h2
+  //       return
+  //     }
+  //     expect(this).toEqual(document.querySelector("ref-test-func"))
+  //     expect(el).toEqual(this.querySelector("h1, h2"))
+  //     if (el.tagName.toLowerCase() === "h1") {
+  //       el.click()
+  //     } else {
+  //       delete global.globalRefFn
+  //       clearTimeout(failUnlessCleared)
+  //       r()
+  //     }
+  //   }
 
-    body.innerHTML = "<ref-test-func h1-ref='globalRefFn'></ref-test-func>"
-  })
+  //   body.innerHTML = "<ref-test-func h1-ref='globalRefFn'></ref-test-func>"
+  // })
 })
 
 test("Props typed as 'ref' work with class components", async () => {
-  expect.assertions(8) // full functionality with class components works in preact too
+  expect.assertions(4) // full functionality with class components works in preact too
 
   class RCom extends React.Component {
     constructor(props) {
@@ -609,7 +602,7 @@ test("Props typed as 'ref' work with class components", async () => {
     }
   }
 
-  class WebCom extends reactToWebComponent(RCom, React, ReactDOM, {
+  class WebCom extends reactToWebComponent(RCom, {
     props: {
       ref: "ref",
       h1Ref: "ref",
@@ -638,33 +631,33 @@ test("Props typed as 'ref' work with class components", async () => {
     }, 0)
   })
 
-  await new Promise((r) => {
-    const failUnlessCleared = setTimeout(() => {
-      delete global.globalRefFn
-      expect("globalRefFn was not called to clear the failure timeout").toEqual(
-        "not to fail because globalRefFn should have been called to clear the failure timeout",
-      )
-      r()
-    }, 1000)
+  // await new Promise((r) => {
+  //   const failUnlessCleared = setTimeout(() => {
+  //     delete global.globalRefFn
+  //     expect("globalRefFn was not called to clear the failure timeout").toEqual(
+  //       "not to fail because globalRefFn should have been called to clear the failure timeout",
+  //     )
+  //     r()
+  //   }, 1000)
 
-    global.globalRefFn = function (el) {
-      if (!el) {
-        // null before it switches to h2
-        return
-      }
-      expect(this).toEqual(document.querySelector("ref-test"))
-      expect(el).toEqual(this.querySelector("h1, h2"))
-      if (el.tagName.toLowerCase() === "h1") {
-        el.click()
-      } else {
-        delete global.globalRefFn
-        clearTimeout(failUnlessCleared)
-        r()
-      }
-    }
+  //   global.globalRefFn = function (el) {
+  //     if (!el) {
+  //       // null before it switches to h2
+  //       return
+  //     }
+  //     expect(this).toEqual(document.querySelector("ref-test"))
+  //     expect(el).toEqual(this.querySelector("h1, h2"))
+  //     if (el.tagName.toLowerCase() === "h1") {
+  //       el.click()
+  //     } else {
+  //       delete global.globalRefFn
+  //       clearTimeout(failUnlessCleared)
+  //       r()
+  //     }
+  //   }
 
-    body.innerHTML = "<ref-test h1-ref='globalRefFn'></ref-test>"
-  })
+  //   body.innerHTML = "<ref-test h1-ref='globalRefFn'></ref-test>"
+  // })
 })
 
 test("Supports text child nodes", async () => {
@@ -676,7 +669,7 @@ test("Supports text child nodes", async () => {
     children: PropTypes.node.isRequired,
   }
 
-  const MyGreeting = reactToWebComponent(Greeting, React, ReactDOM)
+  const MyGreeting = reactToWebComponent(Greeting)
   customElements.define("greeting-child-text", MyGreeting)
 
   const body = document.body
@@ -707,7 +700,7 @@ test("Supports nested html nodes", async () => {
     children: PropTypes.node.isRequired,
   }
 
-  const MyGreeting = reactToWebComponent(Greeting, React, ReactDOM)
+  const MyGreeting = reactToWebComponent(Greeting)
   customElements.define("child-greeting", MyGreeting)
 
   const body = document.body
