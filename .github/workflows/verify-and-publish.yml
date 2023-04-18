@@ -1,0 +1,103 @@
+name: Verify and Publish
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      segment:
+        description: "The version segment to increment: major, minor, patch, premajor, preminor, prepatch, or prerelease."
+        required: true
+      preId:
+        description: "Appended to the pre-release segment. (default: \"\")"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+      - name: ESLint
+        run: npm run eslint
+      - name: Prettier
+        run: npm run prettier
+      - name: depcheck
+        run: npm run depcheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm run buildtests && npm run test
+
+  publish:
+    if: github.event_name == 'workflow_dispatch'
+    needs: verify
+
+    concurrency:
+      group: "publish"
+      cancel-in-progress: false
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Determine Tag
+        id: tag
+        run: |
+          if [[ ${{ github.event.inputs.segment }} == pre* ]]; then
+            echo "tag=next" >> $GITHUB_OUTPUT
+          else
+            echo "tag=latest" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Increment Version
+        run: |
+          git config --local user.email "Workflow: ${{ env.GITHUB_WORKFLOW }}[bot]"
+          git config --local user.name "${{ env.GITHUB_WORKFLOW }}[bot]@workflow"
+
+          if [[ ${{ github.event.inputs.segment }} == pre* ]]; then
+            PRE_ID="${{ github.event.inputs.preId }}"
+            if [[ -n "$PRE_ID" ]]; then
+              PRE_ID_COMMAND_STR="--preid $PRE_ID"
+            fi
+          fi
+
+          npm version ${{ github.event.inputs.segment }} $PRE_ID_COMMAND_STR -m "Publish v%s"
+
+      - name: Publish to NPM Registry
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          tag: ${{ steps.tag.outputs.tag }}
+
+      - name: Push Tag
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          tags: true
