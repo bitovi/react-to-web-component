@@ -54,7 +54,7 @@
     "buildtests": "chmod +x src/tests/buildtests && ./src/tests/buildtests",
     "test": "vitest src/tests/environments/**/react-to-webcomponent.test.jsx && npm run test:core && npm run test:build",
     "test:core": "vitest src/core/core.test.tsx",
-    "test:build": "vitest src/tests/builds/vite/build.test.ts",
+    "test:builds": "vitest src/tests/builds/builds.test.ts",
     "start": "http-server -c-1",
     "typecheck": "tsc --noEmit",
     "eslint": "eslint ./src/**/*.ts",

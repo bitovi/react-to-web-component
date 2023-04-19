@@ -42,3 +42,9 @@ npm install --install-links ../../../..
 npm run build
 node swcBuild.js
 cd ../../..
+
+cd src/tests/builds/webpack
+npm i
+npm install --install-links ../../../..
+npm run build
+cd ../../..
