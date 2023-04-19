@@ -1,4 +1,4 @@
-# react-to-webcomponent
+# React to Web Component
 
 `react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
@@ -11,10 +11,12 @@
 
 This project is supported by [Bitovi, a React consultancy](https://www.bitovi.com/frontend-javascript-consulting/react-consulting). You can get help or ask questions on our:
 
-- [Slack Community](https://www.bitovi.com/community/slack)
+- [Discord Community](https://discord.gg/J7ejFsZnJ4)
 - [Twitter](https://twitter.com/bitovi)
 
 Or, you can hire us for training, consulting, or development. [Set up a free consultation.](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
+
+> This is the documentation for the upcoming version 2 of react-to-webcomponent. It will have a very similar but backwards incompatible API. For production deployments, please see the [document for version 1](https://github.com/bitovi/react-to-webcomponent/tree/main).
 
 ## Basic Use
 
@@ -148,6 +150,6 @@ npm run test
 
 # We want to hear from you.
 
-Come chat with us about open source in our community [Slack](https://www.bitovi.com/community/slack).
+Come chat with us about open source in our Bitovi community [Discord](https://discord.gg/J7ejFsZnJ4).
 
 See what we're up to by following us on [Twitter](https://twitter.com/bitovi).
