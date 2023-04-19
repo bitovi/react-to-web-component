@@ -1,6 +1,7 @@
 node_modules/
 dist/
 dist-swc/
+build/
 
 src/tests/*/react-to-webcomponent.test.jsx
 

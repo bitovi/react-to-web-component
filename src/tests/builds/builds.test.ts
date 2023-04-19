@@ -16,7 +16,7 @@ const elementConstructors: Record<string, CustomElementConstructor> = {
 
 describe("vite build tests", () => {
   for (const [name, constructor] of Object.entries(elementConstructors)) {
-    const tagName = name.replace(/\s/g, "-").toLowerCase()
+    const tagName = name.replace(/\s/g, "-")
     test(`vite build works for ${name}`, async () => {
       customElements.define(
         tagName,
