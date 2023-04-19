@@ -23,13 +23,8 @@ Or, you can hire us for training, consulting, or development. [Set up a free con
 For basic usage, we will use this simple React component:
 
 ```js
-import React from "react"
-import * as ReactDOM from "react-dom/client"
-// When using React 16 and 17 import ReactDom with the commented statement below instead:
-// import ReactDom from "react-dom"
-
-const Greeting = ({ name }) => {
-  return <h1>Hello, {name}</h1>
+const Greeting = () => {
+  return <h1>Hello, World!</h1>
 }
 ```
 
@@ -38,7 +33,7 @@ With our React component complete, all we have to do is call `reactToWebComponen
 ```js
 import reactToWebComponent from "react-to-webcomponent"
 
-const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM)
+const WebGreeting = reactToWebComponent(Greeting)
 
 customElements.define("web-greeting", WebGreeting)
 ```
@@ -59,23 +54,18 @@ In the above case, the web-greeting custom element is not making use of the `nam
 
 ## Working with Attributes
 
-By default, custom elements created by `reactToWebComponent` only
-pass properties to the underlying React component. To make attributes
-work, you must specify your component's properties with
-[PropTypes](https://reactjs.org/docs/typechecking-with-proptypes.html) as follows:
+By default, custom elements created by `reactToWebComponent` only pass properties to the underlying React component. To make attributes work, you must specify your component's props.
 
 ```js
-import React from "react"
-import PropTypes from "prop-types"
-import * as ReactDOM from "react-dom/client"
-
 const Greeting = ({ name }) => {
-  return <h1>Hello, {name}</h1>
+  return <h1>Hello, {name}!</h1>
 }
 
-Greeting.propTypes = {
-  name: PropTypes.string.isRequired,
-}
+const WebGreeting = reactToWebComponent(Greeting, {
+  props: {
+    name: "string",
+  },
+})
 ```
 
 Now `reactToWebComponent` will know to look for `name` attributes
