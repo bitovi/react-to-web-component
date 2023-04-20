@@ -3,6 +3,7 @@ import { ReactNode } from "react"
 import * as ReactDOM from "react-dom/client"
 
 import r2wc from "../core"
+import { ComponentClass, FC, R2WCOptions } from "../types"
 
 const rootSymbol = Symbol.for("r2wc.root")
 

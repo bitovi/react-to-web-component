@@ -1,3 +1,12 @@
+import {
+  ComponentClass,
+  Container,
+  FC,
+  R2WCOptions,
+  ReactElement,
+  RefObject,
+} from "../types"
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const renderSymbol = Symbol.for("r2wc.reactRender")
 const shouldRenderSymbol = Symbol.for("r2wc.shouldRender")
