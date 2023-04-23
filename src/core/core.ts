@@ -111,41 +111,75 @@ export default function (
   class WebCompClass extends HTMLElement {
     rendering: boolean
     getOwnPropertyDescriptor: (
-      key: string
+      key: string,
     ) =>
       | TypedPropertyDescriptor<
           string extends keyof this ? this[keyof this & string] : any
         >
-      | undefined;
+      | undefined
     constructor() {
-      super();
+      super()
       if (typeof config.shadow === "string") {
-        this.attachShadow({ mode: config.shadow } as ShadowRoot);
+        this.attachShadow({ mode: config.shadow } as ShadowRoot)
       } else if (config.shadow) {
         console.warn(
-          'Specifying the "shadow" option as a boolean is deprecated and will be removed in a future version.'
-        );
-        this.attachShadow({ mode: "open" });
+          'Specifying the "shadow" option as a boolean is deprecated and will be removed in a future version.',
+        )
+        this.attachShadow({ mode: "open" })
       }
 
-      this.rendering = false;
+      this.rendering = false
 
       // Add custom getter and setter for each prop
-      propKeys.forEach((key) => {
+      for (const key of propKeys) {
         if (key in propTypes) {
-          define.expando(this, key, this.getAttribute(propAttrMap[key]));
+          let attributeToAdd: any = this.getAttribute(propAttrMap[key])
+          switch (propTypes[key]) {
+            case "ref":
+              attributeToAdd = React.createRef()
+              break
+            case Function:
+              if (typeof window !== "undefined" && attributeToAdd in window) {
+                attributeToAdd = window[attributeToAdd as any]
+              } else if (
+                typeof global !== "undefined" &&
+                attributeToAdd in global
+              ) {
+                attributeToAdd = global[attributeToAdd as any]
+              }
+              if (typeof attributeToAdd === "function") {
+                attributeToAdd = attributeToAdd.bind(this)
+              }
+              break
+            case Number:
+              attributeToAdd = parseFloat(attributeToAdd)
+              break
+            case Boolean:
+              attributeToAdd = /^[ty1-9]/i.test(attributeToAdd)
+              break
+            case Object:
+              attributeToAdd = JSON.parse(attributeToAdd)
+              break
+            case Array:
+              attributeToAdd = JSON.parse(attributeToAdd)
+              break
+            case String:
+            default:
+              break
+          }
+          define.expando(this, key, attributeToAdd)
         }
-      });
+      }
 
       // Add custom getter and setter
       this.hasAttribute = function (key: string) {
-        return key in propTypes || key in this;
-      };
+        return key in propTypes || key in this
+      }
 
       this.getOwnPropertyDescriptor = function (key: string) {
-        const own = Reflect.getOwnPropertyDescriptor(this, key);
+        const own = Reflect.getOwnPropertyDescriptor(this, key)
         if (own) {
-          return own;
+          return own
         }
         if (key in propTypes) {
           return {
@@ -153,90 +187,90 @@ export default function (
             enumerable: true,
             writable: true,
             value: undefined,
-          };
+          }
         }
-      };
+      }
     }
 
     [shouldRenderSymbol] = true;
 
     [renderSymbol]() {
       if (this[shouldRenderSymbol] === true) {
-        const data: Record<string, any> = {};
+        const data: Record<string, any> = {}
         Object.keys(this).forEach(function (this: any, key) {
           if (renderAddedProperties[key] !== false && key in propTypes) {
-            data[key] = this[key];
+            data[key] = this[key]
           }
-        }, this);
-        this.rendering = true;
+        }, this)
+        this.rendering = true
         // Container is either shadow DOM or light DOM depending on `shadow` option.
-        const container = config.shadow ? (this.shadowRoot as any) : this;
+        const container = config.shadow ? (this.shadowRoot as any) : this
 
-        const children = flattenIfOne(mapChildren(this));
+        const children = flattenIfOne(mapChildren(this))
 
-        const element = React.createElement(ReactComponent, data, children);
+        const element = React.createElement(ReactComponent, data, children)
 
         // Use react to render element in container
-        renderer.mount(container, element);
-        this.rendering = false;
+        renderer.mount(container, element)
+        this.rendering = false
       }
     }
 
     connectedCallback() {
       // Once connected, it will keep updating the innerHTML.
       // We could add a render method to allow this as well.
-      renderAddedProperties["setAttribute"] = false;
-      renderAddedProperties["hasAttribute"] = false;
-      renderAddedProperties["getOwnPropertyDescriptor"] = false;
-      this[shouldRenderSymbol] = true;
-      this[renderSymbol]();
+      renderAddedProperties["setAttribute"] = false
+      renderAddedProperties["hasAttribute"] = false
+      renderAddedProperties["getOwnPropertyDescriptor"] = false
+      this[shouldRenderSymbol] = true
+      this[renderSymbol]()
     }
 
     disconnectedCallback() {
-      this[shouldRenderSymbol] = false;
-      renderer.unmount(this);
+      this[shouldRenderSymbol] = false
+      renderer.unmount(this)
     }
 
-    attributeChangedCallback() {
-      return (name: string, oldValue: any, newValue: any) => {
-        const propertyName = attrPropMap[name] || name;
-        switch (propTypes[propertyName]) {
-          case "ref":
-          case Function:
-            if (!newValue && propTypes[propertyName] === "ref") {
-              newValue = React.createRef();
-              break;
-            }
-            if (typeof window !== "undefined") {
-              newValue = window[newValue] || newValue;
-            } else if (typeof global !== "undefined") {
-              newValue = global[newValue] || newValue;
-            }
-            if (typeof newValue === "function") {
-              newValue = newValue.bind(this); // this = instance of the WebComponent / HTMLElement
-            }
-            break;
-          case Number:
-            newValue = parseFloat(newValue);
-            break;
-          case Boolean:
-            newValue = /^[ty1-9]/i.test(newValue);
-            break;
-          case Object:
-            newValue = JSON.parse(newValue);
-            break;
-          case Array:
-            newValue = JSON.parse(newValue);
-            break;
-          case String:
-          default:
-            break;
-        }
-      };
-    }
+    // attributeChangedCallback() {
+    //   return (name: string, oldValue: any, newValue: any) => {
+    //     const propertyName = attrPropMap[name] || name;
+    //     switch (propTypes[propertyName]) {
+    //       case "ref":
+    //       case Function:
+    //         if (!newValue && propTypes[propertyName] === "ref") {
+    //           newValue = React.createRef();
+    //           break;
+    //         }
+    //         if (typeof window !== "undefined") {
+    //           newValue = window[newValue] || newValue;
+    //         } else if (typeof global !== "undefined") {
+    //           newValue = global[newValue] || newValue;
+    //         }
+    //         if (typeof newValue === "function") {
+    //           newValue = newValue.bind(this); // this = instance of the WebComponent / HTMLElement
+    //         }
+    //         break;
+    //       case Number:
+    //         newValue = parseFloat(newValue);
+    //         break;
+    //       case Boolean:
+    //         newValue = /^[ty1-9]/i.test(newValue);
+    //         break;
+    //       case Object:
+    //         newValue = JSON.parse(newValue);
+    //         break;
+    //       case Array:
+    //         newValue = JSON.parse(newValue);
+    //         break;
+    //       case String:
+    //       default:
+    //         break;
+    //     }
+    //   };
+    // }
 
     static get observedAttributes() {
-      return Object.keys(propTypes);
+      return Object.keys(propTypes)
     }
   }
 
