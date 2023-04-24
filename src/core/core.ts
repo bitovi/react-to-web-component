@@ -154,11 +154,6 @@ export default function (
         }
       }
 
-      // Add custom getter and setter
-      this.hasAttribute = function (key: string) {
-        return key in propTypes || key in this
-      }
-
       this.getOwnPropertyDescriptor = function (key: string) {
         const own = Reflect.getOwnPropertyDescriptor(this, key)
         if (own) {
@@ -213,44 +208,6 @@ export default function (
       this[shouldRenderSymbol] = false
       renderer.unmount(this)
     }
-
-    // attributeChangedCallback() {
-    //   return (name: string, oldValue: any, newValue: any) => {
-    //     const propertyName = attrPropMap[name] || name;
-    //     switch (propTypes[propertyName]) {
-    //       case "ref":
-    //       case Function:
-    //         if (!newValue && propTypes[propertyName] === "ref") {
-    //           newValue = React.createRef();
-    //           break;
-    //         }
-    //         if (typeof window !== "undefined") {
-    //           newValue = window[newValue] || newValue;
-    //         } else if (typeof global !== "undefined") {
-    //           newValue = global[newValue] || newValue;
-    //         }
-    //         if (typeof newValue === "function") {
-    //           newValue = newValue.bind(this); // this = instance of the WebComponent / HTMLElement
-    //         }
-    //         break;
-    //       case Number:
-    //         newValue = parseFloat(newValue);
-    //         break;
-    //       case Boolean:
-    //         newValue = /^[ty1-9]/i.test(newValue);
-    //         break;
-    //       case Object:
-    //         newValue = JSON.parse(newValue);
-    //         break;
-    //       case Array:
-    //         newValue = JSON.parse(newValue);
-    //         break;
-    //       case String:
-    //       default:
-    //         break;
-    //     }
-    //   };
-    // }
 
     static get observedAttributes() {
       return Object.keys(propTypes)
