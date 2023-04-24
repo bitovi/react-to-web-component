@@ -339,10 +339,10 @@ describe("react-to-webcomponent", () => {
 
     const body = document.body
 
-    // console.error = function (...messages) {
-    //   // propTypes will throw if any of the types passed into the underlying react component are wrong or missing
-    //   expect("propTypes should not have thrown").toEqual(messages.join(""))
-    // }
+    console.error = function (...messages) {
+      // propTypes will throw if any of the types passed into the underlying react component are wrong or missing
+      expect("propTypes should not have thrown").toEqual(messages.join(""))
+    }
 
     body.innerHTML = `
       <attr-type-casting

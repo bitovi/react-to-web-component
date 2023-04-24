@@ -52,27 +52,6 @@ function mapChildren(node: Element) {
   return flattenIfOne(arr)
 }
 
-// const define = {
-//   // Creates a getter/setter that re-renders everytime a property is set.
-//   expando: function (
-//     receiver: Record<typeof renderSymbol, any>,
-//     key: string,
-//     value: unknown,
-//   ) {
-//     Object.defineProperty(receiver, key, {
-//       enumerable: true,
-//       get: function () {
-//         return value
-//       },
-//       set: function (newValue) {
-//         value = newValue
-//         this[renderSymbol]()
-//       },
-//     })
-//     receiver[renderSymbol]()
-//   },
-// }
-
 /**
  * Converts a React component into a webcomponent by wrapping it in a Proxy object.
  * @param {ReactComponent}
