@@ -129,10 +129,8 @@ export default function (
   const renderAddedProperties: Record<string, boolean> = {
     isConnected: "isConnected" in HTMLElement.prototype,
   }
-
-  let rendering = false
-
   class WebCompClass extends HTMLElement {
+    rendering: boolean
     getOwnPropertyDescriptor: (
       key: string,
     ) =>
@@ -150,6 +148,8 @@ export default function (
         )
         this.attachShadow({ mode: "open" })
       }
+
+      this.rendering = false;
 
       // Add custom getter and setter for each prop
       for (const key of propKeys) {
@@ -180,7 +180,7 @@ export default function (
     }
 
     static get observedAttributes() {
-      return Object.keys(attrPropMap)
+      return Object.keys(propTypes)
     }
 
     [shouldRenderSymbol] = true;
@@ -193,7 +193,7 @@ export default function (
             data[key] = this[key as keyof this]
           }
         }
-        rendering = true
+        this.rendering = true
         // Container is either shadow DOM or light DOM depending on `shadow` option.
         const container = config.shadow ? (this.shadowRoot as any) : this
 
@@ -203,7 +203,7 @@ export default function (
 
         // Use react to render element in container
         renderer.mount(container, element)
-        rendering = false
+        this.rendering = false
       }
     }
 
@@ -225,7 +225,7 @@ export default function (
       handleTypeCasting.call(this, propertyName, newValue, propTypes)
 
       // set prop on React component
-      if (rendering) {
+      if (this.rendering) {
         renderAddedProperties[propertyName] = true
       } else {
         this[renderSymbol]()
