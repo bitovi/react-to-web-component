@@ -149,7 +149,7 @@ export default function (
         this.attachShadow({ mode: "open" })
       }
 
-      this.rendering = false;
+      this.rendering = false
 
       // Add custom getter and setter for each prop
       for (const key of propKeys) {
