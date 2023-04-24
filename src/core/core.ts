@@ -52,6 +52,48 @@ function mapChildren(node: Element) {
   return flattenIfOne(arr)
 }
 
+function handleTypeCasting(
+  this: HTMLElement,
+  key: string,
+  value: any,
+  obj: Record<string, unknown>,
+) {
+  let attributeToAdd = value
+  switch (obj[key]) {
+    case "ref":
+    case Function:
+      if (obj[key] === "ref") {
+        attributeToAdd = React.createRef()
+        break
+      }
+      if (typeof window !== "undefined" && attributeToAdd in window) {
+        attributeToAdd = window[attributeToAdd as any]
+      } else if (typeof global !== "undefined" && attributeToAdd in global) {
+        attributeToAdd = global[attributeToAdd as any]
+      }
+      if (typeof attributeToAdd === "function") {
+        attributeToAdd = attributeToAdd.bind(this)
+      }
+      break
+    case Number:
+      attributeToAdd = parseFloat(attributeToAdd)
+      break
+    case Boolean:
+      attributeToAdd = /^[ty1-9]/i.test(attributeToAdd)
+      break
+    case Object:
+      attributeToAdd = JSON.parse(attributeToAdd)
+      break
+    case Array:
+      attributeToAdd = JSON.parse(attributeToAdd)
+      break
+    case String:
+    default:
+      break
+  }
+  Reflect.set(this, key, attributeToAdd)
+}
+
 /**
  * Converts a React component into a webcomponent by wrapping it in a Proxy object.
  * @param {ReactComponent}
@@ -87,8 +129,10 @@ export default function (
   const renderAddedProperties: Record<string, boolean> = {
     isConnected: "isConnected" in HTMLElement.prototype,
   }
+
+  let rendering = false
+
   class WebCompClass extends HTMLElement {
-    rendering: boolean
     getOwnPropertyDescriptor: (
       key: string,
     ) =>
@@ -107,8 +151,6 @@ export default function (
         this.attachShadow({ mode: "open" })
       }
 
-      this.rendering = false
-
       // Add custom getter and setter for each prop
       for (const key of propKeys) {
         if (key in propTypes) {
@@ -117,40 +159,7 @@ export default function (
           if (attributeToAdd === null) {
             attributeToAdd = ReactComponent.defaultProps?.[key]
           }
-          switch (propTypes[key]) {
-            case "ref":
-              attributeToAdd = React.createRef()
-              break
-            case Function:
-              if (typeof window !== "undefined" && attributeToAdd in window) {
-                attributeToAdd = window[attributeToAdd as any]
-              } else if (
-                typeof global !== "undefined" &&
-                attributeToAdd in global
-              ) {
-                attributeToAdd = global[attributeToAdd as any]
-              }
-              if (typeof attributeToAdd === "function") {
-                attributeToAdd = attributeToAdd.bind(this)
-              }
-              break
-            case Number:
-              attributeToAdd = parseFloat(attributeToAdd)
-              break
-            case Boolean:
-              attributeToAdd = /^[ty1-9]/i.test(attributeToAdd)
-              break
-            case Object:
-              attributeToAdd = JSON.parse(attributeToAdd)
-              break
-            case Array:
-              attributeToAdd = JSON.parse(attributeToAdd)
-              break
-            case String:
-            default:
-              break
-          }
-          Reflect.set(this, key, attributeToAdd)
+          handleTypeCasting.call(this, key, attributeToAdd, propTypes)
         }
       }
 
@@ -170,6 +179,10 @@ export default function (
       }
     }
 
+    static get observedAttributes() {
+      return Object.keys(attrPropMap)
+    }
+
     [shouldRenderSymbol] = true;
 
     [renderSymbol]() {
@@ -180,7 +193,7 @@ export default function (
             data[key] = this[key as keyof this]
           }
         }
-        this.rendering = true
+        rendering = true
         // Container is either shadow DOM or light DOM depending on `shadow` option.
         const container = config.shadow ? (this.shadowRoot as any) : this
 
@@ -190,15 +203,13 @@ export default function (
 
         // Use react to render element in container
         renderer.mount(container, element)
-        this.rendering = false
+        rendering = false
       }
     }
 
     connectedCallback() {
       // Once connected, it will keep updating the innerHTML.
       // We could add a render method to allow this as well.
-      renderAddedProperties["setAttribute"] = false
-      renderAddedProperties["hasAttribute"] = false
       renderAddedProperties["getOwnPropertyDescriptor"] = false
       this[shouldRenderSymbol] = true
       this[renderSymbol]()
@@ -209,8 +220,16 @@ export default function (
       renderer.unmount(this)
     }
 
-    static get observedAttributes() {
-      return Object.keys(propTypes)
+    attributeChangedCallback(name: string, _oldValue: any, newValue: any) {
+      const propertyName = attrPropMap[name] || name
+      handleTypeCasting.call(this, propertyName, newValue, propTypes)
+
+      // set prop on React component
+      if (rendering) {
+        renderAddedProperties[propertyName] = true
+      } else {
+        this[renderSymbol]()
+      }
     }
   }
 
