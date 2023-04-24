@@ -220,7 +220,7 @@ export default function (
       renderer.unmount(this)
     }
 
-    attributeChangedCallback(name: string, _oldValue: any, newValue: any) {
+    /* attributeChangedCallback(name: string, _oldValue: any, newValue: any) {
       const propertyName = attrPropMap[name] || name
       handleTypeCasting.call(this, propertyName, newValue, propTypes)
 
@@ -230,7 +230,7 @@ export default function (
       } else {
         this[renderSymbol]()
       }
-    }
+    } */
   }
 
   return WebCompClass
