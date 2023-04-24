@@ -134,6 +134,10 @@ export default function (
       for (const key of propKeys) {
         if (key in propTypes) {
           let attributeToAdd: any = this.getAttribute(propAttrMap[key])
+          // account for default prop values
+          if (attributeToAdd === null) {
+            attributeToAdd = ReactComponent.defaultProps?.[key]
+          }
           switch (propTypes[key]) {
             case "ref":
               attributeToAdd = React.createRef()
