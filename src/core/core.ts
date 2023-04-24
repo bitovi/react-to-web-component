@@ -180,11 +180,11 @@ export default function (
     [renderSymbol]() {
       if (this[shouldRenderSymbol] === true) {
         const data: Record<string, any> = {}
-        Object.keys(this).forEach(function (this: any, key) {
+        for (const key of Object.keys(this)) {
           if (renderAddedProperties[key] !== false && key in propTypes) {
-            data[key] = this[key]
+            data[key] = this[key as keyof this]
           }
-        }, this)
+        }
         this.rendering = true
         // Container is either shadow DOM or light DOM depending on `shadow` option.
         const container = config.shadow ? (this.shadowRoot as any) : this
