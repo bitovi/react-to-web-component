@@ -49,7 +49,7 @@ function mapChildren(node: Element) {
       return React.createElement(nodeName, attributes, children)
     },
   )
-  
+
   return flattenIfOne(arr)
 }
 
