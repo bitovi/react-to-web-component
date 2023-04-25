@@ -42,13 +42,14 @@ function mapChildren(node: Element) {
       // we need to format c.attributes before passing it to createElement
       const attributes: Record<string, string | null> = {}
       for (const attr of c.getAttributeNames()) {
+        // handleTypeCasting.call(c, attr, c.getAttribute(attr), attributes)
         attributes[attr] = c.getAttribute(attr)
       }
 
       return React.createElement(nodeName, attributes, children)
     },
   )
-
+  
   return flattenIfOne(arr)
 }
 
@@ -131,6 +132,7 @@ export default function (
   }
   class WebCompClass extends HTMLElement {
     rendering: boolean
+    mounted: boolean
     getOwnPropertyDescriptor: (
       key: string,
     ) =>
@@ -150,6 +152,8 @@ export default function (
       }
 
       this.rendering = false
+
+      this.mounted = false
 
       // Add custom getter and setter for each prop
       for (const key of propKeys) {
@@ -203,6 +207,7 @@ export default function (
 
         // Use react to render element in container
         renderer.mount(container, element)
+        this.mounted = true
         this.rendering = false
       }
     }
@@ -220,17 +225,16 @@ export default function (
       renderer.unmount(this)
     }
 
-    /* attributeChangedCallback(name: string, _oldValue: any, newValue: any) {
+    attributeChangedCallback(name: string, _oldValue: any, newValue: any) {
       const propertyName = attrPropMap[name] || name
       handleTypeCasting.call(this, propertyName, newValue, propTypes)
 
       // set prop on React component
-      if (this.rendering) {
-        renderAddedProperties[propertyName] = true
-      } else {
+      renderAddedProperties[propertyName] = true
+      if (this.mounted) {
         this[renderSymbol]()
       }
-    } */
+    }
   }
 
   return WebCompClass
