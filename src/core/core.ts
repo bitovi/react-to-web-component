@@ -181,12 +181,12 @@ export default function (
               if (propTypes[propKey] === "ref") {
                 data[propKey] = this[propKey]
               } else {
-              data[propKey] = handleTypeCasting.call(
-                this,
-                propKey,
-                dataPoint,
-                propTypes,
-              )
+                data[propKey] = handleTypeCasting.call(
+                  this,
+                  propKey,
+                  dataPoint,
+                  propTypes,
+                )
               }
             }
           }
@@ -274,9 +274,13 @@ export default function (
           return castedAttribute
         },
         set(value) {
-          const valueAsString = typeof value === "object" ? JSON.stringify(value) : value
+          const valueAsString =
+            typeof value === "object" ? JSON.stringify(value) : value
           const currentAttributeValue = this.getAttribute(propAttrMap[key])
-          if (currentAttributeValue === null || currentAttributeValue !== valueAsString) {
+          if (
+            currentAttributeValue === null ||
+            currentAttributeValue !== valueAsString
+          ) {
             this.setAttribute(propAttrMap[key], valueAsString)
           }
         },
