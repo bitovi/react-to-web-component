@@ -61,4 +61,5 @@ export interface R2WCOptions {
 export interface Renderer<T> {
   mount: (container: HTMLElement, element: T) => any
   unmount: (container: HTMLElement) => any
+  onUpdated?: () => void
 }

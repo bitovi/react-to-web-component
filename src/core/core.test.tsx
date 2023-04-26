@@ -5,6 +5,11 @@ import r2wc from "."
 // mock renderer
 const mount = vi.fn()
 const unmount = vi.fn()
+const onUpdated = vi.fn()
+
+function flushPromises() {
+  return new Promise((resolve) => setImmediate(resolve))
+}
 
 describe("r2wc core", () => {
   afterEach(() => {
@@ -13,6 +18,7 @@ describe("r2wc core", () => {
     // reset mock
     mount.mockReset()
     unmount.mockReset()
+    onUpdated.mockReset()
   })
   test("mount and unmount is called in functional component", async () => {
     function TestComponent() {
@@ -41,10 +47,14 @@ describe("r2wc core", () => {
       }
     }
     const body = document.body
-    class TestClassElement extends r2wc(TestClassComponent, {}, {
-      mount,
-      unmount,
-    }) {}
+    class TestClassElement extends r2wc(
+      TestClassComponent,
+      {},
+      {
+        mount,
+        unmount,
+      },
+    ) {}
 
     customElements.define("test-class-element", TestClassElement)
 
@@ -57,5 +67,93 @@ describe("r2wc core", () => {
     body.removeChild(testEl)
 
     expect(unmount).toBeCalledTimes(1)
+  })
+
+  test("updated attribute updates the component prop and the HTMLElement property", async () => {
+    function Button({ text }: { text: string }) {
+      return <button>{text}</button>
+    }
+
+    const ButtonElement = r2wc(
+      Button,
+      { props: ["text"] },
+      { mount, unmount, onUpdated },
+    )
+
+    customElements.define("test-button-element-attribute", ButtonElement)
+
+    const body = document.body
+    body.innerHTML =
+      "<test-button-element-attribute text='hello'></test-button-element-attribute>"
+
+    const testEl = body.querySelector(
+      "test-button-element-attribute",
+    ) as HTMLElement & { text: string }
+
+    testEl.setAttribute("text", "world")
+
+    await flushPromises()
+
+    expect(onUpdated).toBeCalledTimes(1)
+    expect(testEl.text).toBe("world")
+  })
+
+  test("updated HTMLElement property updates the component prop and the HTMLElement attribute", async () => {
+    interface Props {
+      text: string
+      numProp: number
+      boolProp: boolean
+      arrProp: string[]
+      objProp: { [key: string]: string }
+      funcProp: () => void
+    }
+
+    function ButtonWithDifferentPropTypes({text, numProp, boolProp, arrProp, objProp, funcProp}: Props) {
+      return <button>{text}</button>
+    }
+
+    const ButtonElement = r2wc(ButtonWithDifferentPropTypes, {props: {
+      text: String,
+      numProp: Number,
+      boolProp: Boolean,
+      arrProp: Array,
+      objProp: Object,
+      funcProp: Function
+    }}, { mount, unmount, onUpdated })
+
+    global.globalFn = function () {
+      expect(true).toBe(true)
+      return true
+    }
+
+    customElements.define("test-button-element-property", ButtonElement)
+
+    const body = document.body
+    body.innerHTML = `<test-button-element-property text='hello' obj-prop='{"greeting": "hello, world"}' arr-prop='["hello", "world"]' num-prop='240' bool-prop='true' func-prop='globalFn'>
+                      </test-button-element-property>`
+
+    const testEl = body.querySelector("test-button-element-property") as HTMLElement & Props
+
+    await flushPromises()
+
+    expect(testEl.text).toBe("hello")
+    expect(testEl.numProp).toBe(240)
+    expect(testEl.boolProp).toBe(true)
+    expect(testEl.arrProp).toEqual(["hello", "world"])
+    expect(testEl.objProp).toEqual({greeting: "hello, world"})
+    expect(testEl.funcProp).toBeInstanceOf(Function)
+    expect(testEl.funcProp()).toBe(true)
+
+    testEl.text = "world"
+    testEl.numProp = 100
+    testEl.boolProp = false
+
+    await flushPromises()
+
+    expect(onUpdated).toBeCalledTimes(3)
+    expect(testEl.getAttribute("text")).toBe("world")
+    expect(testEl.getAttribute("num-prop")).toBe("100")
+    expect(testEl.getAttribute("bool-prop")).toBe("false")
+
   })
 })

@@ -65,6 +65,7 @@ function handleTypeCasting(
     case Function:
       if (obj[key] === "ref") {
         attributeToAdd = React.createRef()
+        Reflect.set(this, key, attributeToAdd)
         break
       }
       if (typeof window !== "undefined" && attributeToAdd in window) {
@@ -92,7 +93,7 @@ function handleTypeCasting(
     default:
       break
   }
-  Reflect.set(this, key, attributeToAdd)
+  return attributeToAdd
 }
 
 /**
@@ -132,7 +133,8 @@ export default function (
   }
   class WebCompClass extends HTMLElement {
     rendering: boolean
-    mounted: boolean
+    mounted: boolean;
+    [renderSymbol]: () => void
     getOwnPropertyDescriptor: (
       key: string,
     ) =>
@@ -163,7 +165,49 @@ export default function (
           if (attributeToAdd === null) {
             attributeToAdd = ReactComponent.defaultProps?.[key]
           }
-          handleTypeCasting.call(this, key, attributeToAdd, propTypes)
+          if (propTypes[key] === "ref") {
+            attributeToAdd = React.createRef()
+            Reflect.set(this, key, attributeToAdd)
+          }
+        }
+      }
+
+      this[renderSymbol] = function () {
+        if (this[shouldRenderSymbol] === true) {
+          const data: Record<string, any> = {}
+          for (const [attrKey, propKey] of Object.entries(attrPropMap)) {
+            if (renderAddedProperties[propKey] !== false) {
+              const dataPoint = this.getAttribute(attrKey)
+              if (propTypes[propKey] === "ref") {
+                data[propKey] = this[propKey]
+              } else {
+              data[propKey] = handleTypeCasting.call(
+                this,
+                propKey,
+                dataPoint,
+                propTypes,
+              )
+              }
+            }
+          }
+          // console.log("rendering", data)
+          this.rendering = true
+          // Container is either shadow DOM or light DOM depending on `shadow` option.
+          const container = config.shadow ? (this.shadowRoot as any) : this
+
+          const children = flattenIfOne(mapChildren(this))
+
+          const element = React.createElement(ReactComponent, data, children)
+
+          // Use react to render element in container
+          renderer.mount(container, element)
+
+          if (!this.mounted) {
+            this.mounted = true
+          } else {
+            renderer.onUpdated?.()
+          }
+          this.rendering = false
         }
       }
 
@@ -184,33 +228,10 @@ export default function (
     }
 
     static get observedAttributes() {
-      return Object.keys(propTypes)
+      return Object.keys(attrPropMap)
     }
 
-    [shouldRenderSymbol] = true;
-
-    [renderSymbol]() {
-      if (this[shouldRenderSymbol] === true) {
-        const data: Record<string, any> = {}
-        for (const key of Object.keys(this)) {
-          if (renderAddedProperties[key] !== false && key in propTypes) {
-            data[key] = this[key as keyof this]
-          }
-        }
-        this.rendering = true
-        // Container is either shadow DOM or light DOM depending on `shadow` option.
-        const container = config.shadow ? (this.shadowRoot as any) : this
-
-        const children = flattenIfOne(mapChildren(this))
-
-        const element = React.createElement(ReactComponent, data, children)
-
-        // Use react to render element in container
-        renderer.mount(container, element)
-        this.mounted = true
-        this.rendering = false
-      }
-    }
+    [shouldRenderSymbol] = true
 
     connectedCallback() {
       // Once connected, it will keep updating the innerHTML.
@@ -227,13 +248,41 @@ export default function (
 
     attributeChangedCallback(name: string, _oldValue: any, newValue: any) {
       const propertyName = attrPropMap[name] || name
-      handleTypeCasting.call(this, propertyName, newValue, propTypes)
-
+      // const castedAttribute = handleTypeCasting.call(this, propertyName, newValue, propTypes)
+      // Reflect.set(this, propertyName, castedAttribute)
       // set prop on React component
-      renderAddedProperties[propertyName] = true
-      if (this.mounted) {
-        this[renderSymbol]()
+      if (propertyName in propTypes) {
+        renderAddedProperties[propertyName] = true
+        if (this.mounted) {
+          this[renderSymbol]()
+        }
       }
+    }
+  }
+
+  // add getters and setters for syncing properties with attributes
+  for (const key of propKeys) {
+    if (key in propTypes && key !== "children" && propTypes[key] !== "ref") {
+      Object.defineProperty(WebCompClass.prototype, key, {
+        get() {
+          const castedAttribute = handleTypeCasting.call(
+            this,
+            key,
+            this.getAttribute(propAttrMap[key]),
+            propTypes,
+          )
+          return castedAttribute
+        },
+        set(value) {
+          const valueAsString = typeof value === "object" ? JSON.stringify(value) : value
+          const currentAttributeValue = this.getAttribute(propAttrMap[key])
+          if (currentAttributeValue === null || currentAttributeValue !== valueAsString) {
+            this.setAttribute(propAttrMap[key], valueAsString)
+          }
+        },
+        enumerable: true,
+        configurable: true,
+      })
     }
   }
 
