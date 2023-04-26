@@ -178,6 +178,10 @@ export default function (
           for (const [attrKey, propKey] of Object.entries(attrPropMap)) {
             if (renderAddedProperties[propKey] !== false) {
               const dataPoint = this.getAttribute(attrKey)
+              // account for default prop values
+              if (dataPoint === null) {
+                continue;
+              }
               if (propTypes[propKey] === "ref") {
                 data[propKey] = this[propKey]
               } else {
@@ -190,7 +194,7 @@ export default function (
               }
             }
           }
-          // console.log("rendering", data)
+
           this.rendering = true
           // Container is either shadow DOM or light DOM depending on `shadow` option.
           const container = config.shadow ? (this.shadowRoot as any) : this
@@ -248,8 +252,6 @@ export default function (
 
     attributeChangedCallback(name: string, _oldValue: any, newValue: any) {
       const propertyName = attrPropMap[name] || name
-      // const castedAttribute = handleTypeCasting.call(this, propertyName, newValue, propTypes)
-      // Reflect.set(this, propertyName, castedAttribute)
       // set prop on React component
       if (propertyName in propTypes) {
         renderAddedProperties[propertyName] = true
