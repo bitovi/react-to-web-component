@@ -180,7 +180,7 @@ export default function (
               const dataPoint = this.getAttribute(attrKey)
               // account for default prop values
               if (dataPoint === null) {
-                continue;
+                continue
               }
               if (propTypes[propKey] === "ref") {
                 data[propKey] = this[propKey]
