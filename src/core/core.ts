@@ -272,8 +272,13 @@ export default function (
           return castedAttribute
         },
         set(value) {
-          const valueAsString =
+          let valueAsString =
             typeof value === "object" ? JSON.stringify(value) : value
+          if (typeof value === "function") {
+            // just set the name of the function
+            // if function is anonymous, it will be an empty string
+            valueAsString = value.name
+          }
           const currentAttributeValue = this.getAttribute(propAttrMap[key])
           if (
             currentAttributeValue === null ||

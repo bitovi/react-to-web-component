@@ -102,6 +102,7 @@ describe("r2wc core", () => {
   })
 
   test("updated HTMLElement property updates the component prop and the HTMLElement attribute", async () => {
+    expect.assertions(13)
     interface Props {
       text: string
       numProp: number
@@ -142,6 +143,12 @@ describe("r2wc core", () => {
       return true
     }
 
+    global.newFunc = function newFunc () {
+      expect(this).toBe(document.querySelector(
+        "test-button-element-property",
+      ))
+    }
+
     customElements.define("test-button-element-property", ButtonElement)
 
     const body = document.body
@@ -165,13 +172,15 @@ describe("r2wc core", () => {
     testEl.text = "world"
     testEl.numProp = 100
     testEl.boolProp = false
+    testEl.funcProp = global.newFunc
 
     await flushPromises()
 
-    expect(onUpdated).toBeCalledTimes(3)
+    expect(onUpdated).toBeCalledTimes(4)
     expect(testEl.getAttribute("text")).toBe("world")
     expect(testEl.getAttribute("num-prop")).toBe("100")
     expect(testEl.getAttribute("bool-prop")).toBe("false")
+    expect(testEl.getAttribute("func-prop")).toBe("newFunc")
   })
 
   test("sets HTML property not defined in props but found on HTML object", async () => {
