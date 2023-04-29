@@ -244,6 +244,7 @@ export default function (
     disconnectedCallback() {
       this[shouldRenderSymbol] = false
       renderer.unmount(this)
+      this.mounted = false
     }
 
     attributeChangedCallback(name: string, _oldValue: any, newValue: any) {
