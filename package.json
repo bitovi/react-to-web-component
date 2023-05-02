@@ -34,6 +34,7 @@
   "devDependencies": {
     "@bitovi/eslint-config": "^1.3.0",
     "@rollup/plugin-typescript": "^8.3.4",
+    "@testing-library/jest-dom": "^5.16.5",
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
     "@webcomponents/custom-elements": "^1.2.4",
@@ -54,6 +55,7 @@
     "buildtests": "chmod +x src/tests/buildtests && ./src/tests/buildtests",
     "test": "vitest src/tests/environments/**/react-to-webcomponent.test.jsx && npm run test:core && npm run test:builds",
     "test:core": "vitest src/core/core.test.tsx",
+    "test:react18": "vitest src/tests/environments/react18/react-to-webcomponent.test.jsx",
     "test:builds": "vitest src/tests/builds/builds.test.ts",
     "start": "http-server -c-1",
     "typecheck": "tsc --noEmit",

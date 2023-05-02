@@ -54,11 +54,12 @@ export interface CustomElementConstructor {
 }
 
 export interface R2WCOptions {
-  shadow?: string | boolean
+  shadow?: "open" | "closed" | boolean
   props?: Array<string> | Record<string, unknown>
 }
 
 export interface Renderer<T> {
   mount: (container: HTMLElement, element: T) => any
   unmount: (container: HTMLElement) => any
+  onUpdated?: () => void
 }
