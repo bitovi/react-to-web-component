@@ -46,7 +46,6 @@ export default function (
   ReactDOM: ReactDOMType,
   options: R2WCOptions = {},
 ): CustomElementConstructor {
-
   function unmount(this: any, _container: HTMLElement) {
     if (ReactDOM.createRoot && typeof ReactDOM.createRoot === "function") {
       this[rootSymbol].unmount()
@@ -67,5 +66,5 @@ export default function (
     }
   }
 
-  return r2wc(ReactComponent, options, {mount, unmount})
+  return r2wc(ReactComponent, options, { mount, unmount })
 }
