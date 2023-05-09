@@ -46,8 +46,10 @@ export default function (
   ReactDOM: ReactDOMType,
   options: R2WCOptions = {},
 ): CustomElementConstructor {
+  const isReact18 =
+    ReactDOM.createRoot && typeof ReactDOM.createRoot === "function"
   function unmount(this: any, _container: HTMLElement) {
-    if (ReactDOM.createRoot && typeof ReactDOM.createRoot === "function") {
+    if (isReact18) {
       this[rootSymbol].unmount()
     } else if (ReactDOM.unmountComponentAtNode) {
       ReactDOM.unmountComponentAtNode(this)
@@ -55,7 +57,7 @@ export default function (
   }
 
   function mount(this: any, container: HTMLElement, element: ReactNode) {
-    if (ReactDOM.createRoot && typeof ReactDOM.createRoot === "function") {
+    if (isReact18) {
       if (!this[rootSymbol]) {
         this[rootSymbol] = ReactDOM.createRoot(container)
       }
