@@ -1,11 +1,11 @@
-import matchers from "@testing-library/jest-dom/matchers"
 import { describe, test, expect, vi, afterEach } from "vitest"
+import matchers from "@testing-library/jest-dom/matchers"
 import React from "react"
-import r2wc from "."
+
+import r2wc from "./core"
 
 expect.extend(matchers)
 
-// mock renderer
 const mount = vi.fn()
 const unmount = vi.fn()
 const onUpdated = vi.fn()
@@ -14,61 +14,44 @@ function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve))
 }
 
-describe("r2wc core", () => {
+describe("core", () => {
   afterEach(() => {
-    // reset DOM
     document.body.innerHTML = ""
-    // reset mock
-    mount.mockReset()
-    unmount.mockReset()
-    onUpdated.mockReset()
   })
-  test("mount and unmount is called in functional component", async () => {
+
+  it("mounts and unmounts for a functional component", async () => {
     function TestComponent() {
       return <div>hello</div>
     }
-    const body = document.body
 
     const TestElement = r2wc(TestComponent, {}, { mount, unmount })
     customElements.define("test-func-element", TestElement)
 
     const testEl = new TestElement()
 
-    body.appendChild(testEl)
-
+    document.body.appendChild(testEl)
     expect(mount).toBeCalledTimes(1)
 
-    body.removeChild(testEl)
-
+    document.body.removeChild(testEl)
     expect(unmount).toBeCalledTimes(1)
   })
 
-  test("mount and unmount is called in class component", async () => {
-    class TestClassComponent extends React.Component {
+  it("mounts and unmounts for a class component", async () => {
+    class TestComponent extends React.Component {
       render() {
         return <div>hello</div>
       }
     }
-    const body = document.body
-    class TestClassElement extends r2wc(
-      TestClassComponent,
-      {},
-      {
-        mount,
-        unmount,
-      },
-    ) {}
 
-    customElements.define("test-class-element", TestClassElement)
+    const TestElement = r2wc(TestComponent, {}, { mount, unmount })
+    customElements.define("test-element", TestElement)
 
-    const testEl = new TestClassElement()
+    const testEl = new TestElement()
 
-    body.appendChild(testEl)
-
+    document.body.appendChild(testEl)
     expect(mount).toBeCalledTimes(1)
 
-    body.removeChild(testEl)
-
+    document.body.removeChild(testEl)
     expect(unmount).toBeCalledTimes(1)
   })
 
@@ -138,15 +121,15 @@ describe("r2wc core", () => {
       { mount, unmount, onUpdated },
     )
 
+    //@ts-ignore
     global.globalFn = function () {
       expect(true).toBe(true)
       return true
     }
 
-    global.newFunc = function newFunc () {
-      expect(this).toBe(document.querySelector(
-        "test-button-element-property",
-      ))
+    //@ts-ignore
+    global.newFunc = function newFunc() {
+      expect(this).toBe(document.querySelector("test-button-element-property"))
     }
 
     customElements.define("test-button-element-property", ButtonElement)
@@ -172,6 +155,7 @@ describe("r2wc core", () => {
     testEl.text = "world"
     testEl.numProp = 100
     testEl.boolProp = false
+    //@ts-ignore
     testEl.funcProp = global.newFunc
 
     await flushPromises()

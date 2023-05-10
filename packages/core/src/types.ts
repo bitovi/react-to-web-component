@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export interface RefObject<T> {
   current: T | null
 }
@@ -55,7 +53,7 @@ export interface CustomElementConstructor {
 
 export interface R2WCOptions {
   shadow?: "open" | "closed" | boolean
-  props?: Array<string> | Record<string, unknown>
+  props?: string[] | Record<string, unknown>
 }
 
 export interface Renderer<T> {

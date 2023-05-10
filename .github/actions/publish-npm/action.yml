@@ -1,0 +1,57 @@
+name: monorepo-publish-npm
+
+inputs:
+  package:
+    description: "The package folder name."
+    required: true
+  segment:
+    description: "The version segment to increment: major, minor, patch, or prerelease."
+    required: true
+  preId:
+    description: "Appended to the prerelease segment. (default: \"\")"
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Determine Tag
+      id: tag
+      shell: bash
+      run: |
+        if [[ ${{ inputs.segment }} == pre* ]]; then
+          echo "tag=next" >> $GITHUB_OUTPUT
+        else
+          echo "tag=latest" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Increment Version
+      shell: bash
+      run: |
+        git config --local user.email "Workflow: ${{ inputs.package }}[bot]"
+        git config --local user.name "${{ inputs.package }}[bot]@workflow"
+
+        TAG_CMD="--tag-version-prefix=\"${{ inputs.package }}/v\""
+        MESSAGE_CMD="-m \"Publish ${{ inputs.package }} v%s\""
+
+        if [[ ${{ inputs.segment }} == pre* ]]; then
+          if [[ -n "${{ inputs.preId }}" ]]; then
+            PREID_CMD="--preid ${{ inputs.preId }}"
+          fi
+        fi
+
+        npm version ${{ inputs.segment }} $PREID_CMD $TAG_CMD $MESSAGE_CMD"
+
+    - name: Push Tag
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
+        tags: true
+
+    - name: Publish to NPM Registry
+      working-directory: ${{ inputs.package }}
+      uses: JS-DevTools/npm-publish@v2
+      with:
+        token: ${{ secrets.NPM_TOKEN }}
+        tag: ${{ steps.tag.outputs.tag }}
+        dry-run: true

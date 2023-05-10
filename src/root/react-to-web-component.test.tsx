@@ -1,9 +1,8 @@
 import { test, expect } from "vitest"
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from "react"
 import PropTypes from "prop-types"
 
-import r2wc18 from "."
+import r2wc from "./react-to-web-component"
 
 function flushPromises() {
   return new Promise((resolve) => setTimeout(resolve, 0))
@@ -14,7 +13,7 @@ test("works with basic react component", async () => {
     return <h1>hello world</h1>
   }
 
-  const HelloWorldElement = r2wc18(HelloWorld)
+  const HelloWorldElement = r2wc(HelloWorld)
 
   expect(HelloWorldElement).toBeTruthy()
 
@@ -34,7 +33,7 @@ test("works with props array", async () => {
     return <div>hello, {name}</div>
   }
 
-  const TestElement = r2wc18(TestComponent, { props: ["name"] })
+  const TestElement = r2wc(TestComponent, { props: ["name"] })
 
   customElements.define("test-hello", TestElement)
 
@@ -56,7 +55,7 @@ test("works with proptypes", async () => {
     name: PropTypes.string.isRequired,
   }
 
-  const WithPropTypesElement = r2wc18(WithProptypes)
+  const WithPropTypesElement = r2wc(WithProptypes)
 
   customElements.define("with-proptypes", WithPropTypesElement)
 
@@ -76,7 +75,7 @@ test("works with class components", async () => {
     }
   }
 
-  class TestClassElement extends r2wc18(TestClassComponent, {
+  class TestClassElement extends r2wc(TestClassComponent, {
     props: ["name"],
   }) {}
 
@@ -116,7 +115,7 @@ test("props typed as ref works with functional components", async () => {
     )
   })
 
-  const ComponentWithRefElement = r2wc18(ComponentWithRef, {
+  const ComponentWithRefElement = r2wc(ComponentWithRef, {
     props: {
       name: String,
       ref: "ref",

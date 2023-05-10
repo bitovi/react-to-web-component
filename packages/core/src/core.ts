@@ -1,110 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ComponentClass, FC, R2WCOptions, Renderer } from "./types"
+
 import React from "react"
-import { ComponentClass, FC, R2WCOptions, Renderer } from "../types"
+
+export { R2WCOptions }
 
 const renderSymbol = Symbol.for("r2wc.reactRender")
 const shouldRenderSymbol = Symbol.for("r2wc.shouldRender")
 
-function toDashedStyle(camelCase = "") {
-  return camelCase.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()
-}
-
-function isAllCaps(word: string) {
-  return word.split("").every((c: string) => c.toUpperCase() === c)
-}
-
-function flattenIfOne(arr: object) {
-  if (!Array.isArray(arr)) {
-    return arr
-  }
-  if (arr.length === 1) {
-    return arr[0]
-  }
-  return arr
-}
-
-function mapChildren(node: Element) {
-  if (node.nodeType === Node.TEXT_NODE) {
-    return node.textContent?.toString()
-  }
-
-  const arr = Array.from(node.childNodes as unknown as Element[]).map(
-    (c: Element) => {
-      if (c.nodeType === Node.TEXT_NODE) {
-        return c.textContent?.toString()
-      }
-      // BR = br, ReactElement = ReactElement
-      const nodeName = isAllCaps(c.nodeName)
-        ? c.nodeName.toLowerCase()
-        : c.nodeName
-      const children = flattenIfOne(mapChildren(c))
-
-      // we need to format c.attributes before passing it to createElement
-      const attributes: Record<string, string | null> = {}
-      for (const attr of c.getAttributeNames()) {
-        // handleTypeCasting.call(c, attr, c.getAttribute(attr), attributes)
-        attributes[attr] = c.getAttribute(attr)
-      }
-
-      return React.createElement(nodeName, attributes, children)
-    },
-  )
-
-  return flattenIfOne(arr)
-}
-
-function handleTypeCasting(
-  this: HTMLElement,
-  key: string,
-  value: any,
-  obj: Record<string, unknown>,
-) {
-  let attributeToAdd = value
-  switch (obj[key]) {
-    case "ref":
-    case Function:
-      if (obj[key] === "ref") {
-        attributeToAdd = React.createRef()
-        Reflect.set(this, key, attributeToAdd)
-        break
-      }
-      if (typeof window !== "undefined" && attributeToAdd in window) {
-        attributeToAdd = window[attributeToAdd as any]
-      } else if (typeof global !== "undefined" && attributeToAdd in global) {
-        attributeToAdd = global[attributeToAdd as any]
-      }
-      if (typeof attributeToAdd === "function") {
-        attributeToAdd = attributeToAdd.bind(this)
-      }
-      break
-    case Number:
-      attributeToAdd = parseFloat(attributeToAdd)
-      break
-    case Boolean:
-      attributeToAdd = /^[ty1-9]/i.test(attributeToAdd)
-      break
-    case Object:
-      attributeToAdd = JSON.parse(attributeToAdd)
-      break
-    case Array:
-      attributeToAdd = JSON.parse(attributeToAdd)
-      break
-    case String:
-    default:
-      break
-  }
-  return attributeToAdd
-}
-
 /**
- * Converts a React component into a webcomponent by wrapping it in a Proxy object.
+ * Converts a React component into a Web Component.
  * @param {ReactComponent}
  * @param {Object} config - Optional parameters
  * @param {String?} config.shadow - Shadow DOM mode as either open or closed.
  * @param {Object|Array?} config.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function (
+export default function r2wc(
   ReactComponent: FC<any> | ComponentClass<any>,
   config: R2WCOptions = {},
   renderer: Renderer<ReturnType<typeof React.createElement>>,
@@ -145,7 +55,7 @@ export default function (
     constructor() {
       super()
       if (typeof config.shadow === "string") {
-        this.attachShadow({ mode: config.shadow } as ShadowRoot)
+        this.attachShadow({ mode: config.shadow })
       } else if (config.shadow) {
         console.warn(
           'Specifying the "shadow" option as a boolean is deprecated and will be removed in a future version.',
@@ -179,6 +89,7 @@ export default function (
                 continue
               }
               if (propTypes[propKey] === "ref") {
+                // @ts-expect-error
                 data[propKey] = this[propKey]
               } else {
                 data[propKey] = handleTypeCasting.call(
@@ -193,7 +104,7 @@ export default function (
 
           this.rendering = true
           // Container is either shadow DOM or light DOM depending on `shadow` option.
-          const container = config.shadow ? (this.shadowRoot as any) : this
+          const container = (this.shadowRoot as unknown as HTMLElement) || this
 
           const children = flattenIfOne(mapChildren(this))
 
@@ -216,6 +127,7 @@ export default function (
         if (own) {
           return own
         }
+
         if (key in propTypes) {
           return {
             configurable: true,
@@ -224,6 +136,8 @@ export default function (
             value: undefined,
           }
         }
+
+        return undefined
       }
     }
 
@@ -295,4 +209,94 @@ export default function (
   }
 
   return WebCompClass
+}
+
+function toDashedStyle(camelCase = "") {
+  return camelCase.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()
+}
+
+function isAllCaps(word: string) {
+  return word.split("").every((c: string) => c.toUpperCase() === c)
+}
+
+function flattenIfOne(arr: object) {
+  if (!Array.isArray(arr)) {
+    return arr
+  }
+  if (arr.length === 1) {
+    return arr[0]
+  }
+  return arr
+}
+
+function mapChildren(node: Element) {
+  if (node.nodeType === Node.TEXT_NODE) {
+    return node.textContent?.toString()
+  }
+
+  const arr = Array.from(node.children).map((element) => {
+    if (element.nodeType === Node.TEXT_NODE) {
+      return element.textContent?.toString()
+    }
+    // BR = br, ReactElement = ReactElement
+    const nodeName = isAllCaps(element.nodeName)
+      ? element.nodeName.toLowerCase()
+      : element.nodeName
+    const children = flattenIfOne(mapChildren(element))
+
+    // we need to format c.attributes before passing it to createElement
+    const attributes: Record<string, string | null> = {}
+    for (const attr of element.getAttributeNames()) {
+      // handleTypeCasting.call(c, attr, c.getAttribute(attr), attributes)
+      attributes[attr] = element.getAttribute(attr)
+    }
+
+    return React.createElement(nodeName, attributes, children)
+  })
+
+  return flattenIfOne(arr)
+}
+
+function handleTypeCasting(
+  this: HTMLElement,
+  key: string,
+  value: any,
+  obj: Record<string, unknown>,
+) {
+  let attributeToAdd = value
+  switch (obj[key]) {
+    case "ref":
+    case Function:
+      if (obj[key] === "ref") {
+        attributeToAdd = React.createRef()
+        Reflect.set(this, key, attributeToAdd)
+        break
+      }
+      if (typeof window !== "undefined" && attributeToAdd in window) {
+        attributeToAdd = window[attributeToAdd]
+      } else if (typeof global !== "undefined" && attributeToAdd in global) {
+        // @ts-expect-error
+        attributeToAdd = global[attributeToAdd]
+      }
+      if (typeof attributeToAdd === "function") {
+        attributeToAdd = attributeToAdd.bind(this)
+      }
+      break
+    case Number:
+      attributeToAdd = parseFloat(attributeToAdd)
+      break
+    case Boolean:
+      attributeToAdd = /^[ty1-9]/i.test(attributeToAdd)
+      break
+    case Object:
+      attributeToAdd = JSON.parse(attributeToAdd)
+      break
+    case Array:
+      attributeToAdd = JSON.parse(attributeToAdd)
+      break
+    case String:
+    default:
+      break
+  }
+  return attributeToAdd
 }
