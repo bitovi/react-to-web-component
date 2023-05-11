@@ -1,0 +1,23 @@
+name: monorepo-job-verify
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Setup
+      uses: ./.github/actions/setup
+
+    - name: Check
+      uses: ./.github/actions/check
+      with:
+        package: ${{ github.workflow }}
+
+    - name: Test
+      uses: ./.github/actions/test
+      with:
+        package: ${{ github.workflow }}
+
+    - name: Build
+      uses: ./.github/actions/build
+      with:
+        package: ${{ github.workflow }}

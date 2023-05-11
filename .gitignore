@@ -1,8 +1,15 @@
-node_modules/
-dist/
-dist-swc/
-build/
+# environment
+.env
+.env.*
 
-src/tests/*/react-to-webcomponent.test.jsx
+# artifacts
+node_modules
+/packages/*/dist
+/packages/*/coverage
 
+# misc
+.vscode
 .DS_Store
+Thumbs.db
+*.tsbuildinfo
+npm-debug.log*

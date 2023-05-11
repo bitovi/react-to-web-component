@@ -1,89 +1,28 @@
 {
-  "name": "react-to-webcomponent",
-  "version": "2.0.0-alpha.4",
-  "description": "Convert react components to native Web Components.",
-  "type": "module",
-  "types": "dist/root/root.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/root.js",
-      "require": "./dist/root.cjs",
-      "types": "./dist/root/root.d.ts"
-    },
-    "./root": {
-      "import": "./dist/root.js",
-      "require": "./dist/root.cjs",
-      "types": "./dist/root/root.d.ts"
-    },
-    "./render": {
-      "import": "./dist/render.js",
-      "require": "./dist/render.cjs",
-      "types": "./dist/render/render.d.ts"
-    },
-    "./legacy": {
-      "import": "./dist/legacy.js",
-      "require": "./dist/legacy.cjs",
-      "types": "./dist/legacy/react-to-webcomponent.d.ts"
-    }
-  },
-  "files": [
-    "dist/*",
-    "src/",
-    "!src/tests/"
+  "namespace": "r2wc",
+  "workspaces": [
+    "packages/*"
   ],
-  "devDependencies": {
-    "@bitovi/eslint-config": "^1.3.0",
-    "@rollup/plugin-typescript": "^8.3.4",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@types/react": "^18.0.33",
-    "@types/react-dom": "^18.0.11",
-    "@webcomponents/custom-elements": "^1.2.4",
-    "depcheck": "^1.4.3",
-    "eslint": "^8.0.0",
-    "eslint-plugin-react": "^7.21.4",
-    "http-server": "^14.1.1",
-    "jsdom": "^20.0.0",
-    "prettier": "^2.7.1",
-    "prop-types": "^15.7.2",
-    "typescript": "^4.3.5",
-    "vite": "^3.2.5",
-    "vitest": "^0.29.8"
-  },
+  "private": true,
   "scripts": {
-    "build": "vite build",
-    "ci": "npm run test",
-    "buildtests": "chmod +x src/tests/buildtests && ./src/tests/buildtests",
-    "test": "vitest src/tests/environments/**/react-to-webcomponent.test.jsx && npm run test:core && npm run test:builds",
-    "test:core": "vitest src/core/core.test.tsx",
-    "test:react18": "vitest src/tests/environments/react18/react-to-webcomponent.test.jsx",
-    "test:builds": "vitest src/tests/builds/builds.test.ts",
-    "start": "http-server -c-1",
-    "typecheck": "tsc --noEmit",
-    "eslint": "eslint ./src/**/*.ts",
-    "prettier": "prettier --check ./src/**/*.ts",
-    "depcheck": "depcheck ."
+    "check-packages": "ts-node ./scripts/check-packages"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bitovi/react-to-webcomponent.git"
+  "eslintConfig": {
+    "root": true,
+    "extends": "@bitovi/eslint-config/react"
   },
-  "keywords": [
-    "React",
-    "Preact",
-    "WebComponents"
-  ],
-  "author": "Bitovi",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/bitovi/react-to-webcomponent/issues"
-  },
-  "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting",
   "prettier": {
     "semi": false,
     "trailingComma": "all"
   },
-  "peerDependencies": {
-    "react": "^18.0.0 || ^17.0.0 || ^16.0.0",
-    "react-dom": "^18.0.0 || ^17.0.0 || ^16.0.0"
+  "devDependencies": {
+    "@bitovi/eslint-config": "^1.5.0",
+    "depcheck": "^1.4.3",
+    "eslint": "^8.25.0",
+    "nx": "15.9.2",
+    "prettier": "^2.7.1",
+    "semver": "^7.5.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
   }
 }

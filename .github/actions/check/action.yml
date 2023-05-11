@@ -1,0 +1,26 @@
+name: monorepo-check
+
+inputs:
+  package:
+    description: "The package folder name."
+    required: true
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Typecheck
+      shell: bash
+      run: npx nx typecheck ${{ inputs.package }}
+
+    - name: ESLint
+      shell: bash
+      run: npx nx eslint ${{ inputs.package }}
+
+    - name: Prettier
+      shell: bash
+      run: npx nx prettier ${{ inputs.package }}
+
+    - name: depcheck
+      shell: bash
+      run: npx nx depcheck ${{ inputs.package }}
