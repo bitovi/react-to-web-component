@@ -17,7 +17,7 @@
     - If `options.props` is an array of string (prop names), the type of those props will be `String`.
 
   A new class inheriting from `HTMLElement` is
-  returned. This class can be directly passed to `customElements.define` as follows:
+  returned. This class is of type CustomElementConstructor can be directly passed to `customElements.define` as follows:
 
 ```js
 customElements.define(
