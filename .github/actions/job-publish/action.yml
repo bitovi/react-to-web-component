@@ -1,0 +1,27 @@
+name: monorepo-job-publish
+
+inputs:
+  segment:
+    description: "The version segment to increment: major, minor, patch, or prerelease."
+    required: true
+  preId:
+    description: "Appended to the prerelease segment. (default: \"\")"
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Setup
+      uses: ./.github/actions/setup
+
+    - name: Build
+      uses: ./.github/actions/build
+      with:
+        package: ${{ github.workflow }}
+
+    - name: Publish to NPM
+      uses: ./.github/actions/publish-npm
+      with:
+        package: ${{ github.workflow }}
+        segment: ${{ github.event.inputs.segment }}
+        preId: ${{ github.event.inputs.preId }}
