@@ -1,1 +1,4 @@
-ignores: ["react", "react-dom", "src", "@webcomponents/custom-elements"]
+ignore-dirs:
+  - /dist
+ignores:
+  - "@types/*"

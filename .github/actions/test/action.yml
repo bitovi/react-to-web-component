@@ -1,0 +1,14 @@
+name: monorepo-test
+
+inputs:
+  package:
+    description: "The package folder name."
+    required: true
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Test
+      shell: bash
+      run: npx nx test ${{ inputs.package }}
