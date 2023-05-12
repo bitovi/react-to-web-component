@@ -2,7 +2,7 @@ import type { ComponentClass, FC, R2WCOptions, Renderer } from "./types"
 
 import React from "react"
 
-export { R2WCOptions }
+export * from "./types"
 
 const renderSymbol = Symbol.for("r2wc.reactRender")
 const shouldRenderSymbol = Symbol.for("r2wc.shouldRender")

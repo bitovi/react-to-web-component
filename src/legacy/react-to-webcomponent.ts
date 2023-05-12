@@ -1,4 +1,4 @@
-import {
+import type {
   ComponentClass,
   Container,
   FC,
@@ -6,8 +6,8 @@ import {
   ReactElement,
   ReactNode,
   RefObject,
-} from "../types"
-import r2wc from "../core"
+} from "@r2wc/core"
+import r2wc from "@r2wc/core"
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const rootSymbol = Symbol.for("r2wc.root")
@@ -59,7 +59,7 @@ export default function (
   function mount(this: any, container: HTMLElement, element: ReactNode) {
     if (isReact18) {
       if (!this[rootSymbol]) {
-        this[rootSymbol] = ReactDOM.createRoot(container)
+        this[rootSymbol] = ReactDOM.createRoot?.(container)
       }
 
       this[rootSymbol].render(element)
