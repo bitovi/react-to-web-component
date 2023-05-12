@@ -55,8 +55,7 @@ export type PropOptionTypes =
   | "string"
   | "number"
   | "boolean"
-  | "array"
-  | "object"
+  | "json"
   | "function"
   | "ref"
 

@@ -294,8 +294,7 @@ function handleTypeCasting(
     case "boolean":
       attributeToAdd = /^[ty1-9]/i.test(attributeToAdd)
       break
-    case "array":
-    case "object":
+    case "json":
       attributeToAdd = JSON.parse(attributeToAdd)
       break
     case "string":
