@@ -4,8 +4,8 @@ import type {
   FC,
   R2WCOptions,
   ReactElement,
-  ReactNode,
   RefObject,
+  Context,
 } from "@r2wc/core"
 import r2wcCore from "@r2wc/core"
 
@@ -56,7 +56,13 @@ export default function (
     }
   }
 
-  function mount(this: any, container: HTMLElement, element: ReactNode) {
+  function mount<Props extends React.Attributes>(
+    this: any,
+    container: HTMLElement,
+    ReactComponent: React.ComponentType<Props>,
+    props: Props,
+  ): Context<Props> {
+    const element = React.createElement(ReactComponent, props)
     if (isReact18) {
       if (!this[rootSymbol]) {
         this[rootSymbol] = ReactDOM.createRoot?.(container)
@@ -66,7 +72,27 @@ export default function (
     } else if (ReactDOM.render) {
       ReactDOM.render(element, container)
     }
+
+    return {
+      reactContainer: container,
+      component: ReactComponent,
+    }
   }
 
-  return r2wcCore(ReactComponent, options, { mount, unmount })
+  function update<Props extends React.Attributes>(
+    this: any,
+    { reactContainer, component }: Context<Props>,
+    props: Props,
+  ): void {
+    const element = React.createElement(component, props)
+
+    if (isReact18) {
+      this[rootSymbol].render(element)
+      return
+    } else if (ReactDOM.render) {
+      ReactDOM.render(element, reactContainer)
+    }
+  }
+
+  return r2wcCore(ReactComponent, options, { mount, unmount, update })
 }
