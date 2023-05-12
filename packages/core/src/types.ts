@@ -51,7 +51,14 @@ export interface CustomElementConstructor {
   new (...params: any[]): HTMLElement
 }
 
-export type PropOptionTypes = "string" | "number" | "boolean" | "array" | "object" | "function" | "ref";
+export type PropOptionTypes =
+  | "string"
+  | "number"
+  | "boolean"
+  | "array"
+  | "object"
+  | "function"
+  | "ref"
 
 export interface R2WCOptions {
   shadow?: "open" | "closed" | boolean

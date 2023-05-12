@@ -1,4 +1,10 @@
-import type { ComponentClass, FC, PropOptionTypes, R2WCOptions, Renderer } from "./types"
+import type {
+  ComponentClass,
+  FC,
+  PropOptionTypes,
+  R2WCOptions,
+  Renderer,
+} from "./types"
 
 import React from "react"
 
