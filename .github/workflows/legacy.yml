@@ -1,0 +1,44 @@
+name: "react-to-web-component"
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      segment:
+        description: "The version segment to increment: major, minor, patch, or prerelease."
+        required: true
+      preId:
+        description: "Appended to the prerelease segment. (default: \"\")"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Verify
+        uses: ./.github/actions/job-verify
+
+  publish:
+    if: github.event_name == 'workflow_dispatch'
+    needs: verify
+
+    concurrency:
+      group: "publish"
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Publish
+        uses: ./.github/actions/job-publish
+        with:
+          segment: ${{ github.event.inputs.segment }}
+          preId: ${{ github.event.inputs.preId }}
