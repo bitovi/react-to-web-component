@@ -33,10 +33,10 @@ export const Greeting = ({ name, description, colorMode = "light", buttonVariant
 
 const WebGreeting = reactToWebComponent(Greeting, {
   props: {
-    name: String,
-    description: String,
-    colorMode: String,
-    buttonVariant: String,
+    name: "string",
+    description: "string",
+    colorMode: "string",
+    buttonVariant: "string",
   }
 })
 
