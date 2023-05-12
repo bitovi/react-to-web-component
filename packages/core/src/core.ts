@@ -1,4 +1,4 @@
-import type { ComponentClass, FC, R2WCOptions, Renderer } from "./types"
+import type { ComponentClass, FC, PropOptionTypes, R2WCOptions, Renderer } from "./types"
 
 import React from "react"
 
@@ -261,12 +261,12 @@ function handleTypeCasting(
   this: HTMLElement,
   key: string,
   value: any,
-  obj: Record<string, unknown>,
+  obj: Record<string, PropOptionTypes>,
 ) {
   let attributeToAdd = value
   switch (obj[key]) {
     case "ref":
-    case Function:
+    case "function":
       if (obj[key] === "ref") {
         attributeToAdd = React.createRef()
         Reflect.set(this, key, attributeToAdd)
@@ -282,19 +282,17 @@ function handleTypeCasting(
         attributeToAdd = attributeToAdd.bind(this)
       }
       break
-    case Number:
+    case "number":
       attributeToAdd = parseFloat(attributeToAdd)
       break
-    case Boolean:
+    case "boolean":
       attributeToAdd = /^[ty1-9]/i.test(attributeToAdd)
       break
-    case Object:
+    case "array":
+    case "object":
       attributeToAdd = JSON.parse(attributeToAdd)
       break
-    case Array:
-      attributeToAdd = JSON.parse(attributeToAdd)
-      break
-    case String:
+    case "string":
     default:
       break
   }

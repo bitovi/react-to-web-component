@@ -109,9 +109,9 @@ console.log(document.body.firstElementChild.innerHTML) // "<h1>Hello, Jane</h1>"
 
 If `options.props` is an object, the keys are the camelCased React props and the values are any one of the following built in javascript types, or the string "ref":
 
-`String | Number | Boolean | Function | Object | Array | "ref"`
+`"string" | "number" | "boolean" | "function" | "object" | "array" | "ref"`
 
-### String | Number | Boolean | Object | Array props
+### "string" | "number" | "boolean" | "function" | "object" | "array" props
 
 ```js
 function AttrPropTypeCasting(props) {
@@ -123,13 +123,13 @@ customElements.define(
   "attr-prop-type-casting",
   reactToWebComponent(AttrPropTypeCasting, React, ReactDOM, {
     props: {
-      stringProp: String,
-      numProp: Number,
-      floatProp: Number,
-      trueProp: Boolean,
-      falseProp: Boolean,
-      arrayProp: Array,
-      objProp: Object,
+      stringProp: "string",
+      numProp: "number",
+      floatProp: "number",
+      trueProp: "boolean",
+      falseProp: "boolean",
+      arrayProp: "array",
+      objProp: "object",
     },
   }),
 )
@@ -177,7 +177,7 @@ function ThemeSelect({ handleClick }) {
 
 const WebThemeSelect = reactToWebComponent(ThemeSelect, React, ReactDOM, {
   props: {
-    handleClick: Function,
+    handleClick: "function",
   },
 })
 
