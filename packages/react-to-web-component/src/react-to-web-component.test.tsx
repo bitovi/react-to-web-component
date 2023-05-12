@@ -14,7 +14,6 @@ function flushPromises() {
 const Greeting = ({ name }: { name: string }) => <h1>Hello, {name}</h1>
 
 describe("react", () => {
-
   it("basics with react", () => {
     const MyWelcome = r2wc(Greeting)
     customElements.define("my-welcome", MyWelcome)
