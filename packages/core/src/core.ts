@@ -178,7 +178,13 @@ export default function r2wc(
 
     disconnectedCallback() {
       this[shouldRenderSymbol] = false
-      renderer.unmount(this)
+      if (this.componentContainer && this.reactComponent) {
+        const context = {
+          reactContainer: this.componentContainer,
+          component: this.reactComponent,
+        }
+        renderer.unmount(context)
+      }
       this.mounted = false
     }
 

@@ -48,11 +48,14 @@ export default function (
 ): CustomElementConstructor {
   const isReact18 =
     ReactDOM.createRoot && typeof ReactDOM.createRoot === "function"
-  function unmount(this: any, _container: HTMLElement) {
+  function unmount<Props extends React.Attributes>(
+    this: any,
+    { reactContainer }: Context<React.ComponentType<Props>>,
+  ): void {
     if (isReact18) {
       this[rootSymbol].unmount()
     } else if (ReactDOM.unmountComponentAtNode) {
-      ReactDOM.unmountComponentAtNode(this)
+      ReactDOM.unmountComponentAtNode(reactContainer)
     }
   }
 
@@ -61,7 +64,7 @@ export default function (
     container: HTMLElement,
     ReactComponent: React.ComponentType<Props>,
     props: Props,
-  ): Context<Props> {
+  ): Context<React.ComponentType<Props>> {
     const element = React.createElement(ReactComponent, props)
     if (isReact18) {
       if (!this[rootSymbol]) {
@@ -81,7 +84,7 @@ export default function (
 
   function update<Props extends React.Attributes>(
     this: any,
-    { reactContainer, component }: Context<Props>,
+    { reactContainer, component }: Context<React.ComponentType<Props>>,
     props: Props,
   ): void {
     const element = React.createElement(component, props)

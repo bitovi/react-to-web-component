@@ -47,9 +47,9 @@ export interface ComponentClass<P = Record<string, unknown>> {
 
 export type Container = Element | Document | DocumentFragment
 
-export interface Context<PropsType> {
+export interface Context<ComponentType> {
   reactContainer: HTMLElement
-  component: ComponentClass<PropsType> | FC<PropsType>
+  component: ComponentType
 }
 
 export interface CustomElementConstructor {
@@ -62,8 +62,12 @@ export interface R2WCOptions {
 }
 
 export interface Renderer {
-  mount: (container: HTMLElement, ReactComponent: FC<any> | ComponentClass<any>, props: any) => Context<any>
-  unmount: (container: HTMLElement) => any
+  mount: (
+    container: HTMLElement,
+    ReactComponent: FC<any> | ComponentClass<any>,
+    props: any,
+  ) => Context<any>
+  unmount: (context: Context<any>, props?: any) => void
   update: (context: Context<any>, props: any) => void
   onUpdated?: () => void
 }
