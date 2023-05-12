@@ -7,7 +7,7 @@ import type {
   ReactNode,
   RefObject,
 } from "@r2wc/core"
-import r2wc from "@r2wc/core"
+import r2wcCore from "@r2wc/core"
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const rootSymbol = Symbol.for("r2wc.root")
@@ -68,5 +68,5 @@ export default function (
     }
   }
 
-  return r2wc(ReactComponent, options, { mount, unmount })
+  return r2wcCore(ReactComponent, options, { mount, unmount })
 }
