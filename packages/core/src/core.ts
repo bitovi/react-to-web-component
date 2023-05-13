@@ -43,9 +43,14 @@ export default function r2wc<Props, Context>(
       : []
   }
 
-  const propNames = Array.isArray(options.props)
-    ? options.props.slice()
-    : (Object.keys(options.props) as PropNames<Props>)
+  const propNames = (
+    Array.isArray(options.props)
+      ? options.props.slice()
+      : (Object.keys(options.props) as PropNames<Props>)
+  ).filter((prop) => {
+    //@ts-ignore
+    return prop !== "container"
+  })
 
   const propTypes = {} as Record<PropName<Props>, R2WCType>
   const mapPropAttribute = {} as Record<PropName<Props>, string>
@@ -81,6 +86,9 @@ export default function r2wc<Props, Context>(
       } else {
         this.container = this
       }
+
+      // @ts-ignore: There won't always be a container in the definition
+      this[propsSymbol].container = this.container
 
       for (const prop of propNames) {
         const attribute = mapPropAttribute[prop]

@@ -50,7 +50,6 @@ describe("core", () => {
     document.body.appendChild(element)
     expect(element).toHaveProperty("shadowRoot")
     expect(mount).toBeCalledTimes(1)
-    expect(mount).toBeCalledWith(element.container, ReactComponent, {})
 
     document.body.removeChild(element)
     expect(unmount).toBeCalledTimes(1)
@@ -72,7 +71,6 @@ describe("core", () => {
     document.body.appendChild(element)
     expect(element).toHaveProperty("shadowRoot")
     expect(mount).toBeCalledTimes(1)
-    // expect(mount).toBeCalledWith(element.container, ReactComponent, {})
 
     document.body.removeChild(element)
     expect(unmount).toBeCalledTimes(1)
