@@ -6,9 +6,18 @@ import r2wc from "./core"
 
 expect.extend(matchers)
 
-const mount = vi.fn()
+const mountCheck = vi.fn()
 const unmount = vi.fn()
+const update = vi.fn()
 const onUpdated = vi.fn()
+
+const mount = (el: HTMLElement, reactComponent: any, _props: any) => {
+  mountCheck()
+  return {
+    reactContainer: el,
+    component: reactComponent,
+  }
+}
 
 function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve))
@@ -24,13 +33,13 @@ describe("core", () => {
       return <div>hello</div>
     }
 
-    const TestElement = r2wc(TestComponent, {}, { mount, unmount })
+    const TestElement = r2wc(TestComponent, {}, { mount, unmount, update })
     customElements.define("test-func-element", TestElement)
 
     const testEl = new TestElement()
 
     document.body.appendChild(testEl)
-    expect(mount).toBeCalledTimes(1)
+    expect(mountCheck).toBeCalledTimes(1)
 
     document.body.removeChild(testEl)
     expect(unmount).toBeCalledTimes(1)
@@ -43,13 +52,13 @@ describe("core", () => {
       }
     }
 
-    const TestElement = r2wc(TestComponent, {}, { mount, unmount })
+    const TestElement = r2wc(TestComponent, {}, { mount, unmount, update })
     customElements.define("test-element", TestElement)
 
     const testEl = new TestElement()
 
     document.body.appendChild(testEl)
-    expect(mount).toBeCalledTimes(1)
+    expect(mountCheck).toBeCalledTimes(1)
 
     document.body.removeChild(testEl)
     expect(unmount).toBeCalledTimes(1)
@@ -63,7 +72,7 @@ describe("core", () => {
     const ButtonElement = r2wc(
       Button,
       { props: ["text"] },
-      { mount, unmount, onUpdated },
+      { mount, unmount, update, onUpdated },
     )
 
     customElements.define("test-button-element-attribute", ButtonElement)
@@ -118,7 +127,7 @@ describe("core", () => {
           funcProp: "function",
         },
       },
-      { mount, unmount, onUpdated },
+      { mount, unmount, update, onUpdated },
     )
 
     //@ts-ignore
@@ -175,7 +184,7 @@ describe("core", () => {
     const ButtonElement = r2wc(
       Button,
       { props: ["text"] },
-      { mount, unmount, onUpdated },
+      { mount, unmount, update, onUpdated },
     )
 
     customElements.define("test-button-element-non-prop", ButtonElement)

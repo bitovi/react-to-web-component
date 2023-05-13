@@ -1,0 +1,60 @@
+{
+  "name": "react-to-webcomponent",
+  "version": "2.0.0",
+  "description": "Convert react components to native Web Components.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitovi/react-to-webcomponent.git"
+  },
+  "keywords": [
+    "React",
+    "Web",
+    "Component"
+  ],
+  "author": "Bitovi",
+  "license": "MIT",
+  "type": "module",
+  "homepage": "https://github.com/bitovi/react-to-webcomponent#readme",
+  "main": "./dist/react-to-webcomponent.cjs",
+  "module": "./dist/react-to-webcomponent.js",
+  "types": "./dist/react-to-webcomponent.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/react-to-webcomponent.cjs",
+      "import": "./dist/react-to-webcomponent.js",
+      "types": "./dist/react-to-webcomponent.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "eslint": "eslint vite.config.ts src",
+    "prettier": "prettier --check vite.config.ts src",
+    "depcheck": "depcheck .",
+    "dev": "vite",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf tsconfig.tsbuildinfo dist",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@r2wc/core": "^0.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "vite": "^4.3.1",
+    "vite-plugin-dts": "^2.3.0",
+    "vitest": "^0.30.1"
+  },
+  "peerDependencies": {
+    "react": "^16.0.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.0.0 || ^17.0.0 || ^18.0.0"
+  }
+}
