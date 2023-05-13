@@ -1,25 +1,15 @@
 import { describe, test, it, expect, vi, afterEach } from "vitest"
 import matchers from "@testing-library/jest-dom/matchers"
-import React from "react"
 
 import r2wc from "./core"
 
 expect.extend(matchers)
 
-const mountCheck = vi.fn()
+const mount = vi.fn(() => ({ why: "context" }))
 const unmount = vi.fn()
 const update = vi.fn()
-const onUpdated = vi.fn()
 
-const mount = (el: HTMLElement, reactComponent: any, _props: any) => {
-  mountCheck()
-  return {
-    reactContainer: el,
-    component: reactComponent,
-  }
-}
-
-function flushPromises() {
+function wait() {
   return new Promise((resolve) => setImmediate(resolve))
 }
 
@@ -28,40 +18,62 @@ describe("core", () => {
     document.body.innerHTML = ""
   })
 
-  it("mounts and unmounts for a functional component", async () => {
-    function TestComponent() {
-      return <div>hello</div>
-    }
+  it("mounts and unmounts in light mode", async () => {
+    const ReactComponent: React.FC = () => <h1>Hello</h1>
 
-    const TestElement = r2wc(TestComponent, {}, { mount, unmount, update })
-    customElements.define("test-func-element", TestElement)
+    const WebComponent = r2wc(ReactComponent, {}, { mount, unmount, update })
+    customElements.define("test-light", WebComponent)
 
-    const testEl = new TestElement()
+    const element = new WebComponent()
 
-    document.body.appendChild(testEl)
-    expect(mountCheck).toBeCalledTimes(1)
+    document.body.appendChild(element)
+    expect(mount).toBeCalledTimes(1)
 
-    document.body.removeChild(testEl)
+    document.body.removeChild(element)
     expect(unmount).toBeCalledTimes(1)
+    expect(unmount).toBeCalledWith({ why: "context" })
   })
 
-  it("mounts and unmounts for a class component", async () => {
-    class TestComponent extends React.Component {
-      render() {
-        return <div>hello</div>
-      }
-    }
+  it("mounts and unmounts in open shadow mode", async () => {
+    const ReactComponent: React.FC = () => <h1>Hello</h1>
 
-    const TestElement = r2wc(TestComponent, {}, { mount, unmount, update })
-    customElements.define("test-element", TestElement)
+    const WebComponent = r2wc(
+      ReactComponent,
+      { shadow: "open" },
+      { mount, unmount, update },
+    )
+    customElements.define("test-shadow-open", WebComponent)
 
-    const testEl = new TestElement()
+    const element = new WebComponent()
 
-    document.body.appendChild(testEl)
-    expect(mountCheck).toBeCalledTimes(1)
+    document.body.appendChild(element)
+    expect(element).toHaveProperty("shadowRoot")
+    expect(mount).toBeCalledTimes(1)
 
-    document.body.removeChild(testEl)
+    document.body.removeChild(element)
     expect(unmount).toBeCalledTimes(1)
+    expect(unmount).toBeCalledWith({ why: "context" })
+  })
+
+  it("mounts and unmounts in closed shadow mode", async () => {
+    const ReactComponent: React.FC = () => <h1>Hello</h1>
+
+    const WebComponent = r2wc(
+      ReactComponent,
+      { shadow: "closed" },
+      { mount, unmount, update },
+    )
+    customElements.define("test-shadow-closed", WebComponent)
+
+    const element = new WebComponent()
+
+    document.body.appendChild(element)
+    expect(element).toHaveProperty("shadowRoot")
+    expect(mount).toBeCalledTimes(1)
+
+    document.body.removeChild(element)
+    expect(unmount).toBeCalledTimes(1)
+    expect(unmount).toBeCalledWith({ why: "context" })
   })
 
   test("updated attribute updates the component prop and the HTMLElement property", async () => {
@@ -72,7 +84,7 @@ describe("core", () => {
     const ButtonElement = r2wc(
       Button,
       { props: ["text"] },
-      { mount, unmount, update, onUpdated },
+      { mount, unmount, update },
     )
 
     customElements.define("test-button-element-attribute", ButtonElement)
@@ -81,20 +93,18 @@ describe("core", () => {
     body.innerHTML =
       "<test-button-element-attribute text='hello'></test-button-element-attribute>"
 
-    const testEl = body.querySelector(
+    const element = body.querySelector(
       "test-button-element-attribute",
     ) as HTMLElement & { text: string }
 
-    testEl.setAttribute("text", "world")
+    element.setAttribute("text", "world")
 
-    await flushPromises()
+    await wait()
 
-    expect(onUpdated).toBeCalledTimes(1)
-    expect(testEl.text).toBe("world")
+    expect(element.text).toBe("world")
   })
 
   test("updated HTMLElement property updates the component prop and the HTMLElement attribute", async () => {
-    expect.assertions(13)
     interface Props {
       text: string
       numProp: number
@@ -127,7 +137,7 @@ describe("core", () => {
           funcProp: "function",
         },
       },
-      { mount, unmount, update, onUpdated },
+      { mount, unmount, update },
     )
 
     //@ts-ignore
@@ -147,33 +157,32 @@ describe("core", () => {
     body.innerHTML = `<test-button-element-property text='hello' obj-prop='{"greeting": "hello, world"}' arr-prop='["hello", "world"]' num-prop='240' bool-prop='true' func-prop='globalFn'>
                       </test-button-element-property>`
 
-    const testEl = body.querySelector(
+    const element = body.querySelector(
       "test-button-element-property",
     ) as HTMLElement & Props
 
-    await flushPromises()
+    await wait()
 
-    expect(testEl.text).toBe("hello")
-    expect(testEl.numProp).toBe(240)
-    expect(testEl.boolProp).toBe(true)
-    expect(testEl.arrProp).toEqual(["hello", "world"])
-    expect(testEl.objProp).toEqual({ greeting: "hello, world" })
-    expect(testEl.funcProp).toBeInstanceOf(Function)
-    expect(testEl.funcProp()).toBe(true)
+    expect(element.text).toBe("hello")
+    expect(element.numProp).toBe(240)
+    expect(element.boolProp).toBe(true)
+    expect(element.arrProp).toEqual(["hello", "world"])
+    expect(element.objProp).toEqual({ greeting: "hello, world" })
+    expect(element.funcProp).toBeInstanceOf(Function)
+    expect(element.funcProp()).toBe(true)
 
-    testEl.text = "world"
-    testEl.numProp = 100
-    testEl.boolProp = false
+    element.text = "world"
+    element.numProp = 100
+    element.boolProp = false
     //@ts-ignore
-    testEl.funcProp = global.newFunc
+    element.funcProp = global.newFunc
 
-    await flushPromises()
+    await wait()
 
-    expect(onUpdated).toBeCalledTimes(4)
-    expect(testEl.getAttribute("text")).toBe("world")
-    expect(testEl.getAttribute("num-prop")).toBe("100")
-    expect(testEl.getAttribute("bool-prop")).toBe("false")
-    expect(testEl.getAttribute("func-prop")).toBe("newFunc")
+    expect(element.getAttribute("text")).toBe("world")
+    expect(element.getAttribute("num-prop")).toBe("100")
+    expect(element.getAttribute("bool-prop")).toBe("false")
+    expect(element.getAttribute("func-prop")).toBe("newFunc")
   })
 
   test("sets HTML property not defined in props but found on HTML object", async () => {
@@ -184,7 +193,7 @@ describe("core", () => {
     const ButtonElement = r2wc(
       Button,
       { props: ["text"] },
-      { mount, unmount, update, onUpdated },
+      { mount, unmount, update },
     )
 
     customElements.define("test-button-element-non-prop", ButtonElement)
@@ -192,17 +201,17 @@ describe("core", () => {
     const body = document.body
     body.innerHTML = `<test-button-element-non-prop></test-button-element-non-prop>`
 
-    const testEl = body.querySelector(
+    const element = body.querySelector(
       "test-button-element-non-prop",
     ) as HTMLElement & { text: string }
-    testEl.style.backgroundColor = "red"
-    testEl.style.visibility = "hidden"
-    testEl.id = "test-button-id"
+    element.style.backgroundColor = "red"
+    element.style.visibility = "hidden"
+    element.id = "test-button-id"
 
-    await flushPromises()
+    await wait()
 
-    expect(testEl).toHaveStyle("background-color: red;")
-    expect(testEl).not.toBeVisible()
-    expect(body.querySelector("#test-button-id")).toBe(testEl)
+    expect(element).toHaveStyle("background-color: red;")
+    expect(element).not.toBeVisible()
+    expect(body.querySelector("#test-button-id")).toBe(element)
   })
 })

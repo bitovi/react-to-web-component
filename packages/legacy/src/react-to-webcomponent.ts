@@ -1,33 +1,39 @@
-import type {
-  ComponentClass,
-  Container,
-  FC,
-  R2WCOptions,
-  ReactElement,
-  RefObject,
-  Context,
-} from "@r2wc/core"
+import type { R2WCOptions } from "@r2wc/core"
+
 import r2wcCore from "@r2wc/core"
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const rootSymbol = Symbol.for("r2wc.root")
+interface ReactType {
+  createElement: (
+    type: any,
+    data: any,
+    children?: any,
+  ) => React.ReactElement | null
+}
 
-interface ReactDOMType {
-  createRoot?: (container: Element | DocumentFragment, options?: any) => unknown
-  unmountComponentAtNode?: (container: Element | DocumentFragment) => boolean
-  render?: (
-    element: ReactElement<any, any> | null | any,
-    container: Container | null,
+interface ReactDOMRootRootType {
+  render: (element: React.ReactElement | null) => void
+  unmount: () => void
+}
+
+interface ReactDOMRootType {
+  createRoot: (
+    container: Element | DocumentFragment,
+    options?: any,
+  ) => ReactDOMRootRootType
+}
+
+interface ReactDOMRenderType {
+  unmountComponentAtNode: (container: Element | DocumentFragment) => boolean
+  render: (
+    element: React.ReactElement | null,
+    container: ReactDOM.Container | null,
   ) => unknown
 }
 
-interface ReactType {
-  createRef: () => RefObject<unknown>
-  createElement: (
-    type: string | FC<any> | ComponentClass<any>,
-    data: any,
-    children?: any,
-  ) => ReactElement<any, any> | null | any
+interface Context<Props> {
+  container: HTMLElement
+  root?: ReactDOMRootRootType
+  ReactComponent: React.ComponentType<Props>
 }
 
 /**
@@ -40,60 +46,68 @@ interface ReactType {
  * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function (
-  ReactComponent: FC<any> | ComponentClass<any>,
+export default function r2wc<Props>(
+  ReactComponent: React.ComponentType<Props>,
   React: ReactType,
-  ReactDOM: ReactDOMType,
-  options: R2WCOptions = {},
+  ReactDOM: ReactDOMRootType | ReactDOMRenderType,
+  options: R2WCOptions<Props> = {},
 ): CustomElementConstructor {
-  const isReact18 =
-    ReactDOM.createRoot && typeof ReactDOM.createRoot === "function"
-  function unmount<Props extends React.Attributes>(
-    this: any,
-    { reactContainer }: Context<React.ComponentType<Props>>,
-  ): void {
-    if (isReact18) {
-      this[rootSymbol].unmount()
-    } else if (ReactDOM.unmountComponentAtNode) {
-      ReactDOM.unmountComponentAtNode(reactContainer)
-    }
-  }
-
-  function mount<Props extends React.Attributes>(
-    this: any,
+  function mount(
     container: HTMLElement,
     ReactComponent: React.ComponentType<Props>,
     props: Props,
-  ): Context<React.ComponentType<Props>> {
+  ): Context<Props> {
     const element = React.createElement(ReactComponent, props)
-    if (isReact18) {
-      if (!this[rootSymbol]) {
-        this[rootSymbol] = ReactDOM.createRoot?.(container)
-      }
 
-      this[rootSymbol].render(element)
-    } else if (ReactDOM.render) {
-      ReactDOM.render(element, container)
+    if ("createRoot" in ReactDOM) {
+      const root = ReactDOM.createRoot(container)
+      root.render(element)
+
+      return {
+        container,
+        root,
+        ReactComponent,
+      }
     }
 
-    return {
-      reactContainer: container,
-      component: ReactComponent,
+    if ("render" in ReactDOM) {
+      ReactDOM.render(element, container)
+
+      return {
+        container,
+        ReactComponent,
+      }
+    }
+
+    throw new Error("Invalid ReactDOM instance provided.")
+  }
+
+  function update(
+    { container, root, ReactComponent }: Context<Props>,
+    props: Props,
+  ): void {
+    const element = React.createElement(ReactComponent, props)
+
+    if (root) {
+      root.render(element)
+      return
+    }
+
+    if ("render" in ReactDOM) {
+      ReactDOM.render(element, container)
+      return
     }
   }
 
-  function update<Props extends React.Attributes>(
-    this: any,
-    { reactContainer, component }: Context<React.ComponentType<Props>>,
-    props: Props,
-  ): void {
-    const element = React.createElement(component, props)
-
-    if (isReact18) {
-      this[rootSymbol].render(element)
+  function unmount({ container, root }: Context<Props>): void {
+    if (root) {
+      root.unmount()
       return
-    } else if (ReactDOM.render) {
-      ReactDOM.render(element, reactContainer)
+    }
+
+    if ("unmountComponentAtNode" in ReactDOM) {
+      ReactDOM.unmountComponentAtNode(container)
+      return
     }
   }
 

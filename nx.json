@@ -11,6 +11,8 @@
           "prettier",
           "depcheck",
           "test",
+          "test:ci",
+          "test:coverage",
           "clean",
           "build"
         ]

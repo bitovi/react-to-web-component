@@ -3,7 +3,6 @@ import { describe, it, expect, assert } from "vitest"
 import matchers from "@testing-library/jest-dom/matchers"
 
 import r2wc from "./react-to-web-component"
-import React from "react"
 
 expect.extend(matchers)
 
@@ -11,9 +10,11 @@ function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve))
 }
 
-const Greeting = ({ name }: { name: string }) => <h1>Hello, {name}</h1>
+const Greeting: React.FC<{ name: string }> = ({ name }) => (
+  <h1>Hello, {name}</h1>
+)
 
-describe("react", () => {
+describe("react-to-web-component", () => {
   it("basics with react", () => {
     const MyWelcome = r2wc(Greeting)
     customElements.define("my-welcome", MyWelcome)
@@ -140,18 +141,19 @@ describe("react", () => {
         arrayProp,
         objProp,
       }
+
       return <h1>{stringProp}</h1>
     }
 
     const WebOptionsPropsTypeCasting = r2wc(OptionsPropsTypeCasting, {
       props: {
-        stringProp: String,
-        numProp: Number,
-        floatProp: Number,
-        trueProp: Boolean,
-        falseProp: Boolean,
-        arrayProp: Array,
-        objProp: Object,
+        stringProp: "string",
+        numProp: "number",
+        floatProp: "number",
+        trueProp: "boolean",
+        falseProp: "boolean",
+        arrayProp: "json",
+        objProp: "json",
       },
     })
 
@@ -221,7 +223,7 @@ describe("react", () => {
 
     const WebThemeSelect = r2wc(ThemeSelect, {
       props: {
-        handleClick: Function,
+        handleClick: "function",
       },
     })
 
@@ -253,123 +255,6 @@ describe("react", () => {
           "theme-select button:last-child",
         ) as HTMLButtonElement
         button.click()
-      }, 0)
-    })
-  })
-
-  it("Props typed as 'ref' work with functional components", async () => {
-    expect.assertions(5)
-
-    type TestRef = {
-      tag: string
-      setTag: React.Dispatch<React.SetStateAction<string>>
-    }
-
-    const RCom = React.forwardRef<
-      TestRef,
-      { h1Ref: React.RefObject<HTMLButtonElement> }
-    >(function RCom(props, ref) {
-      const [tag, setTag] = React.useState("h1")
-      React.useImperativeHandle(ref, () => ({
-        tag,
-        setTag,
-      }))
-      return (
-        <button ref={props.h1Ref} onClick={() => setTag("h2")}>
-          Ref, {tag}
-        </button>
-      )
-    })
-
-    class WebCom extends r2wc(RCom, {
-      props: {
-        ref: "ref",
-        h1Ref: "ref",
-      },
-    }) {}
-
-    customElements.define("ref-test-func", WebCom)
-
-    const body = document.body
-
-    await new Promise((r) => {
-      body.innerHTML = "<ref-test-func ref h1-ref></ref-test-func>"
-
-      setTimeout(() => {
-        const el = document.querySelector("ref-test-func") as HTMLElement & {
-          ref: React.RefObject<TestRef>
-          h1Ref: React.RefObject<HTMLButtonElement>
-        }
-        expect(el.ref.current?.tag).toEqual("h1")
-        expect(typeof el.ref.current?.setTag).toEqual("function")
-        const button = document.querySelector(
-          "ref-test-func button",
-        ) as HTMLButtonElement
-        expect(el.h1Ref.current).toEqual(button)
-        button?.click()
-        setTimeout(() => {
-          expect(el.ref.current?.tag).toEqual("h2")
-          expect(button.innerHTML).toEqual("Ref, h2")
-          r(true)
-        }, 0)
-      }, 0)
-    })
-  })
-
-  it("Props typed as 'ref' work with class components", async () => {
-    expect.assertions(3)
-
-    type TestClassProps = {
-      h1Ref: React.RefObject<HTMLButtonElement>
-    }
-
-    class RCom extends React.Component<TestClassProps, { tag: string }> {
-      constructor(props: TestClassProps) {
-        super(props)
-        this.state = { tag: "h1" }
-      }
-      render() {
-        const Tag = this.state.tag
-        return (
-          <button
-            ref={this.props.h1Ref}
-            onClick={() => this.setState({ tag: "h2" })}
-          >
-            Ref, {Tag}
-          </button>
-        )
-      }
-    }
-
-    class WebCom extends r2wc(RCom, {
-      props: {
-        ref: "ref",
-        h1Ref: "ref",
-      },
-    }) {}
-
-    customElements.define("ref-test", WebCom)
-
-    const body = document.body
-
-    await new Promise((r) => {
-      body.innerHTML = "<ref-test ref h1-ref></ref-test>"
-
-      setTimeout(() => {
-        const el = document.querySelector("ref-test") as HTMLElement & {
-          ref: React.RefObject<HTMLElement>
-          h1Ref: React.RefObject<HTMLButtonElement>
-        }
-        expect(el?.ref.current instanceof RCom).toEqual(true)
-        const button = document.querySelector(
-          "ref-test button",
-        ) as HTMLButtonElement
-        expect(el.h1Ref.current).toEqual(button)
-        button.click()
-        setTimeout(() => {
-          expect(button.innerHTML).toEqual("Ref, h2")
-          r(true)
-        }, 0)
       }, 0)
     })
   })
