@@ -109,9 +109,11 @@ console.log(document.body.firstElementChild.innerHTML) // "<h1>Hello, Jane</h1>"
 
 If `options.props` is an object, the keys are the camelCased React props and the values are any one of the following built in javascript types, or the string "ref":
 
-`String | Number | Boolean | Function | Object | Array | "ref"`
+`"string" | "number" | "boolean" | "function" | "json" | "ref"`
 
-### String | Number | Boolean | Object | Array props
+"json" can be an array or object. The string passed into the attribute must pass `JSON.parse()` requirements.
+
+### "string" | "number" | "boolean" | "function" | "json" props
 
 ```js
 function AttrPropTypeCasting(props) {
@@ -123,13 +125,13 @@ customElements.define(
   "attr-prop-type-casting",
   reactToWebComponent(AttrPropTypeCasting, React, ReactDOM, {
     props: {
-      stringProp: String,
-      numProp: Number,
-      floatProp: Number,
-      trueProp: Boolean,
-      falseProp: Boolean,
-      arrayProp: Array,
-      objProp: Object,
+      stringProp: "string",
+      numProp: "number",
+      floatProp: "number",
+      trueProp: "boolean",
+      falseProp: "boolean",
+      arrayProp: "json",
+      objProp: "json",
     },
   }),
 )
@@ -177,7 +179,7 @@ function ThemeSelect({ handleClick }) {
 
 const WebThemeSelect = reactToWebComponent(ThemeSelect, React, ReactDOM, {
   props: {
-    handleClick: Function,
+    handleClick: "function",
   },
 })
 

@@ -110,12 +110,12 @@ describe("core", () => {
       ButtonWithDifferentPropTypes,
       {
         props: {
-          text: String,
-          numProp: Number,
-          boolProp: Boolean,
-          arrProp: Array,
-          objProp: Object,
-          funcProp: Function,
+          text: "string",
+          numProp: "number",
+          boolProp: "boolean",
+          arrProp: "json",
+          objProp: "json",
+          funcProp: "function",
         },
       },
       { mount, unmount, onUpdated },
