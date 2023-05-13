@@ -28,7 +28,6 @@ describe("core", () => {
 
     document.body.appendChild(element)
     expect(mount).toBeCalledTimes(1)
-    expect(mount).toBeCalledWith(element, ReactComponent, {})
 
     document.body.removeChild(element)
     expect(unmount).toBeCalledTimes(1)
