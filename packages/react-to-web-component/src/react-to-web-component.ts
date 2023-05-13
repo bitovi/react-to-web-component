@@ -1,4 +1,4 @@
-import type { R2WCOptions } from "@r2wc/core"
+import type { Context, R2WCOptions } from "@r2wc/core"
 
 import React from "react"
 import ReactDOM from "react-dom"
@@ -32,6 +32,11 @@ function update<Props extends React.Attributes>(
   const element = React.createElement(ReactComponent, props)
 
   ReactDOM.render(element, container)
+
+  return {
+    reactContainer: container,
+    component: ReactComponent,
+  }
 }
 
 function unmount<Props extends React.Attributes>(

@@ -324,13 +324,13 @@ describe("react-to-webcomponent", () => {
       OptionsPropsTypeCasting,
       {
         props: {
-          stringProp: String,
-          numProp: Number,
-          floatProp: Number,
-          trueProp: Boolean,
-          falseProp: Boolean,
-          arrayProp: Array,
-          objProp: Object,
+          stringProp: "string",
+          numProp: "number",
+          floatProp: "number",
+          trueProp: "boolean",
+          falseProp: "boolean",
+          arrayProp: "array",
+          objProp: "object",
         },
       },
     )
@@ -403,7 +403,7 @@ describe("react-to-webcomponent", () => {
 
     const WebThemeSelect = reactToWebComponent(ThemeSelect, {
       props: {
-        handleClick: Function,
+        handleClick: "function",
       },
     })
 

@@ -4,10 +4,7 @@
 
 - `ReactComponent` - A React component that you want to
   convert to a Web Component.
-- `React` - A version of React (or [preact-compat](https://preactjs.com/guide/v10/switching-to-preact)) the
-  component works with.
-- `ReactDOM` - A version of ReactDOM (or preact-compat) that the component works with.
-- `options` - An optional set of parameters.
+- `options` - An set of parameters.
 
   - `options.shadow` - Use shadow DOM rather than light DOM.
   - `options.props` - Array of camelCasedProps to watch as String values or { [camelCasedProps]: String | Number | Boolean | Function | Object | Array | "ref" }
@@ -15,21 +12,24 @@
     - When specifying Array or Object as the type, the string passed into the attribute must pass `JSON.parse()` requirements.
     - When specifying Boolean as the type, "true", "1", "yes", "TRUE", and "t" are mapped to `true`. All strings NOT begining with t, T, 1, y, or Y will be `false`.
     - When specifying Function as the type, the string passed into the attribute must be the name of a function on `window` (or `global`). The `this` context of the function will be the instance of the WebComponent / HTMLElement when called.
+    - If PropTypes are defined on the React component, the `options.props` will be ignored and the PropTypes will be used instead.
+      However, we strongly recommend using `options.props` instead of PropTypes as it is usually not a good idea to use PropTypes in production.
+    - If `options.props` is an array of string (prop names), the type of those props will be `String`.
 
   A new class inheriting from `HTMLElement` is
-  returned. This class can be directly passed to `customElements.define` as follows:
+  returned. This class is of type CustomElementConstructor can be directly passed to `customElements.define` as follows:
 
 ```js
 customElements.define(
   "web-greeting",
-  reactToWebComponent(Greeting, React, ReactDOM),
+  reactToWebComponent(Greeting),
 )
 ```
 
 Or the class can be defined and used later:
 
 ```js
-const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM)
+const WebGreeting = reactToWebComponent(Greeting)
 
 customElements.define("web-greeting", WebGreeting)
 
@@ -40,7 +40,7 @@ document.body.appendChild(myGreeting)
 Or the class can be extended:
 
 ```js
-class WebGreeting extends reactToWebComponent(Greeting, React, ReactDOM) {
+class WebGreeting extends reactToWebComponent(Greeting) {
   disconnectedCallback() {
     super.disconnectedCallback()
     // special stuff
@@ -52,7 +52,7 @@ customElements.define("web-greeting", WebGreeting)
 Components can also be implemented using [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM) with either `open` or `closed` mode.
 
 ```js
-const WebGreeting = reactToWebComponent(Greeting, React, ReactDOM, {
+const WebGreeting = reactToWebComponent(Greeting, {
   shadow: "open",
 })
 
@@ -76,7 +76,7 @@ Greeting.propTypes = {
 
 customElements.define(
   "my-dashed-style-greeting",
-  reactToWebComponent(Greeting, React, ReactDOM, {}),
+  reactToWebComponent(Greeting, {}),
 )
 
 document.body.innerHTML =
@@ -94,7 +94,7 @@ function Greeting({ camelCaseName }) {
 
 customElements.define(
   "my-dashed-style-greeting",
-  reactToWebComponent(Greeting, React, ReactDOM, {
+  reactToWebComponent(Greeting, {
     props: ["camelCaseName"],
   }),
 )
@@ -109,27 +109,29 @@ console.log(document.body.firstElementChild.innerHTML) // "<h1>Hello, Jane</h1>"
 
 If `options.props` is an object, the keys are the camelCased React props and the values are any one of the following built in javascript types, or the string "ref":
 
-`String | Number | Boolean | Function | Object | Array | "ref"`
+`"string" | "number" | "boolean" | "function" | "json" | "ref"`
 
-### String | Number | Boolean | Object | Array props
+"json" can be an array or object. The string passed into the attribute must pass `JSON.parse()` requirements.
+
+### "string" | "number" | "boolean" | "function" | "json" props
 
 ```js
 function AttrPropTypeCasting(props) {
   console.log(props) // Note
-  return <h1>Hello, {props.camelCaseName}</h1>
+  return <h1>Hello, {props.stringProp}</h1>
 }
 
 customElements.define(
   "attr-prop-type-casting",
-  reactToWebComponent(AttrPropTypeCasting, React, ReactDOM, {
+  reactToWebComponent(AttrPropTypeCasting, {
     props: {
-      stringProp: String,
-      numProp: Number,
-      floatProp: Number,
-      trueProp: Boolean,
-      falseProp: Boolean,
-      arrayProp: Array,
-      objProp: Object,
+      stringProp: "string",
+      numProp: "number",
+      floatProp: "number",
+      trueProp: "boolean",
+      falseProp: "boolean",
+      arrayProp: "json",
+      objProp: "json",
     },
   }),
 )
@@ -175,9 +177,9 @@ function ThemeSelect({ handleClick }) {
   )
 }
 
-const WebThemeSelect = reactToWebComponent(ThemeSelect, React, ReactDOM, {
+const WebThemeSelect = reactToWebComponent(ThemeSelect, {
   props: {
-    handleClick: Function,
+    handleClick: "function",
   },
 })
 
@@ -236,7 +238,7 @@ const ComRef = React.forwardRef(function ComRef(props, ref) {
 Then `React.createRef()` will automatically happen behind the scenes then attach the reference to the webcomponent instance if it has the corresponding attribute.
 
 ```js
-class WebComRef extends reactToWebComponent(ComRef, React, ReactDOM, {
+class WebComRef extends reactToWebComponent(ComRef, {
   props: {
     ref: "ref",
     h1Ref: "ref",

@@ -1,8 +1,14 @@
-import type { ComponentClass, FC, R2WCOptions, Renderer } from "./types"
+import type {
+  ComponentClass,
+  FC,
+  PropOptionTypes,
+  R2WCOptions,
+  Renderer,
+} from "./types"
 
 import React from "react"
 
-export { R2WCOptions }
+export * from "./types"
 
 const renderSymbol = Symbol.for("r2wc.reactRender")
 const shouldRenderSymbol = Symbol.for("r2wc.shouldRender")
@@ -17,7 +23,7 @@ const shouldRenderSymbol = Symbol.for("r2wc.shouldRender")
 export default function r2wc(
   ReactComponent: FC<any> | ComponentClass<any>,
   config: R2WCOptions = {},
-  renderer: Renderer<ReturnType<typeof React.createElement>>,
+  renderer: Renderer,
 ): CustomElementConstructor {
   const propTypes: Record<string, any> = {} // { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
   const propAttrMap: Record<string, any> = {} // @TODO: add option to specify for asymetric mapping (eg "className" from "class")
@@ -43,7 +49,9 @@ export default function r2wc(
   }
   class WebCompClass extends HTMLElement {
     rendering: boolean
-    mounted: boolean;
+    mounted: boolean
+    componentContainer: HTMLElement | null
+    reactComponent: FC<any> | ComponentClass<any> | null;
     [renderSymbol]: () => void
     getOwnPropertyDescriptor: (
       key: string,
@@ -66,6 +74,10 @@ export default function r2wc(
       this.rendering = false
 
       this.mounted = false
+
+      this.componentContainer = null
+
+      this.reactComponent = null
 
       // Add custom getter and setter for each prop
       for (const key of propKeys) {
@@ -104,18 +116,33 @@ export default function r2wc(
 
           this.rendering = true
           // Container is either shadow DOM or light DOM depending on `shadow` option.
-          const container = (this.shadowRoot as unknown as HTMLElement) || this
+          const _container =
+            this.componentContainer ??
+            ((this.shadowRoot as unknown as HTMLElement) || this)
 
-          const children = flattenIfOne(mapChildren(this))
-
-          const element = React.createElement(ReactComponent, data, children)
+          // const children = flattenIfOne(mapChildren(this))
 
           // Use react to render element in container
-          renderer.mount(container, element)
 
           if (!this.mounted) {
+            const { reactContainer, component } = renderer.mount(
+              _container,
+              ReactComponent,
+              data,
+            )
+            this.componentContainer = reactContainer
+            this.reactComponent = component
             this.mounted = true
           } else {
+            if (!this.reactComponent)
+              throw new Error("React component is not mounted")
+            if (!this.componentContainer)
+              throw new Error("React component container is not mounted")
+            const updateContext = {
+              reactContainer: this.componentContainer,
+              component: this.reactComponent,
+            }
+            renderer.update(updateContext, data)
             renderer.onUpdated?.()
           }
           this.rendering = false
@@ -157,7 +184,13 @@ export default function r2wc(
 
     disconnectedCallback() {
       this[shouldRenderSymbol] = false
-      renderer.unmount(this)
+      if (this.componentContainer && this.reactComponent) {
+        const context = {
+          reactContainer: this.componentContainer,
+          component: this.reactComponent,
+        }
+        renderer.unmount(context)
+      }
       this.mounted = false
     }
 
@@ -215,58 +248,58 @@ function toDashedStyle(camelCase = "") {
   return camelCase.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()
 }
 
-function isAllCaps(word: string) {
-  return word.split("").every((c: string) => c.toUpperCase() === c)
-}
+// function isAllCaps(word: string) {
+//   return word.split("").every((c: string) => c.toUpperCase() === c)
+// }
 
-function flattenIfOne(arr: object) {
-  if (!Array.isArray(arr)) {
-    return arr
-  }
-  if (arr.length === 1) {
-    return arr[0]
-  }
-  return arr
-}
+// function flattenIfOne(arr: object) {
+//   if (!Array.isArray(arr)) {
+//     return arr
+//   }
+//   if (arr.length === 1) {
+//     return arr[0]
+//   }
+//   return arr
+// }
 
-function mapChildren(node: Element) {
-  if (node.nodeType === Node.TEXT_NODE) {
-    return node.textContent?.toString()
-  }
+// function mapChildren(node: Element) {
+//   if (node.nodeType === Node.TEXT_NODE) {
+//     return node.textContent?.toString()
+//   }
 
-  const arr = Array.from(node.children).map((element) => {
-    if (element.nodeType === Node.TEXT_NODE) {
-      return element.textContent?.toString()
-    }
-    // BR = br, ReactElement = ReactElement
-    const nodeName = isAllCaps(element.nodeName)
-      ? element.nodeName.toLowerCase()
-      : element.nodeName
-    const children = flattenIfOne(mapChildren(element))
+//   const arr = Array.from(node.children).map((element) => {
+//     if (element.nodeType === Node.TEXT_NODE) {
+//       return element.textContent?.toString()
+//     }
+//     // BR = br, ReactElement = ReactElement
+//     const nodeName = isAllCaps(element.nodeName)
+//       ? element.nodeName.toLowerCase()
+//       : element.nodeName
+//     const children = flattenIfOne(mapChildren(element))
 
-    // we need to format c.attributes before passing it to createElement
-    const attributes: Record<string, string | null> = {}
-    for (const attr of element.getAttributeNames()) {
-      // handleTypeCasting.call(c, attr, c.getAttribute(attr), attributes)
-      attributes[attr] = element.getAttribute(attr)
-    }
+//     // we need to format c.attributes before passing it to createElement
+//     const attributes: Record<string, string | null> = {}
+//     for (const attr of element.getAttributeNames()) {
+//       // handleTypeCasting.call(c, attr, c.getAttribute(attr), attributes)
+//       attributes[attr] = element.getAttribute(attr)
+//     }
 
-    return React.createElement(nodeName, attributes, children)
-  })
+//     return React.createElement(nodeName, attributes, children)
+//   })
 
-  return flattenIfOne(arr)
-}
+//   return flattenIfOne(arr)
+// }
 
 function handleTypeCasting(
   this: HTMLElement,
   key: string,
   value: any,
-  obj: Record<string, unknown>,
+  obj: Record<string, PropOptionTypes>,
 ) {
   let attributeToAdd = value
   switch (obj[key]) {
     case "ref":
-    case Function:
+    case "function":
       if (obj[key] === "ref") {
         attributeToAdd = React.createRef()
         Reflect.set(this, key, attributeToAdd)
@@ -282,19 +315,16 @@ function handleTypeCasting(
         attributeToAdd = attributeToAdd.bind(this)
       }
       break
-    case Number:
+    case "number":
       attributeToAdd = parseFloat(attributeToAdd)
       break
-    case Boolean:
+    case "boolean":
       attributeToAdd = /^[ty1-9]/i.test(attributeToAdd)
       break
-    case Object:
+    case "json":
       attributeToAdd = JSON.parse(attributeToAdd)
       break
-    case Array:
-      attributeToAdd = JSON.parse(attributeToAdd)
-      break
-    case String:
+    case "string":
     default:
       break
   }
