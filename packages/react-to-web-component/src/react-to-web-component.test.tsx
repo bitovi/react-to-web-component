@@ -11,9 +11,11 @@ function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve))
 }
 
-const Greeting = ({ name }: { name: string }) => <h1>Hello, {name}</h1>
+const Greeting: React.FC<{ name: string }> = ({ name }) => (
+  <h1>Hello, {name}</h1>
+)
 
-describe("react", () => {
+describe("react-to-web-component", () => {
   it("basics with react", () => {
     const MyWelcome = r2wc(Greeting)
     customElements.define("my-welcome", MyWelcome)
