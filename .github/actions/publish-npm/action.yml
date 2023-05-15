@@ -35,13 +35,11 @@ runs:
 
     - name: Increment Version
       shell: bash
-      working-directory: ./packages/${{ inputs.directory }}
       run: |
         git config --local user.email "Workflow: ${{ inputs.package }}[bot]"
         git config --local user.name "${{ inputs.package }}[bot]@workflow"
 
-        TAG_CMD="--tag-version-prefix ${{ inputs.package }}/v"
-        MESSAGE="Publish ${{ inputs.package }} v%s"
+        WORKSPACE_CMD="--workspace packages/${{ inputs.directory }}"
 
         if [[ ${{ inputs.segment }} == pre* ]]; then
           if [[ -n "${{ inputs.preId }}" ]]; then
@@ -49,7 +47,10 @@ runs:
           fi
         fi
 
-        npm version ${{ inputs.segment }} $PREID_CMD $TAG_CMD -m "$MESSAGE"
+        VERSION="$(npm version ${{ inputs.segment }} $PREID_CMD $WORKSPACE_CMD)"
+
+        git commit --message "Publish ${{ inputs.package }} v$MESSAGE"
+        git tag "${{ inputs.package }}/v$VERSION"
 
     - name: Push Tag
       uses: ad-m/github-push-action@master
