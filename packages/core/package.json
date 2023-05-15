@@ -1,18 +1,18 @@
 {
   "name": "@r2wc/core",
-  "version": "0.0.0",
+  "version": "1.0.0-alpha.0",
   "description": "Convert framework components to native Web Components.",
-  "type": "module",
   "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting",
   "author": "Bitovi",
   "license": "MIT",
   "keywords": [
-    "Web Components"
+    "Web Component"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bitovi/react-to-webcomponent.git"
   },
+  "type": "module",
   "main": "./dist/core.cjs",
   "module": "./dist/core.js",
   "types": "./dist/core.d.ts",
@@ -46,8 +46,5 @@
     "vite": "^4.3.1",
     "vite-plugin-dts": "^2.3.0",
     "vitest": "^0.30.1"
-  },
-  "peerDependencies": {
-    "react": "^16.0.0 || ^17.0.0 || ^18.0.0"
   }
 }

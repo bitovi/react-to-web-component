@@ -1,20 +1,19 @@
 {
   "name": "react-to-webcomponent",
-  "version": "2.0.0",
-  "description": "Convert react components to native Web Components.",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bitovi/react-to-webcomponent.git"
-  },
-  "keywords": [
-    "React",
-    "Web",
-    "Component"
-  ],
+  "version": "2.0.0-alpha.4",
+  "description": "Convert React components to native Web Components.",
+  "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting",
   "author": "Bitovi",
   "license": "MIT",
+  "keywords": [
+    "React",
+    "Web Component"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitovi/react-to-web-component.git"
+  },
   "type": "module",
-  "homepage": "https://github.com/bitovi/react-to-webcomponent#readme",
   "main": "./dist/react-to-webcomponent.cjs",
   "module": "./dist/react-to-webcomponent.js",
   "types": "./dist/react-to-webcomponent.d.ts",
@@ -43,7 +42,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@r2wc/core": "^0.0.0"
+    "@r2wc/core": "^1.0.0-alpha.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
