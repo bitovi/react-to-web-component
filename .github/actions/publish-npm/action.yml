@@ -35,6 +35,7 @@ runs:
 
     - name: Increment Version
       shell: bash
+      working-directory: ./packages/${{ inputs.directory }}
       run: |
         git config --local user.email "Workflow: ${{ inputs.package }}[bot]"
         git config --local user.name "${{ inputs.package }}[bot]@workflow"

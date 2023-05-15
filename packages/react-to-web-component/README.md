@@ -122,22 +122,6 @@ Also:
 - Enumerable properties and values on the custom element are used as the `props` passed to the React component.
 - The React component is not rendered until the custom element is inserted into the page.
 
-# Tests
-
-To run tests, first run:
-
-```
-npm run buildtests
-```
-
-This copies the root test file into each of the `/tests/react*` versioned folders, modifies the ReactDOM import for older versions, and installs the corresponding version of react in that directory.
-
-Then run:
-
-```
-npm run test
-```
-
 # We want to hear from you.
 
 Come chat with us about open source in our Bitovi community [Discord](https://discord.gg/J7ejFsZnJ4).

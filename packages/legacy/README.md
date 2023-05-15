@@ -1,8 +1,8 @@
 # React to Web Component
 
-`@r2wc/react-to-web-component` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
+`react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
-`@r2wc/react-to-web-component`:
+`react-to-webcomponent`:
 
 - Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
 - Is `1.11KB` minified and gzipped.
@@ -29,9 +29,12 @@ const Greeting = () => {
 With our React component complete, all we have to do is call `r2wc` and [customElements.define](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define) to create and define our custom element:
 
 ```js
-import r2wc from "@r2wc/react-to-web-component"
+import React from "react"
+import * as ReactDOM from "react-dom/client" // if using React 18
+// import * as ReactDOM from "react-dom" // if using React 17
+import r2wc from "react-to-webcomponent"
 
-const WebGreeting = r2wc(Greeting)
+const WebGreeting = r2wc(Greeting, React, ReactDOM)
 
 customElements.define("web-greeting", WebGreeting)
 ```
@@ -46,8 +49,6 @@ Now we can use `<web-greeting>` like any other HTML element!
 </body>
 ```
 
-Note that by using React 18, `r2wc` will use the new root API. If your application needs the legacy API, please use React 17
-
 In the above case, the web-greeting custom element is not making use of the `name` property from our `Greeting` component.
 
 ## Working with Attributes
@@ -59,7 +60,7 @@ const Greeting = ({ name }) => {
   return <h1>Hello, {name}!</h1>
 }
 
-const WebGreeting = r2wc(Greeting, {
+const WebGreeting = r2wc(Greeting, React, ReactDOM, {
   props: {
     name: "string",
   },
@@ -86,7 +87,7 @@ We also have a [complete example using a third party library](docs/complete-exam
 To install from npm:
 
 ```
-npm install @r2wc/react-to-web-component
+npm i react-to-webcomponent
 ```
 
 ## External Examples
@@ -121,22 +122,6 @@ Also:
 
 - Enumerable properties and values on the custom element are used as the `props` passed to the React component.
 - The React component is not rendered until the custom element is inserted into the page.
-
-# Tests
-
-To run tests, first run:
-
-```
-npm run buildtests
-```
-
-This copies the root test file into each of the `/tests/react*` versioned folders, modifies the ReactDOM import for older versions, and installs the corresponding version of react in that directory.
-
-Then run:
-
-```
-npm run test
-```
 
 # We want to hear from you.
 
