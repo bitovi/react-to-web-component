@@ -1,0 +1,50 @@
+{
+  "name": "@r2wc/core",
+  "version": "1.0.0-alpha.0",
+  "description": "Convert framework components to native Web Components.",
+  "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting",
+  "author": "Bitovi",
+  "license": "MIT",
+  "keywords": [
+    "Web Component"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitovi/react-to-webcomponent.git"
+  },
+  "type": "module",
+  "main": "./dist/core.cjs",
+  "module": "./dist/core.js",
+  "types": "./dist/core.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/core.cjs",
+      "import": "./dist/core.js",
+      "types": "./dist/core.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "eslint": "eslint vite.config.ts src",
+    "prettier": "prettier --check vite.config.ts src",
+    "depcheck": "depcheck .",
+    "dev": "vite",
+    "test": "vitest",
+    "test:ci": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf tsconfig.tsbuildinfo dist",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "jsdom": "^22.0.0",
+    "vite": "^4.3.1",
+    "vite-plugin-dts": "^2.3.0",
+    "vitest": "^0.30.1"
+  }
+}

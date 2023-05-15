@@ -1,0 +1,14 @@
+name: monorepo-setup
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v3
+      with:
+        node-version-file: ".nvmrc"
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci

@@ -1,0 +1,14 @@
+{
+  "name": "react-to-webcomponent-preact10",
+  "version": "0.0.0",
+  "dependencies": {
+    "prop-types": "^15.7.2",
+    "preact": "^10.10.0",
+    "react-to-webcomponent": "file:.."
+  },
+  "devDependencies": {
+    "typescript": "^4.3.5",
+    "jsdom": "^20.0.0",
+    "vite": "^3.0.3"
+  }
+}

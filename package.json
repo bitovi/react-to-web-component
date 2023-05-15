@@ -1,66 +1,28 @@
 {
-  "name": "react-to-webcomponent",
-  "version": "1.7.6",
-  "description": "Convert react components to native Web Components.",
-  "main": "./dist/react-to-webcomponent.cjs",
-  "module": "./dist/react-to-webcomponent.mjs",
-  "types": "./dist/react-to-webcomponent.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/react-to-webcomponent.mjs",
-      "require": "./dist/react-to-webcomponent.cjs"
-    }
-  },
-  "files": [
-    "dist/",
-    "src/",
-    "!src/tests/"
+  "namespace": "r2wc",
+  "workspaces": [
+    "packages/*"
   ],
-  "devDependencies": {
-    "@bitovi/eslint-config": "^1.3.0",
-    "@rollup/plugin-typescript": "^8.3.4",
-    "@webcomponents/custom-elements": "^1.2.4",
-    "can-stache": "^4.17.20",
-    "can-stache-bindings": "^4.10.9",
-    "depcheck": "^1.4.3",
-    "eslint": "^8.0.0",
-    "eslint-plugin-react": "^7.21.4",
-    "http-server": "^14.1.1",
-    "jsdom": "^20.0.0",
-    "prettier": "^2.7.1",
-    "prop-types": "^15.7.2",
-    "typescript": "^4.3.5",
-    "vite": "^3.0.3",
-    "vitest": "^0.19.1"
-  },
+  "private": true,
   "scripts": {
-    "build": "vite build",
-    "ci": "npm run test",
-    "buildtests": "chmod +x src/tests/buildtests && ./src/tests/buildtests",
-    "test": "vitest src/tests/**/react-to-webcomponent.test.jsx",
-    "start": "http-server -c-1",
-    "typecheck": "tsc --noEmit",
-    "eslint": "eslint ./src/*.js",
-    "prettier": "prettier --check ./src/*.js",
-    "depcheck": "depcheck ."
+    "check-packages": "ts-node ./scripts/check-packages"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bitovi/react-to-webcomponent.git"
+  "eslintConfig": {
+    "root": true,
+    "extends": "@bitovi/eslint-config/react"
   },
-  "keywords": [
-    "React",
-    "Preact",
-    "Web Component"
-  ],
-  "author": "Bitovi",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/bitovi/react-to-webcomponent/issues"
-  },
-  "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting",
   "prettier": {
     "semi": false,
     "trailingComma": "all"
+  },
+  "devDependencies": {
+    "@bitovi/eslint-config": "^1.5.0",
+    "depcheck": "^1.4.3",
+    "eslint": "^8.25.0",
+    "nx": "15.9.2",
+    "prettier": "^2.7.1",
+    "semver": "^7.5.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
   }
 }
