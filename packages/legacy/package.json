@@ -42,7 +42,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@r2wc/core": "^1.0.0-alpha.1"
+    "@r2wc/core": "^1.0.0-alpha.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
