@@ -2,3 +2,7 @@ ignore-dirs:
   - /dist
 ignores:
   - "@types/*"
+  - "@testing-library/jest-dom"
+  - vite
+  - vite-plugin-dts
+  - vitest

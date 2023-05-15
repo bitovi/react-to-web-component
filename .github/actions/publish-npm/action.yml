@@ -49,7 +49,7 @@ runs:
 
         VERSION="$(npm version ${{ inputs.segment }} $PREID_CMD $WORKSPACE_CMD)"
 
-        git commit --message "Publish ${{ inputs.package }} v$MESSAGE"
+        git commit --all --message "Publish ${{ inputs.package }} v$MESSAGE"
         git tag "${{ inputs.package }}/v$VERSION"
 
     - name: Push Tag
