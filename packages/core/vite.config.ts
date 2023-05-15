@@ -9,9 +9,6 @@ export default defineConfig({
       entry: "src/core.ts",
       formats: ["es", "cjs"],
     },
-    rollupOptions: {
-      external: [/node_modules/],
-    },
   },
   plugins: [dts()],
   test: {

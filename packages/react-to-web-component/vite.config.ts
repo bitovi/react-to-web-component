@@ -10,7 +10,7 @@ export default defineConfig({
       formats: ["es", "cjs"],
     },
     rollupOptions: {
-      external: [/node_modules/],
+      external: ["react", "react-dom", "@r2wc/core"],
     },
   },
   plugins: [dts()],
