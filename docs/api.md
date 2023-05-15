@@ -95,7 +95,7 @@ function Greeting({ camelCaseName }) {
 customElements.define(
   "my-dashed-style-greeting",
   reactToWebComponent(Greeting, {
-    props: ["camelCaseName"],
+    props: { camelCaseName: "string" },
   }),
 )
 
@@ -107,9 +107,10 @@ console.log(document.body.firstElementChild.innerHTML) // "<h1>Hello, Jane</h1>"
 
 ## Typed Props
 
-If `options.props` is an object, the keys are the camelCased React props and the values are any one of the following built in javascript types, or the string "ref":
+If `options.props` is an object, the keys are the camelCased React props and the values are any one of the following built in javascript types.
+This is the recommended way of passing props to r2wc.
 
-`"string" | "number" | "boolean" | "function" | "json" | "ref"`
+`"string" | "number" | "boolean" | "function" | "json"`
 
 "json" can be an array or object. The string passed into the attribute must pass `JSON.parse()` requirements.
 
@@ -200,83 +201,3 @@ setTimeout(
 )
 // ^ calls globalFn, logs: true, "Jane"
 ```
-
-### "ref" props
-
-If the React component is can provide a ref to itself or has ref props, you can specify attributes as `"ref"` type.
-
-For example, given this class component:
-
-```js
-class ComRef extends React.Component {
-  constructor(props) {
-    super(props)
-    this.exposedToParentByRef = true
-    this.h1Ref = props.h1Ref
-  }
-  render() {
-    return <h1 ref={this.props.h1Ref}>Ref</h1>
-  }
-}
-```
-
-or given this functional component:
-
-```js
-/* note useImperativeHandle is not available in preact, but class component `ref` will work as expected in both preact and react */
-
-const ComRef = React.forwardRef(function ComRef(props, ref) {
-  // set up a reference obj to the component itself
-  React.useImperativeHandle(ref, () => ({
-    exposedToParentByRef: true,
-    h1Ref: props.h1Ref,
-  }))
-  return <h1 ref={props.h1Ref}>Ref</h1>
-})
-```
-
-Then `React.createRef()` will automatically happen behind the scenes then attach the reference to the webcomponent instance if it has the corresponding attribute.
-
-```js
-class WebComRef extends reactToWebComponent(ComRef, {
-  props: {
-    ref: "ref",
-    h1Ref: "ref",
-  },
-}) {}
-
-customElements.define("ref-example", WebComRef)
-
-// add "ref" and "h1-ref" attrs to opt-in to having them attached to the webcomponent instance:
-document.body.innerHTML = "<ref-example ref h1-ref></ref-example>"
-
-setTimeout(() => {
-  const el = document.querySelector("ref-example")
-
-  console.log(el.ref.current.exposedToParentByRef) // logs true using either the functional or class example above
-  console.log(el.ref.current instanceof ComRef) // logs true only if you used the class ComRef component example
-
-  const h1 = el.querySelector("h1")
-
-  console.log(el.h1Ref.current === h1) // logs true
-}, 0)
-```
-
-#### Specifing a callback function for ref props
-
-If your `"ref"` type webcomponent attribute specifies a value, the value will be the name of a global function (like the `Function` prop type above) and be used as a callback reference, recieving the dom element the React component attaches it to as a parameter.
-
-```js
-window.globalRefFn = function (el) {
-  if (!el) {
-    // if the component rerenders the referenced element, the callback may run with el = null
-    return
-  }
-  console.log(el === this.querySelector("h1")) // logs true
-}
-
-// opt-in to the h1-ref attr (h1Ref prop) and specify callback function to use:
-body.innerHTML = "<ref-example h1-ref='globalRefFn'></ref-example>"
-```
-
-Note: React only supports callback references to elements, not to component instances
