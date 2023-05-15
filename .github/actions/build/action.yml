@@ -2,7 +2,7 @@ name: monorepo-build
 
 inputs:
   package:
-    description: "The package folder name."
+    description: "The package name."
     required: true
 
 runs:

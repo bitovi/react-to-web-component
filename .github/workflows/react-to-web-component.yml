@@ -40,5 +40,8 @@ jobs:
       - name: Publish
         uses: ./.github/actions/job-publish
         with:
+          directory: react-to-web-component
+          npm-token: ${{ secrets.NPM_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           segment: ${{ github.event.inputs.segment }}
           preId: ${{ github.event.inputs.preId }}

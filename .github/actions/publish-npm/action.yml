@@ -2,7 +2,16 @@ name: monorepo-publish-npm
 
 inputs:
   package:
-    description: "The package folder name."
+    description: "The package name."
+    required: true
+  directory:
+    description: "The directory name."
+    required: true
+  npm-token:
+    description: "The token for publishing the package to npm."
+    required: true
+  github-token:
+    description: "The token for pushing tags and version changes to github.."
     required: true
   segment:
     description: "The version segment to increment: major, minor, patch, or prerelease."
@@ -30,8 +39,8 @@ runs:
         git config --local user.email "Workflow: ${{ inputs.package }}[bot]"
         git config --local user.name "${{ inputs.package }}[bot]@workflow"
 
-        TAG_CMD="--tag-version-prefix=\"${{ inputs.package }}/v\""
-        MESSAGE_CMD="-m \"Publish ${{ inputs.package }} v%s\""
+        TAG_CMD="--tag-version-prefix ${{ inputs.package }}/v"
+        MESSAGE="Publish ${{ inputs.package }} v%s"
 
         if [[ ${{ inputs.segment }} == pre* ]]; then
           if [[ -n "${{ inputs.preId }}" ]]; then
@@ -39,19 +48,19 @@ runs:
           fi
         fi
 
-        npm version ${{ inputs.segment }} $PREID_CMD $TAG_CMD $MESSAGE_CMD"
+        npm version ${{ inputs.segment }} $PREID_CMD $TAG_CMD -m "$MESSAGE"
 
     - name: Push Tag
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ inputs.github-token }}
         branch: ${{ github.ref }}
         tags: true
 
     - name: Publish to NPM Registry
-      working-directory: ${{ inputs.package }}
       uses: JS-DevTools/npm-publish@v2
       with:
-        token: ${{ secrets.NPM_TOKEN }}
+        token: ${{ inputs.npm-token }}
+        package: ./packages/${{ inputs.directory }}
+        access: public
         tag: ${{ steps.tag.outputs.tag }}
-        dry-run: true

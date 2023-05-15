@@ -1,6 +1,15 @@
 name: monorepo-job-publish
 
 inputs:
+  directory:
+    description: "The directory name."
+    required: true
+  npm-token:
+    description: "The token for publishing the package to npm."
+    required: true
+  github-token:
+    description: "The token for pushing tags and version changes to github.."
+    required: true
   segment:
     description: "The version segment to increment: major, minor, patch, or prerelease."
     required: true
@@ -23,5 +32,8 @@ runs:
       uses: ./.github/actions/publish-npm
       with:
         package: ${{ github.workflow }}
-        segment: ${{ github.event.inputs.segment }}
-        preId: ${{ github.event.inputs.preId }}
+        directory: ${{ inputs.directory }}
+        npm-token: ${{ inputs.npm-token }}
+        github-token: ${{ inputs.github-token }}
+        segment: ${{ inputs.segment }}
+        preId: ${{ inputs.preId }}
