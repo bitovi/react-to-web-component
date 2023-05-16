@@ -6,7 +6,6 @@ import PropTypes from "prop-types"
 
 import r2wc from "./react-to-web-component"
 
-
 expect.extend(matchers)
 
 function flushPromises() {
@@ -33,63 +32,63 @@ describe("react-to-web-component 1", () => {
     function TestComponent({ name }: { name: string }) {
       return <div>hello, {name}</div>
     }
-  
+
     const TestElement = r2wc(TestComponent, { props: ["name"] })
-  
+
     customElements.define("test-hello", TestElement)
-  
+
     const body = document.body
     body.innerHTML = "<test-hello name='Bavin'></test-hello>"
-  
+
     await flushPromises()
-  
+
     const div = body.querySelector("div")
     expect(div?.textContent).toBe("hello, Bavin")
   })
-  
+
   it("works with proptypes", async () => {
     function WithProptypes({ name }: { name: string }) {
       return <div>hello, {name}</div>
     }
-  
+
     WithProptypes.propTypes = {
       name: PropTypes.string.isRequired,
     }
-  
+
     const WithPropTypesElement = r2wc(WithProptypes)
-  
+
     customElements.define("with-proptypes", WithPropTypesElement)
-  
+
     const body = document.body
     body.innerHTML = "<with-proptypes name='Bavin'></with-proptypes>"
-  
+
     await flushPromises()
-  
+
     const div = body.querySelector("div")
     expect(div?.textContent).toBe("hello, Bavin")
   })
-  
+
   it("works with class components", async () => {
     class TestClassComponent extends React.Component<{ name: string }> {
       render() {
         return <div>hello, {this.props.name}</div>
       }
     }
-  
+
     class TestClassElement extends r2wc(TestClassComponent, {
       props: ["name"],
     }) {}
-  
+
     customElements.define("test-class", TestClassElement)
-  
+
     const body = document.body
     body.innerHTML = "<test-class name='Bavin'></test-class>"
-  
+
     await flushPromises()
-  
+
     const div = body.querySelector("div")
     const testClassEl = body.querySelector("test-class")
-  
+
     expect(testClassEl).toBeInstanceOf(TestClassElement)
     expect(div?.textContent).toBe("hello, Bavin")
   })
