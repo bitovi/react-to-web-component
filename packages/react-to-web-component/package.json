@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bitovi/react-to-webcomponent.git"
+    "url": "git+https://github.com/bitovi/react-to-web-component.git"
   },
   "type": "module",
   "main": "./dist/react-to-web-component.cjs",
