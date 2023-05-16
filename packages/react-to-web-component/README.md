@@ -111,7 +111,7 @@ R2WC with Create React App (CRA) [View Post](https://www.bitovi.com/blog/how-to-
 
 Check out our [full API documentation](../../docs/api.md).
 
-`r2wc` creates a constructor function whose prototype is a [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy). This acts as a trap for any property set on instances of the custom element. When a property is set, the proxy:
+Under the hood, `r2wc` creates a `CustomElementConstructor` with custom getters/setters and life cycle methods that keep track of the props that you have defined. When a property is set, its custom setter:
 
 - re-renders the React component inside the custom element.
 - creates an enumerable getter / setter on the instance
