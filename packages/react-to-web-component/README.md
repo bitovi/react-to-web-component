@@ -91,8 +91,6 @@ npm install @r2wc/react-to-web-component
 
 ## External Examples
 
-Greeting example in a [CodePen](https://codepen.io/bavinedwards/pen/jOveaGm)
-
 Greeting example in [CodeSandbox](https://codesandbox.io/s/sample-greeting-app-ts-qwidh9)
 
 Hello, world example (React17) in [CodeSandbox](https://codesandbox.io/s/hello-world-react17-u4l3x1)
