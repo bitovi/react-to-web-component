@@ -89,17 +89,15 @@ To install from npm:
 npm install @r2wc/react-to-web-component
 ```
 
-## External Examples
+## Examples
 
-Greeting example in [CodeSandbox](https://codesandbox.io/s/sample-greeting-app-ts-qwidh9)
+* [Greeting](https://codesandbox.io/s/greeting-md5oih)
+* [All the Props](https://codesandbox.io/s/all-the-props-n8z5hv)
+* [Header Demo](https://codesandbox.io/s/example-header-blog-7k313l)
+* [MUI Button](https://codesandbox.io/s/example-mui-button-qwidh9)
+* [Checklist Demo](https://codesandbox.io/s/example-checklist-blog-y3nqwx)
 
-Hello, world example (React17) in [CodeSandbox](https://codesandbox.io/s/hello-world-react17-u4l3x1)
-
-Example with all prop types in [CodeSandbox](https://codesandbox.io/p/sandbox/vite-example-with-numerous-types-gjf87o)
-
-R2WC With Vite Header Example in [CodeSandbox](https://codesandbox.io/p/sandbox/r2wc-header-example-vqzfgo)
-
-## External Blog Posts
+## Blog Posts
 
 R2WC with Vite [View Post](https://www.bitovi.com/blog/react-everywhere-with-vite-and-react-to-webcomponent)
 
@@ -112,8 +110,7 @@ Check out our [full API documentation](../../docs/api.md).
 Under the hood, `r2wc` creates a `CustomElementConstructor` with custom getters/setters and life cycle methods that keep track of the props that you have defined. When a property is set, its custom setter:
 
 - re-renders the React component inside the custom element.
-- creates an enumerable getter / setter on the instance
-  to save the set value and avoid hitting the proxy in the future.
+- creates an enumerable getter / setter on the instance to save the set value and avoid hitting the proxy in the future.
 
 Also:
 
