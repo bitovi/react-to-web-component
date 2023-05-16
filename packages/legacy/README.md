@@ -2,10 +2,12 @@
 
 `react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
+> Note: This is a compatibility wrapper around our new, simpler API. We highly reccomend using the new [@r2wc/react-to-web-component](https://github.com/bitovi/react-to-web-component) package.
+
 `react-to-webcomponent`:
 
 - Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
-- Is `1.11KB` minified and gzipped.
+- Is `1.37KB` minified and gzipped.
 
 ## Need help or have questions?
 
@@ -30,8 +32,9 @@ With our React component complete, all we have to do is call `r2wc` and [customE
 
 ```js
 import React from "react"
-import * as ReactDOM from "react-dom/client" // if using React 18
-// import * as ReactDOM from "react-dom" // if using React 17
+import ReactDOM from "react-dom/client" // if using React 18
+// import ReactDOM from "react-dom" // if using React 17
+
 import r2wc from "react-to-webcomponent"
 
 const WebGreeting = r2wc(Greeting, React, ReactDOM)
@@ -87,22 +90,15 @@ We also have a [complete example using a third party library](docs/complete-exam
 To install from npm:
 
 ```
-npm i react-to-webcomponent
+npm install react-to-webcomponent
 ```
 
-## External Examples
+## Examples
 
-Greeting example in a [CodePen](https://codepen.io/bavinedwards/pen/jOveaGm)
+* [Greeting](https://codesandbox.io/s/greeting-legacy-8oopz3)
+* [All the Props](https://codesandbox.io/s/all-the-props-legacy-0zh6iv)
 
-Greeting example in [CodeSandbox](https://codesandbox.io/s/sample-greeting-app-ts-qwidh9)
-
-Hello, world example (React17) in [CodeSandbox](https://codesandbox.io/s/hello-world-react17-u4l3x1)
-
-Example with all prop types in [CodeSandbox](https://codesandbox.io/p/sandbox/vite-example-with-numerous-types-gjf87o)
-
-R2WC With Vite Header Example in [CodeSandbox](https://codesandbox.io/p/sandbox/header-example-e4x25q)
-
-## External Blog Posts
+## Blog Posts
 
 R2WC with Vite [View Post](https://www.bitovi.com/blog/react-everywhere-with-vite-and-react-to-webcomponent)
 
@@ -111,17 +107,6 @@ R2WC with Create React App (CRA) [View Post](https://www.bitovi.com/blog/how-to-
 ## How it works
 
 Check out our [full API documentation](../../docs/api.md).
-
-`r2wc` creates a constructor function whose prototype is a [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy). This acts as a trap for any property set on instances of the custom element. When a property is set, the proxy:
-
-- re-renders the React component inside the custom element.
-- creates an enumerable getter / setter on the instance
-  to save the set value and avoid hitting the proxy in the future.
-
-Also:
-
-- Enumerable properties and values on the custom element are used as the `props` passed to the React component.
-- The React component is not rendered until the custom element is inserted into the page.
 
 # We want to hear from you.
 
