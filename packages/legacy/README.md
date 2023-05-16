@@ -94,13 +94,7 @@ npm i react-to-webcomponent
 
 Greeting example in a [CodePen](https://codepen.io/bavinedwards/pen/jOveaGm)
 
-Greeting example in [CodeSandbox](https://codesandbox.io/s/sample-greeting-app-ts-qwidh9)
-
-Hello, world example (React17) in [CodeSandbox](https://codesandbox.io/s/hello-world-react17-u4l3x1)
-
-Example with all prop types in [CodeSandbox](https://codesandbox.io/p/sandbox/vite-example-with-numerous-types-gjf87o)
-
-R2WC With Vite Header Example in [CodeSandbox](https://codesandbox.io/p/sandbox/header-example-e4x25q)
+List example in [CodeSandbox](https://codesandbox.io/s/r2wc-legacy-example-hf90pk?file=/src/index.tsx)
 
 ## External Blog Posts
 
