@@ -98,6 +98,8 @@ test("props typed as ref works with functional components", async () => {
     refValue: string
     setRefValue: React.Dispatch<React.SetStateAction<string>>
   }
+
+  //@ts-ignore
   const ComponentWithRef = React.forwardRef(function ComponentWithRef(
     props: { buttonRef: React.RefObject<HTMLButtonElement> },
     ref: React.RefObject<CustomRef>,
@@ -134,7 +136,9 @@ test("props typed as ref works with functional components", async () => {
     "component-with-ref",
   ) as HTMLElement & { ref: React.RefObject<CustomRef> }
 
+  //@ts-ignore
   expect(componentWithRefEl.ref.current.refValue).toBe("hello")
+  //@ts-ignore
   expect(componentWithRefEl.ref.current.setRefValue).toBeInstanceOf(Function)
 
   const button = body.querySelector("button")
@@ -142,5 +146,6 @@ test("props typed as ref works with functional components", async () => {
 
   await flushPromises()
 
+  //@ts-ignore
   expect(componentWithRefEl.ref.current.refValue).toBe("world")
 })
