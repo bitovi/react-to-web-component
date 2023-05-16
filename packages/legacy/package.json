@@ -1,6 +1,6 @@
 {
   "name": "react-to-webcomponent",
-  "version": "1.0.0-alpha.5",
+  "version": "2.0.0-alpha.5",
   "description": "Convert React components to native Web Components.",
   "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting",
   "author": "Bitovi",
