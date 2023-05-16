@@ -94,10 +94,11 @@ export default function r2wc<Props, Context>(
         const attribute = mapPropAttribute[prop]
         const value = this.getAttribute(attribute)
         const type = propTypes[prop]
+        const transform = transforms[type]
 
-        if (value) {
+        if (value && transform?.parse) {
           //@ts-ignore
-          this[propsSymbol][prop] = transforms[type].parse(value, this)
+          this[propsSymbol][prop] = transform.parse(value, this)
         }
       }
     }
@@ -122,10 +123,11 @@ export default function r2wc<Props, Context>(
     ) {
       const prop = mapAttributeProp[attribute]
       const type = propTypes[prop]
+      const transform = transforms[type]
 
-      if (prop in propTypes) {
+      if (prop in propTypes && transform?.parse) {
         //@ts-ignore
-        this[propsSymbol][prop] = transforms[type].parse(value, this)
+        this[propsSymbol][prop] = transform.parse(value, this)
 
         this[renderSymbol]()
       }
@@ -159,10 +161,10 @@ export default function r2wc<Props, Context>(
       set(value) {
         this[propsSymbol][prop] = value
 
-        const stringify = transforms[type].stringify
-        if (stringify) {
+        const transform = transforms[type]
+        if (transform?.stringify) {
           //@ts-ignore
-          const attributeValue = stringify(value)
+          const attributeValue = transform.stringify(value)
           const oldAttributeValue = this.getAttribute(attribute)
 
           if (oldAttributeValue !== attributeValue) {
