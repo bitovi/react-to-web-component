@@ -1,6 +1,6 @@
 {
   "name": "@r2wc/core",
-  "version": "0.0.0-alpha.0",
+  "version": "0.0.0",
   "description": "Convert framework components to native Web Components.",
   "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting",
   "author": "Bitovi",
