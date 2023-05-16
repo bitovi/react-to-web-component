@@ -99,7 +99,7 @@ Hello, world example (React17) in [CodeSandbox](https://codesandbox.io/s/hello-w
 
 Example with all prop types in [CodeSandbox](https://codesandbox.io/p/sandbox/vite-example-with-numerous-types-gjf87o)
 
-R2WC With Vite Header Example in [CodeSandbox](https://codesandbox.io/p/sandbox/header-example-e4x25q)
+R2WC With Vite Header Example in [CodeSandbox](https://codesandbox.io/p/sandbox/r2wc-header-example-vqzfgo)
 
 ## External Blog Posts
 
