@@ -1,6 +1,6 @@
 {
   "name": "@r2wc/react-to-web-component",
-  "version": "1.0.0-alpha.4",
+  "version": "2.0.0-alpha.0",
   "description": "Convert React components to native Web Components.",
   "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting",
   "author": "Bitovi",
@@ -45,11 +45,11 @@
     "@r2wc/core": "^1.0.0-alpha.0"
   },
   "devDependencies": {
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0"
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0"
   },
   "peerDependencies": {
-    "react": "^16.0.0 || ^17.0.0",
-    "react-dom": "^16.0.0 || ^17.0.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   }
 }

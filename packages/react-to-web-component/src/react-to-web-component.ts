@@ -1,12 +1,13 @@
 import type { R2WCOptions } from "@r2wc/core"
+import type { Root } from "react-dom/client"
 
 import React from "react"
-import ReactDOM from "react-dom"
+import { createRoot } from "react-dom/client"
 
 import r2wcCore from "@r2wc/core"
 
 interface Context<Props extends object> {
-  container: HTMLElement
+  root: Root
   ReactComponent: React.ComponentType<Props>
 }
 
@@ -15,27 +16,27 @@ function mount<Props extends object>(
   ReactComponent: React.ComponentType<Props>,
   props: Props,
 ): Context<Props> {
-  const element = React.createElement(ReactComponent, props)
+  const root = createRoot(container)
 
-  ReactDOM.render(element, container)
+  const element = React.createElement(ReactComponent, props)
+  root.render(element)
 
   return {
-    container,
+    root,
     ReactComponent,
   }
 }
 
 function update<Props extends object>(
-  { container, ReactComponent }: Context<Props>,
+  { root, ReactComponent }: Context<Props>,
   props: Props,
 ): void {
   const element = React.createElement(ReactComponent, props)
-
-  ReactDOM.render(element, container)
+  root.render(element)
 }
 
-function unmount<Props extends object>({ container }: Context<Props>): void {
-  ReactDOM.unmountComponentAtNode(container)
+function unmount<Props extends object>({ root }: Context<Props>): void {
+  root.unmount()
 }
 
 export default function r2wc<Props extends object>(
