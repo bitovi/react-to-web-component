@@ -14,7 +14,7 @@ const Greeting: React.FC<{ name: string }> = ({ name }) => (
   <h1>Hello, {name}</h1>
 )
 
-describe("react-to-web-component", () => {
+describe("react-to-web-component 1", () => {
   it("basics with react", () => {
     const MyWelcome = r2wc(Greeting)
     customElements.define("my-welcome", MyWelcome)
