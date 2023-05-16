@@ -39,7 +39,7 @@ runs:
         git config --local user.email "Workflow: ${{ inputs.package }}[bot]"
         git config --local user.name "${{ inputs.package }}[bot]@workflow"
 
-        WORKSPACE_CMD="--workspace packages/${{ inputs.directory }}"
+        DIRECTORY="./packages/${{ inputs.directory }}"
 
         if [[ ${{ inputs.segment }} == pre* ]]; then
           if [[ -n "${{ inputs.preId }}" ]]; then
@@ -47,9 +47,9 @@ runs:
           fi
         fi
 
-        npm version ${{ inputs.segment }} $PREID_CMD $WORKSPACE_CMD
+        npm version ${{ inputs.segment }} $PREID_CMD --workspace $DIRECTORY
 
-        VERSION="$(cat package.json | jq -r '.version')"
+        VERSION="$(cat $DIRECTORY/package.json | jq -r '.version')"
         git commit --all --message "Publish ${{ inputs.package }} v$MESSAGE"
         git tag "${{ inputs.package }}/v$VERSION"
 
