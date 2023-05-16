@@ -2,7 +2,7 @@
 
 `@r2wc/react-to-web-component` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
-> Note: This package only works with the React 16 and 17. If you are using React 18, use version 2.0 or later.
+> Note: This package only works with the React 18. If you are using React 16 or 17, use version 1.0.
 
 `@r2wc/react-to-web-component`:
 
