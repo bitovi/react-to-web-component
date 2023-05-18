@@ -105,7 +105,7 @@ R2WC with Create React App (CRA) [View Post](https://www.bitovi.com/blog/how-to-
 
 ## How it works
 
-Check out our [full API documentation](../../docs/api.md).
+Check out our [full API documentation](https://github.com/bitovi/react-to-web-component/blob/main/docs/api.md).
 
 Under the hood, `r2wc` creates a `CustomElementConstructor` with custom getters/setters and life cycle methods that keep track of the props that you have defined. When a property is set, its custom setter:
 
