@@ -7,7 +7,7 @@ interface ReactType {
     type: any,
     data: any,
     children?: any,
-  ) => React.ReactElement | null
+  ) => React.ReactElement
 }
 
 interface ReactDOMRootRootType {
@@ -25,7 +25,7 @@ interface ReactDOMRootType {
 interface ReactDOMRenderType {
   unmountComponentAtNode: (container: Element | DocumentFragment) => boolean
   render: (
-    element: React.ReactElement | null,
+    element: React.ReactElement,
     container: ReactDOM.Container | null,
   ) => unknown
 }
@@ -37,7 +37,7 @@ interface Context<Props> {
 }
 
 /**
- * Converts a React component into a webcomponent by wrapping it in a Proxy object.
+ * Converts a React component into a webcomponent by mounting it into an HTMLElement container.
  * @param {ReactComponent}
  * @param {React}
  * @param {ReactDOM}
