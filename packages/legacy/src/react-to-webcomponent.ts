@@ -3,11 +3,7 @@ import type { R2WCOptions } from "@r2wc/core"
 import r2wcCore from "@r2wc/core"
 
 interface ReactType {
-  createElement: (
-    type: any,
-    data: any,
-    children?: any,
-  ) => React.ReactElement
+  createElement: (type: any, data: any, children?: any) => React.ReactElement
 }
 
 interface ReactDOMRootRootType {
