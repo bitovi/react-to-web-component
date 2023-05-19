@@ -1,6 +1,6 @@
 {
   "name": "@r2wc/react-to-web-component",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Convert React components to native Web Components.",
   "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting",
   "author": "Bitovi",
