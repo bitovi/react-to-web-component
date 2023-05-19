@@ -106,7 +106,7 @@ R2WC with Create React App (CRA) [View Post](https://www.bitovi.com/blog/how-to-
 
 ## How it works
 
-Check out our [full API documentation](../../docs/api.md).
+Check out our [full API documentation](https://github.com/bitovi/react-to-web-component/blob/main/docs/api.md).
 
 # We want to hear from you.
 

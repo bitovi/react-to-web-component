@@ -91,8 +91,11 @@ npm install @r2wc/react-to-web-component
 
 ## Examples
 
-* [Greeting](https://codesandbox.io/s/greeting-react-17-u4l3x1)
-* [All the Props](https://codesandbox.io/s/all-the-props-react-17-x09rxo)
+* [Greeting](https://codesandbox.io/s/greeting-md5oih)
+* [All the Props](https://codesandbox.io/s/all-the-props-n8z5hv)
+* [Header Demo](https://codesandbox.io/s/example-header-blog-7k313l)
+* [MUI Button](https://codesandbox.io/s/example-mui-button-qwidh9)
+* [Checklist Demo](https://codesandbox.io/s/example-checklist-blog-y3nqwx)
 
 ## Blog Posts
 
@@ -102,7 +105,17 @@ R2WC with Create React App (CRA) [View Post](https://www.bitovi.com/blog/how-to-
 
 ## How it works
 
-Check out our [full API documentation](../../docs/api.md).
+Check out our [full API documentation](https://github.com/bitovi/react-to-web-component/blob/main/docs/api.md).
+
+Under the hood, `r2wc` creates a `CustomElementConstructor` with custom getters/setters and life cycle methods that keep track of the props that you have defined. When a property is set, its custom setter:
+
+- re-renders the React component inside the custom element.
+- creates an enumerable getter / setter on the instance to save the set value and avoid hitting the proxy in the future.
+
+Also:
+
+- Enumerable properties and values on the custom element are used as the `props` passed to the React component.
+- The React component is not rendered until the custom element is inserted into the page.
 
 # We want to hear from you.
 

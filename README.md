@@ -91,15 +91,13 @@ npm install @r2wc/react-to-web-component
 
 ## External Examples
 
-Greeting example in a [CodePen](https://codepen.io/bavinedwards/pen/jOveaGm)
-
 Greeting example in [CodeSandbox](https://codesandbox.io/s/sample-greeting-app-ts-qwidh9)
 
 Hello, world example (React17) in [CodeSandbox](https://codesandbox.io/s/hello-world-react17-u4l3x1)
 
 Example with all prop types in [CodeSandbox](https://codesandbox.io/p/sandbox/vite-example-with-numerous-types-gjf87o)
 
-R2WC With Vite Header Example in [CodeSandbox](https://codesandbox.io/p/sandbox/header-example-e4x25q)
+R2WC With Vite Header Example in [CodeSandbox](https://codesandbox.io/p/sandbox/r2wc-header-example-vqzfgo)
 
 ## External Blog Posts
 
@@ -109,9 +107,9 @@ R2WC with Create React App (CRA) [View Post](https://www.bitovi.com/blog/how-to-
 
 ## How it works
 
-Check out our [full API documentation](../../docs/api.md).
+Check out our [full API documentation](https://github.com/bitovi/react-to-web-component/blob/main/docs/api.md).
 
-`r2wc` creates a constructor function whose prototype is a [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy). This acts as a trap for any property set on instances of the custom element. When a property is set, the proxy:
+Under the hood, `r2wc` creates a `CustomElementConstructor` with custom getters/setters and life cycle methods that keep track of the props that you have defined. When a property is set, its custom setter:
 
 - re-renders the React component inside the custom element.
 - creates an enumerable getter / setter on the instance
