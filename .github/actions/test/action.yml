@@ -11,4 +11,4 @@ runs:
   steps:
     - name: Test
       shell: bash
-      run: npx nx test ${{ inputs.package }}
+      run: npx nx test:ci ${{ inputs.package }}
