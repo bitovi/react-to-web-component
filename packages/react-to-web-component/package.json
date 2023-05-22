@@ -35,9 +35,8 @@
     "prettier": "prettier --check vite.config.ts src",
     "depcheck": "depcheck .",
     "dev": "vite",
-    "test": "npm run test-environments",
-    "test-environments": "cd ../../tests && npm run test-environments",
-    "test:ci": "npm run test-environments",
+    "test": "cd ../../tests && npm run test",
+    "test:ci": "cd ../../tests && npm run test:ci",
     "test:coverage": "vitest run --coverage",
     "clean": "rm -rf tsconfig.tsbuildinfo dist",
     "build": "vite build"
