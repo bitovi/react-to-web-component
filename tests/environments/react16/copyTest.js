@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const fs = require("fs")
 
-const TEST_PATH = "../../react-to-web-component.test.tsx"
+const TEST_PATH = "../../react-to-web-component.tsx"
 const REACT16_TEST_PATH = "./react-to-web-component.test.tsx"
 
 // copy test file from tests folder to react16 folder
