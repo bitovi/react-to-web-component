@@ -22,15 +22,12 @@ cd ../../
 
 
 # builds
-# cd src/tests/builds/vite
-# npm i
-# npm install --install-links ../../../..
-# npm run build
-# node swcBuild.js
-# cd ../../../../
+cd builds/vite
+npm ci
+npm run build
+node swcBuild.js
+cd ../../
 
-# cd src/tests/builds/webpack
-# npm i
-# npm install --install-links ../../../..
-# npm run build
-# cd ../../../../
+cd builds/webpack
+npm ci
+npm run build

@@ -20,9 +20,6 @@ jobs:
 
       - name: Verify
         uses: ./.github/actions/job-verify
-        paths-ignore:
-          - "tests/react-to-web-component.test.tsx"
-          - "tests/builds/build.test.ts"
 
   publish:
     if: github.event_name == 'workflow_dispatch'

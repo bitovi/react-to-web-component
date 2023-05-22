@@ -2,7 +2,6 @@ import { test, expect, describe } from "vitest"
 import AppWCVite from "./vite/dist/index.js"
 import AppWCViteSwc from "./vite/dist-swc/index.js"
 import AppWebpack from "./webpack/build/index.js"
-import { CustomElementConstructor } from "../../types.js"
 
 function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve))
