@@ -11,7 +11,7 @@ npm ci
 cd ../../
 
 cd environments/react18
-node copyTest.js
+node copyTest.js @r2wc/react-to-web-component
 npm ci
 cd ../../
 

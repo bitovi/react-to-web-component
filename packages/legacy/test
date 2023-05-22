@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd ../../tests/environments/react18
+node copyTest.js react-to-webcomponent legacy
+npm ci
+npm run test:ci
