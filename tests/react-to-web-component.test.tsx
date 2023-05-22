@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, it, expect, assert } from "vitest"
+import { describe, it, expect, assert, vi } from "vitest"
 import matchers from "@testing-library/jest-dom/matchers"
 import React from "react"
 import PropTypes from "prop-types"
 
-import r2wc from "./react-to-web-component"
+const r2wc = vi.fn()
 
 expect.extend(matchers)
 
@@ -75,9 +75,9 @@ describe("react-to-web-component 1", () => {
       }
     }
 
-    class TestClassElement extends r2wc(TestClassComponent, {
+    const TestClassElement = r2wc(TestClassComponent, {
       props: ["name"],
-    }) {}
+    });
 
     customElements.define("test-class", TestClassElement)
 

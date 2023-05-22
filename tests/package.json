@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "test-environments": "npm run buildtests && vitest ./environments/**/*.test.tsx run",
+    "buildtests": "chmod +x ./buildtests && ./buildtests"
+  }
+}
