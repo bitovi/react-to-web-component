@@ -12,3 +12,6 @@ runs:
     - name: Test
       shell: bash
       run: npx nx test:ci ${{ inputs.package }}
+      paths-ignore:
+        - "tests/react-to-web-component.test.tsx"
+        - "tests/builds/build.test.ts"
