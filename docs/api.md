@@ -20,10 +20,7 @@
   returned. This class is of type CustomElementConstructor can be directly passed to `customElements.define` as follows:
 
 ```js
-customElements.define(
-  "web-greeting",
-  reactToWebComponent(Greeting),
-)
+customElements.define("web-greeting", reactToWebComponent(Greeting))
 ```
 
 Or the class can be defined and used later:
