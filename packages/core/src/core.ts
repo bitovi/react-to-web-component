@@ -30,7 +30,7 @@ const propsSymbol = Symbol.for("r2wc.props")
  * @param {ReactComponent}
  * @param {Object} options - Optional parameters
  * @param {String?} options.shadow - Shadow DOM mode as either open or closed.
- * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
+ * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: 'string' | 'number' | 'boolean' | 'function' | 'json' }
  */
 export default function r2wc<Props, Context>(
   ReactComponent: React.ComponentType<Props>,

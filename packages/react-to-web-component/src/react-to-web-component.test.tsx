@@ -325,4 +325,32 @@ describe("react-to-web-component 1", () => {
       }, 0)
     })
   })
+
+  it("access to defaultProps", async () => {
+    function Button({ text }: { text: string[] }) {
+      return <button>{text.toString()}</button>
+    }
+
+    Button.defaultProps = {
+      text: ["Hello, button"],
+    }
+
+    const ButtonElement = r2wc(
+      Button,
+      { props: {text: "json"} },
+    )
+
+    customElements.define("test-button-element-default-props", ButtonElement)
+
+    const body = document.body
+    body.innerHTML = `<test-button-element-default-props></test-button-element-default-props>`
+
+    const element = body.querySelector(
+      "test-button-element-default-props",
+    ) as HTMLElement & { text: string }
+
+    await flushPromises()
+
+    expect(element.firstElementChild?.innerHTML).toBe("Hello, button")
+  })
 })
