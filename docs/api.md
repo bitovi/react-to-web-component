@@ -7,7 +7,7 @@
 - `options` - An set of parameters.
 
   - `options.shadow` - Use shadow DOM rather than light DOM.
-  - `options.props` - Array of camelCasedProps to watch as String values or { [camelCasedProps]: String | Number | Boolean | Function | Object | Array | "ref" }
+  - `options.props` - Array of camelCasedProps to watch as String values or { [camelCasedProps]: "string" | "number" | "boolean" | "function" | "json" }
 
     - When specifying Array or Object as the type, the string passed into the attribute must pass `JSON.parse()` requirements.
     - When specifying Boolean as the type, "true", "1", "yes", "TRUE", and "t" are mapped to `true`. All strings NOT begining with t, T, 1, y, or Y will be `false`.
