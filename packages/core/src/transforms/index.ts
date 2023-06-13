@@ -6,7 +6,7 @@ import json from "./json"
 
 export interface Transform<Type> {
   stringify?: (value: Type) => string
-  parse: (value: string, element: HTMLElement) => Type
+  parse: (value: string, attribute: string, element: HTMLElement) => Type
 }
 
 const transforms = {
