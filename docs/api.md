@@ -4,7 +4,7 @@
 
 - `ReactComponent` - A React component that you want to
   convert to a Web Component.
-- `options` - An set of parameters.
+- `options` - A set of parameters.
 
   - `options.shadow` - Use shadow DOM rather than light DOM.
   - `options.props` - Array of camelCasedProps to watch as String values or { [camelCasedProps]: "string" | "number" | "boolean" | "function" | "json" }
