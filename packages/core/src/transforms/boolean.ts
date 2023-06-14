@@ -15,7 +15,7 @@ const string: Transform<boolean> = {
     } else {
       if (LOG_DEPRECATION_WARNING) {
         console.warn(
-          `[${attribute}="${value}"] The current pattern for boolean attributes has been marked as deprecated, but it is still supported in this release. In a future release, this pattern will no longer be supported. To avoid compatibility issues, please migrate to the new behavior and use the attribute without a value or pass 'true', '<attribute>', or an empty string for the value to represent true. Otherwise, the attribute will be considered false.`,
+          `[${attribute}="${value}"] The current pattern for boolean attributes has been marked as deprecated. In a future release, this pattern will no longer be supported. To avoid compatibility issues, please migrate to the new behavior and use the attribute without a value or pass 'true', '<attribute>', or an empty string for the value to represent true. Otherwise, the attribute will be considered false.`,
         )
         LOG_DEPRECATION_WARNING = false
       }

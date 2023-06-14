@@ -10,7 +10,7 @@
   - `options.props` - Array of camelCasedProps to watch as String values or { [camelCasedProps]: "string" | "number" | "boolean" | "function" | "json" }
 
     - When specifying Array or Object as the type, the string passed into the attribute must pass `JSON.parse()` requirements.
-    - When specifying Boolean as the type, "true", "1", "yes", "TRUE", and "t" are mapped to `true`. All strings NOT begining with t, T, 1, y, or Y will be `false`.
+    - When specifying Boolean as the type, "true", "1", "yes", "TRUE", and "t" are mapped to `true`. All strings NOT beginning with t, T, 1, y, or Y will be `false`.
     - When specifying Function as the type, the string passed into the attribute must be the name of a function on `window` (or `global`). The `this` context of the function will be the instance of the WebComponent / HTMLElement when called.
     - If PropTypes are defined on the React component, the `options.props` will be ignored and the PropTypes will be used instead.
       However, we strongly recommend using `options.props` instead of PropTypes as it is usually not a good idea to use PropTypes in production.
@@ -82,7 +82,7 @@ document.body.innerHTML =
 console.log(document.body.firstElementChild.innerHTML) // "<h1>Hello, Christopher</h1>"
 ```
 
-If `options.props` is specified, R2WC will use those props instead of the keys from propTypes. If it's an array, all corresponding kebob-cased attr values will be passed as strings to the underlying React component.
+If `options.props` is specified, R2WC will use those props instead of the keys from propTypes. If it's an array, all corresponding kebab-cased attr values will be passed as strings to the underlying React component.
 
 ```js
 function Greeting({ camelCaseName }) {
