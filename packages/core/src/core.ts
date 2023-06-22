@@ -114,7 +114,6 @@ export default function r2wc<Props, Context>(
       if (this[contextSymbol]) {
         renderer.unmount(this[contextSymbol])
       }
-      delete this[contextSymbol]
     }
 
     attributeChangedCallback(
