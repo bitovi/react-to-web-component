@@ -114,6 +114,7 @@ export default function r2wc<Props, Context>(
       if (this[contextSymbol]) {
         renderer.unmount(this[contextSymbol])
       }
+      delete this[contextSymbol]
     }
 
     attributeChangedCallback(
@@ -164,7 +165,7 @@ export default function r2wc<Props, Context>(
         const transform = transforms[type]
         if (transform?.stringify) {
           //@ts-ignore
-          const attributeValue = transform.stringify(value)
+          const attributeValue = type === "function" ? value : transform.stringify(value)
           const oldAttributeValue = this.getAttribute(attribute)
 
           if (oldAttributeValue !== attributeValue) {
