@@ -1,22 +1,19 @@
 #!/bin/bash
 
-cd src/tests/environments/react16
+cd environments/react16
 node copyTest.js
-npm i
-npm install --install-links ../../../..
-cd ../../../../
+npm ci
+cd ../../
 
-cd src/tests/environments/react17
+cd environments/react17
 node copyTest.js
-npm i
-npm install --install-links ../../../..
-cd ../../../../
+npm ci
+cd ../../
 
-cd src/tests/environments/react18
-node copyTest.js
-npm i
-npm install --install-links ../../../..
-cd ../../../../
+cd environments/react18
+node copyTest.js @r2wc/react-to-web-component
+npm ci
+cd ../../
 
 # cd src/tests/environments/preact10
 # npm i
@@ -25,15 +22,12 @@ cd ../../../../
 
 
 # builds
-cd src/tests/builds/vite
-npm i
-npm install --install-links ../../../..
+cd builds/vite
+npm ci
 npm run build
 node swcBuild.js
-cd ../../../../
+cd ../../
 
-cd src/tests/builds/webpack
-npm i
-npm install --install-links ../../../..
+cd builds/webpack
+npm ci
 npm run build
-cd ../../../../

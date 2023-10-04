@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, it, expect, assert } from "vitest"
+import { describe, it, expect, assert, vi } from "vitest"
 import matchers from "@testing-library/jest-dom/matchers"
 import React from "react"
+import ReactDOM from "react-dom/client"
 import PropTypes from "prop-types"
 
-import r2wc from "./react-to-web-component"
+const r2wc = vi.fn()
 
 expect.extend(matchers)
 
@@ -18,7 +19,7 @@ const Greeting: React.FC<{ name: string }> = ({ name }) => (
 
 describe("react-to-web-component 1", () => {
   it("basics with react", () => {
-    const MyWelcome = r2wc(Greeting)
+    const MyWelcome = r2wc(Greeting, React, ReactDOM)
     customElements.define("my-welcome", MyWelcome)
 
     const myWelcome = new MyWelcome()
@@ -33,7 +34,9 @@ describe("react-to-web-component 1", () => {
       return <div>hello, {name}</div>
     }
 
-    const TestElement = r2wc(TestComponent, { props: ["name"] })
+    const TestElement = r2wc(TestComponent, React, ReactDOM, {
+      props: ["name"],
+    })
 
     customElements.define("test-hello", TestElement)
 
@@ -55,7 +58,7 @@ describe("react-to-web-component 1", () => {
       name: PropTypes.string.isRequired,
     }
 
-    const WithPropTypesElement = r2wc(WithProptypes)
+    const WithPropTypesElement = r2wc(WithProptypes, React, ReactDOM)
 
     customElements.define("with-proptypes", WithPropTypesElement)
 
@@ -75,9 +78,9 @@ describe("react-to-web-component 1", () => {
       }
     }
 
-    class TestClassElement extends r2wc(TestClassComponent, {
+    const TestClassElement = r2wc(TestClassComponent, React, ReactDOM, {
       props: ["name"],
-    }) {}
+    })
 
     customElements.define("test-class", TestClassElement)
 
@@ -96,7 +99,7 @@ describe("react-to-web-component 1", () => {
   it("works with shadow DOM `options.shadow === 'open'`", async () => {
     expect.assertions(5)
 
-    const MyWelcome = r2wc(Greeting, {
+    const MyWelcome = r2wc(Greeting, React, ReactDOM, {
       shadow: "open",
     })
 
@@ -126,7 +129,7 @@ describe("react-to-web-component 1", () => {
   it('It works without shadow option set to "true"', async () => {
     expect.assertions(1)
 
-    const MyWelcome = r2wc(Greeting)
+    const MyWelcome = r2wc(Greeting, React, ReactDOM)
 
     customElements.define("my-noshadow-welcome", MyWelcome)
 
@@ -152,7 +155,9 @@ describe("react-to-web-component 1", () => {
       camelCaseName: string
     }) => <h1>Hello, {camelCaseName}</h1>
 
-    const MyGreeting = r2wc(CamelCaseGreeting, { props: ["camelCaseName"] })
+    const MyGreeting = r2wc(CamelCaseGreeting, React, ReactDOM, {
+      props: ["camelCaseName"],
+    })
 
     customElements.define("my-dashed-style-greeting", MyGreeting)
 
@@ -212,17 +217,22 @@ describe("react-to-web-component 1", () => {
       return <h1>{stringProp}</h1>
     }
 
-    const WebOptionsPropsTypeCasting = r2wc(OptionsPropsTypeCasting, {
-      props: {
-        stringProp: "string",
-        numProp: "number",
-        floatProp: "number",
-        trueProp: "boolean",
-        falseProp: "boolean",
-        arrayProp: "json",
-        objProp: "json",
+    const WebOptionsPropsTypeCasting = r2wc(
+      OptionsPropsTypeCasting,
+      React,
+      ReactDOM,
+      {
+        props: {
+          stringProp: "string",
+          numProp: "number",
+          floatProp: "number",
+          trueProp: "boolean",
+          falseProp: "boolean",
+          arrayProp: "json",
+          objProp: "json",
+        },
       },
-    })
+    )
 
     customElements.define("attr-type-casting", WebOptionsPropsTypeCasting)
 
@@ -288,7 +298,7 @@ describe("react-to-web-component 1", () => {
       )
     }
 
-    const WebThemeSelect = r2wc(ThemeSelect, {
+    const WebThemeSelect = r2wc(ThemeSelect, React, ReactDOM, {
       props: {
         handleClick: "function",
       },

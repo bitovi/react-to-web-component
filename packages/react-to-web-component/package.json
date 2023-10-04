@@ -35,8 +35,8 @@
     "prettier": "prettier --check vite.config.ts src",
     "depcheck": "depcheck .",
     "dev": "vite",
-    "test": "vitest",
-    "test:ci": "vitest run",
+    "test": "cd ../../tests && npm run test",
+    "test:ci": "cd ../../tests && npm run test:ci",
     "test:coverage": "vitest run --coverage",
     "clean": "rm -rf tsconfig.tsbuildinfo dist",
     "build": "vite build"
@@ -46,8 +46,7 @@
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "prop-types": "^15.8.1"
+    "@types/react-dom": "^18.0.0"
   },
   "peerDependencies": {
     "react": "^18.0.0",

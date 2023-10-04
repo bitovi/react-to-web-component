@@ -36,7 +36,8 @@
     "depcheck": "depcheck .",
     "dev": "vite",
     "test": "vitest",
-    "test:ci": "vitest run",
+    "test:react18": "chmod +x ./test && ./test",
+    "test:ci": "npm run test:react18",
     "test:coverage": "vitest run --coverage",
     "clean": "rm -rf tsconfig.tsbuildinfo dist",
     "build": "vite build"

@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const fs = require("fs")
 
-const TEST_PATH = "../../react-to-webcomponent.test.jsx"
-const REACT16_TEST_PATH = "./react-to-webcomponent.test.jsx"
+const TEST_PATH = "../../react-to-web-component.tsx"
+const REACT16_TEST_PATH = "./react-to-web-component.test.tsx"
 
 // copy test file from tests folder to react16 folder
 fs.copyFileSync(TEST_PATH, REACT16_TEST_PATH)
 
-// edit react-to-webcomponent test file's reactToWebComponent and components imports
+// read test file
 const data = fs.readFileSync(REACT16_TEST_PATH, "utf8")
-const result = data.replace(/..\/legacy\/react-to-webcomponent/g, "react-to-webcomponent/render")
-const result2 = result.replace(/.\/components/g, "../../components.tsx")
+// add react-to-web-component import to top of file
+const result = `import r2wc from '@r2wc/react-to-web-component';\n${data}`
+// remove r2wc mock from test file
+const result2 = result.replace("const r2wc = vi.fn()", "")
 fs.writeFileSync(REACT16_TEST_PATH, result2, "utf8")
