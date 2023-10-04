@@ -2,7 +2,7 @@ import type { R2WCType } from "./transforms"
 
 import transforms from "./transforms"
 
-type PropName<Props> = Extract<keyof Props, "string">
+type PropName<Props> = Extract<keyof Props, string>
 type PropNames<Props> = Array<PropName<Props>>
 
 export interface R2WCOptions<Props> {
@@ -30,7 +30,7 @@ const propsSymbol = Symbol.for("r2wc.props")
  * @param {ReactComponent}
  * @param {Object} options - Optional parameters
  * @param {String?} options.shadow - Shadow DOM mode as either open or closed.
- * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
+ * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: "string" | "number" | "boolean" | "function" | "json" }
  */
 export default function r2wc<Props, Context>(
   ReactComponent: React.ComponentType<Props>,
@@ -114,6 +114,7 @@ export default function r2wc<Props, Context>(
       if (this[contextSymbol]) {
         renderer.unmount(this[contextSymbol])
       }
+      delete this[contextSymbol]
     }
 
     attributeChangedCallback(
