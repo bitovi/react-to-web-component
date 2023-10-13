@@ -96,9 +96,12 @@ export default function r2wc<Props, Context>(
         const type = propTypes[prop]
         const transform = transforms[type]
 
-        if (value && transform?.parse) {
+        if (!value && type === "boolean") {
           //@ts-ignore
-          this[propsSymbol][prop] = transform.parse(value, this)
+          this[propsSymbol][prop] = true
+        } else if (value && transform?.parse) {
+          //@ts-ignore
+          this[propsSymbol][prop] = transform.parse(value, attribute, this)
         }
       }
     }
@@ -127,8 +130,13 @@ export default function r2wc<Props, Context>(
       const transform = transforms[type]
 
       if (prop in propTypes && transform?.parse) {
-        //@ts-ignore
-        this[propsSymbol][prop] = transform.parse(value, this)
+        if (!value && type === "boolean") {
+          //@ts-ignore
+          this[propsSymbol][prop] = true
+        } else {
+          //@ts-ignore
+          this[propsSymbol][prop] = transform.parse(value, attribute, this)
+        }
 
         this[renderSymbol]()
       }
