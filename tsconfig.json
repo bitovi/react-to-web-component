@@ -9,6 +9,7 @@
     "composite": true,
     "incremental": true,
     "strict": true,
+
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,

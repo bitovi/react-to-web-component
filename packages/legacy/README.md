@@ -2,7 +2,7 @@
 
 `react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
-> Note: This is a compatibility wrapper around our new, simpler API. We highly reccomend using the new [@r2wc/react-to-web-component](https://github.com/bitovi/react-to-web-component) package.
+> Note: This is a compatibility wrapper around our new, simpler API. We highly reccomend using the new [@r2wc/react-to-web-component](https://www.npmjs.com/package/@r2wc/react-to-web-component) package.
 
 `react-to-webcomponent`:
 

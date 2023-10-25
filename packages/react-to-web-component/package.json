@@ -2,7 +2,7 @@
   "name": "@r2wc/react-to-web-component",
   "version": "2.0.3",
   "description": "Convert React components to native Web Components.",
-  "homepage": "https://www.bitovi.com/frontend-javascript-consulting/react-consulting",
+  "homepage": "https://www.bitovi.com/open-source/react-to-web-component",
   "author": "Bitovi",
   "license": "MIT",
   "keywords": [

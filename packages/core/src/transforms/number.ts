@@ -1,8 +1,8 @@
 import type { Transform } from "./index"
 
-const string: Transform<number> = {
+const number: Transform<number> = {
   stringify: (value) => `${value}`,
   parse: (value) => parseFloat(value),
 }
 
-export default string
+export default number

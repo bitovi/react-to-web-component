@@ -1,8 +1,9 @@
 import type { R2WCType } from "./transforms"
 
 import transforms from "./transforms"
+import { toDashedCase } from "./utils"
 
-type PropName<Props> = Extract<keyof Props, string>
+type PropName<Props> = Exclude<Extract<keyof Props, string>, "container">
 type PropNames<Props> = Array<PropName<Props>>
 
 export interface R2WCOptions<Props> {
@@ -20,6 +21,10 @@ export interface R2WCRenderer<Props, Context> {
   unmount: (context: Context) => void
 }
 
+export interface R2WCBaseProps {
+  container?: HTMLElement
+}
+
 const renderSymbol = Symbol.for("r2wc.render")
 const connectedSymbol = Symbol.for("r2wc.connected")
 const contextSymbol = Symbol.for("r2wc.context")
@@ -32,7 +37,7 @@ const propsSymbol = Symbol.for("r2wc.props")
  * @param {String?} options.shadow - Shadow DOM mode as either open or closed.
  * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: "string" | "number" | "boolean" | "function" | "json" }
  */
-export default function r2wc<Props, Context>(
+export default function r2wc<Props extends R2WCBaseProps, Context>(
   ReactComponent: React.ComponentType<Props>,
   options: R2WCOptions<Props>,
   renderer: R2WCRenderer<Props, Context>,
@@ -43,14 +48,9 @@ export default function r2wc<Props, Context>(
       : []
   }
 
-  const propNames = (
-    Array.isArray(options.props)
-      ? options.props.slice()
-      : (Object.keys(options.props) as PropNames<Props>)
-  ).filter((prop) => {
-    //@ts-ignore
-    return prop !== "container"
-  })
+  const propNames = Array.isArray(options.props)
+    ? options.props.slice()
+    : (Object.keys(options.props) as PropNames<Props>)
 
   const propTypes = {} as Record<PropName<Props>, R2WCType>
   const mapPropAttribute = {} as Record<PropName<Props>, string>
@@ -60,7 +60,7 @@ export default function r2wc<Props, Context>(
       ? "string"
       : options.props[prop]
 
-    const attribute = toDashedStyle(prop)
+    const attribute = toDashedCase(prop)
 
     mapPropAttribute[prop] = attribute
     mapAttributeProp[attribute] = prop
@@ -87,7 +87,6 @@ export default function r2wc<Props, Context>(
         this.container = this
       }
 
-      // @ts-ignore: There won't always be a container in the definition
       this[propsSymbol].container = this.container
 
       for (const prop of propNames) {
@@ -96,9 +95,9 @@ export default function r2wc<Props, Context>(
         const type = propTypes[prop]
         const transform = transforms[type]
 
-        if (value && transform?.parse) {
+        if (transform?.parse && value) {
           //@ts-ignore
-          this[propsSymbol][prop] = transform.parse(value, this)
+          this[propsSymbol][prop] = transform.parse(value, attribute, this)
         }
       }
     }
@@ -126,9 +125,9 @@ export default function r2wc<Props, Context>(
       const type = propTypes[prop]
       const transform = transforms[type]
 
-      if (prop in propTypes && transform?.parse) {
+      if (prop in propTypes && transform?.parse && value) {
         //@ts-ignore
-        this[propsSymbol][prop] = transform.parse(value, this)
+        this[propsSymbol][prop] = transform.parse(value, attribute, this)
 
         this[renderSymbol]()
       }
@@ -165,7 +164,7 @@ export default function r2wc<Props, Context>(
         const transform = transforms[type]
         if (transform?.stringify) {
           //@ts-ignore
-          const attributeValue = transform.stringify(value)
+          const attributeValue = transform.stringify(value, attribute, this)
           const oldAttributeValue = this.getAttribute(attribute)
 
           if (oldAttributeValue !== attributeValue) {
@@ -177,8 +176,4 @@ export default function r2wc<Props, Context>(
   }
 
   return ReactWebComponent
-}
-
-function toDashedStyle(camelCase = "") {
-  return camelCase.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()
 }

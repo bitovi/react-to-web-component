@@ -1,9 +1,10 @@
 {
+  "private": true,
+  "homepage": "https://www.bitovi.com/open-source/react-to-web-component",
   "namespace": "r2wc",
   "workspaces": [
     "packages/*"
   ],
-  "private": true,
   "scripts": {
     "check-packages": "ts-node ./scripts/check-packages"
   },
