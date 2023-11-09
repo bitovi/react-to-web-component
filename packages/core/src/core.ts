@@ -8,7 +8,7 @@ type PropNames<Props> = Array<PropName<Props>>
 
 export interface R2WCOptions<Props> {
   shadow?: "open" | "closed"
-  props?: PropNames<Props> | Record<PropName<Props>, R2WCType>
+  props?: PropNames<Props> | Partial<Record<PropName<Props>, R2WCType>>
 }
 
 export interface R2WCRenderer<Props, Context> {
@@ -52,7 +52,7 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
     ? options.props.slice()
     : (Object.keys(options.props) as PropNames<Props>)
 
-  const propTypes = {} as Record<PropName<Props>, R2WCType>
+  const propTypes = {} as Partial<Record<PropName<Props>, R2WCType>>
   const mapPropAttribute = {} as Record<PropName<Props>, string>
   const mapAttributeProp = {} as Record<string, PropName<Props>>
   for (const prop of propNames) {
@@ -93,7 +93,7 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
         const attribute = mapPropAttribute[prop]
         const value = this.getAttribute(attribute)
         const type = propTypes[prop]
-        const transform = transforms[type]
+        const transform = type ? transforms[type] : null
 
         if (transform?.parse && value) {
           //@ts-ignore
@@ -123,7 +123,7 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
     ) {
       const prop = mapAttributeProp[attribute]
       const type = propTypes[prop]
-      const transform = transforms[type]
+      const transform = type ? transforms[type] : null
 
       if (prop in propTypes && transform?.parse && value) {
         //@ts-ignore
@@ -161,7 +161,7 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
       set(value) {
         this[propsSymbol][prop] = value
 
-        const transform = transforms[type]
+        const transform = type ? transforms[type] : null
         if (transform?.stringify) {
           //@ts-ignore
           const attributeValue = transform.stringify(value, attribute, this)
