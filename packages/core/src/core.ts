@@ -170,6 +170,8 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
           if (oldAttributeValue !== attributeValue) {
             this.setAttribute(attribute, attributeValue)
           }
+        } else {
+          this[renderSymbol]()
         }
       },
     })
