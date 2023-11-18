@@ -1,13 +1,15 @@
 # React to Web Component
 
-`@r2wc/react-to-web-component` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
+!!!!!!!! FIX ME !!!!!!!!
 
-> Note: This package only works with the React 18. If you are using React 16 or 17, use version 1.0.
+`react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
-`@r2wc/react-to-web-component`:
+> Note: This is a compatibility wrapper around our new, simpler API. We highly reccomend using the new [@r2wc/react-to-web-component](https://github.com/bitovi/react-to-web-component) package.
+
+`react-to-webcomponent`:
 
 - Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
-- Is `1.26KB` minified and gzipped.
+- Is `1.37KB` minified and gzipped.
 
 ## Need help or have questions?
 
@@ -31,9 +33,13 @@ const Greeting = () => {
 With our React component complete, all we have to do is call `r2wc` and [customElements.define](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define) to create and define our custom element:
 
 ```js
-import r2wc from "@r2wc/react-to-web-component"
+import React from "react"
+import ReactDOM from "react-dom/client" // if using React 18
+// import ReactDOM from "react-dom" // if using React 17
 
-const WebGreeting = r2wc(Greeting)
+import r2wc from "react-to-webcomponent"
+
+const WebGreeting = r2wc(Greeting, React, ReactDOM)
 
 customElements.define("web-greeting", WebGreeting)
 ```
@@ -59,7 +65,7 @@ const Greeting = ({ name }) => {
   return <h1>Hello, {name}!</h1>
 }
 
-const WebGreeting = r2wc(Greeting, {
+const WebGreeting = r2wc(Greeting, React, ReactDOM, {
   props: {
     name: "string",
   },
@@ -86,16 +92,13 @@ We also have a [complete example using a third party library](docs/complete-exam
 To install from npm:
 
 ```
-npm install @r2wc/react-to-web-component
+npm install react-to-webcomponent
 ```
 
 ## Examples
 
-* [Hello World](https://codesandbox.io/s/hello-world-md5oih) - The quintessential software demo!
-* [All the Props](https://codesandbox.io/s/all-the-props-n8z5hv) - A demo of all the prop transform types that R2WC supports.
-* [Header Example](https://codesandbox.io/s/example-header-blog-7k313l) - An example reusable Header component.
-* [MUI Button](https://codesandbox.io/s/example-mui-button-qwidh9) - An example application using an MUI button with theme customization.
-* [Checklist Demo](https://codesandbox.io/s/example-checklist-blog-y3nqwx) - An example Checklist application.
+* [Greeting](https://codesandbox.io/s/greeting-legacy-8oopz3)
+* [All the Props](https://codesandbox.io/s/all-the-props-legacy-0zh6iv)
 
 ## Blog Posts
 
@@ -106,16 +109,6 @@ R2WC with Create React App (CRA) [View Post](https://www.bitovi.com/blog/how-to-
 ## How it works
 
 Check out our [full API documentation](https://github.com/bitovi/react-to-web-component/blob/main/docs/api.md).
-
-Under the hood, `r2wc` creates a `CustomElementConstructor` with custom getters/setters and life cycle methods that keep track of the props that you have defined. When a property is set, its custom setter:
-
-- re-renders the React component inside the custom element.
-- creates an enumerable getter / setter on the instance to save the set value and avoid hitting the proxy in the future.
-
-Also:
-
-- Enumerable properties and values on the custom element are used as the `props` passed to the React component.
-- The React component is not rendered until the custom element is inserted into the page.
 
 # We want to hear from you.
 
