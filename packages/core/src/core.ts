@@ -1,5 +1,6 @@
 import type { R2WCType } from "./transforms"
 
+import parseChildren from "./parseChildren"
 import transforms from "./transforms"
 import { toDashedCase } from "./utils"
 
@@ -9,6 +10,7 @@ type PropNames<Props> = Array<PropName<Props>>
 export interface R2WCOptions<Props> {
   shadow?: "open" | "closed"
   props?: PropNames<Props> | Record<PropName<Props>, R2WCType>
+  experimentalChildren?: boolean
 }
 
 export interface R2WCRenderer<Props, Context> {
@@ -22,6 +24,7 @@ export interface R2WCRenderer<Props, Context> {
 }
 
 export interface R2WCBaseProps {
+  children?: React.ReactNode
   container?: HTMLElement
 }
 
@@ -99,6 +102,10 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
           //@ts-ignore
           this[propsSymbol][prop] = transform.parse(value, attribute, this)
         }
+      }
+
+      if (options.experimentalChildren) {
+        this[propsSymbol].children = parseChildren(this.childNodes)
       }
     }
 
