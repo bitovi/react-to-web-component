@@ -42,7 +42,7 @@ interface Context<Props> {
  * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: String | Number | Boolean | Function | Object | Array }
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function r2wc<Props>(
+export default function r2wc<Props extends object>(
   ReactComponent: React.ComponentType<Props>,
   React: ReactType,
   ReactDOM: ReactDOMRootType | ReactDOMRenderType,

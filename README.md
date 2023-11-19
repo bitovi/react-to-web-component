@@ -2,10 +2,20 @@
 
 `@r2wc/react-to-web-component` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require being mounted through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
+> Note: The latest version of this package only works with the React 18. If you are using React 16 or 17, please use version 1.
+
 `@r2wc/react-to-web-component`:
 
 - Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
-- Is `1.11KB` minified and gzipped.
+- Is `1.26KB` minified and gzipped.
+
+## Setup
+
+To install from npm:
+
+```
+npm install @r2wc/react-to-web-component
+```
 
 ## Need help or have questions?
 
@@ -46,8 +56,6 @@ Now we can use `<web-greeting>` like any other HTML element!
 </body>
 ```
 
-Note that by using React 18, `r2wc` will use the new root API. If your application needs the legacy API, please use React 17
-
 In the above case, the web-greeting custom element is not making use of the `name` property from our `Greeting` component.
 
 ## Working with Attributes
@@ -81,25 +89,15 @@ For projects needing more advanced usage of the web components, see our [program
 
 We also have a [complete example using a third party library](docs/complete-example.md).
 
-## Setup
+## Examples
 
-To install from npm:
+* [Hello World](https://codesandbox.io/s/hello-world-md5oih) - The quintessential software demo!
+* [All the Props](https://codesandbox.io/s/all-the-props-n8z5hv) - A demo of all the prop transform types that R2WC supports.
+* [Header Example](https://codesandbox.io/s/example-header-blog-7k313l) - An example reusable Header component.
+* [MUI Button](https://codesandbox.io/s/example-mui-button-qwidh9) - An example application using an MUI button with theme customization.
+* [Checklist Demo](https://codesandbox.io/s/example-checklist-blog-y3nqwx) - An example Checklist application.
 
-```
-npm install @r2wc/react-to-web-component
-```
-
-## External Examples
-
-Greeting example in [CodeSandbox](https://codesandbox.io/s/sample-greeting-app-ts-qwidh9)
-
-Hello, world example (React17) in [CodeSandbox](https://codesandbox.io/s/hello-world-react17-u4l3x1)
-
-Example with all prop types in [CodeSandbox](https://codesandbox.io/p/sandbox/vite-example-with-numerous-types-gjf87o)
-
-R2WC With Vite Header Example in [CodeSandbox](https://codesandbox.io/p/sandbox/r2wc-header-example-vqzfgo)
-
-## External Blog Posts
+## Blog Posts
 
 R2WC with Vite [View Post](https://www.bitovi.com/blog/react-everywhere-with-vite-and-react-to-webcomponent)
 
@@ -112,29 +110,12 @@ Check out our [full API documentation](https://github.com/bitovi/react-to-web-co
 Under the hood, `r2wc` creates a `CustomElementConstructor` with custom getters/setters and life cycle methods that keep track of the props that you have defined. When a property is set, its custom setter:
 
 - re-renders the React component inside the custom element.
-- creates an enumerable getter / setter on the instance
-  to save the set value and avoid hitting the proxy in the future.
+- creates an enumerable getter / setter on the instance to save the set value and avoid hitting the proxy in the future.
 
 Also:
 
 - Enumerable properties and values on the custom element are used as the `props` passed to the React component.
 - The React component is not rendered until the custom element is inserted into the page.
-
-# Tests
-
-To run tests, first run:
-
-```
-npm run buildtests
-```
-
-This copies the root test file into each of the `/tests/react*` versioned folders, modifies the ReactDOM import for older versions, and installs the corresponding version of react in that directory.
-
-Then run:
-
-```
-npm run test
-```
 
 # We want to hear from you.
 

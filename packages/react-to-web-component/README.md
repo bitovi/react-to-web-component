@@ -1,13 +1,21 @@
 # React to Web Component
 
-`@r2wc/react-to-web-component` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
+`@r2wc/react-to-web-component` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require being mounted through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
-> Note: This package only works with the React 18. If you are using React 16 or 17, use version 1.0.
+> Note: The latest version of this package only works with the React 18. If you are using React 16 or 17, please use version 1.
 
 `@r2wc/react-to-web-component`:
 
 - Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
 - Is `1.26KB` minified and gzipped.
+
+## Setup
+
+To install from npm:
+
+```
+npm install @r2wc/react-to-web-component
+```
 
 ## Need help or have questions?
 
@@ -81,21 +89,13 @@ For projects needing more advanced usage of the web components, see our [program
 
 We also have a [complete example using a third party library](docs/complete-example.md).
 
-## Setup
-
-To install from npm:
-
-```
-npm install @r2wc/react-to-web-component
-```
-
 ## Examples
 
-* [Greeting](https://codesandbox.io/s/greeting-md5oih)
-* [All the Props](https://codesandbox.io/s/all-the-props-n8z5hv)
-* [Header Demo](https://codesandbox.io/s/example-header-blog-7k313l)
-* [MUI Button](https://codesandbox.io/s/example-mui-button-qwidh9)
-* [Checklist Demo](https://codesandbox.io/s/example-checklist-blog-y3nqwx)
+* [Hello World](https://codesandbox.io/s/hello-world-md5oih) - The quintessential software demo!
+* [All the Props](https://codesandbox.io/s/all-the-props-n8z5hv) - A demo of all the prop transform types that R2WC supports.
+* [Header Example](https://codesandbox.io/s/example-header-blog-7k313l) - An example reusable Header component.
+* [MUI Button](https://codesandbox.io/s/example-mui-button-qwidh9) - An example application using an MUI button with theme customization.
+* [Checklist Demo](https://codesandbox.io/s/example-checklist-blog-y3nqwx) - An example Checklist application.
 
 ## Blog Posts
 
