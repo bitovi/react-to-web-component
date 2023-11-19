@@ -67,6 +67,7 @@ export default function r2wc<Props extends object>(
     }
 
     if ("render" in ReactDOM) {
+      //@ts-ignore
       ReactDOM.render(element, container)
 
       return {
@@ -90,6 +91,7 @@ export default function r2wc<Props extends object>(
     }
 
     if ("render" in ReactDOM) {
+      //@ts-ignore
       ReactDOM.render(element, container)
       return
     }
@@ -102,6 +104,7 @@ export default function r2wc<Props extends object>(
     }
 
     if ("unmountComponentAtNode" in ReactDOM) {
+      //@ts-ignore
       ReactDOM.unmountComponentAtNode(container)
       return
     }

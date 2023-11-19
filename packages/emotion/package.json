@@ -36,6 +36,9 @@
     "prettier": "prettier --check vite.config.ts src",
     "depcheck": "depcheck .",
     "dev": "vite",
+    "test": "vitest",
+    "test:ci": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "clean": "rm -rf tsconfig.tsbuildinfo dist",
     "build": "vite build"
   },
