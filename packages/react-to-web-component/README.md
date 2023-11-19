@@ -1,13 +1,21 @@
 # React to Web Component
 
-`@r2wc/react-to-web-component` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
+`@r2wc/react-to-web-component` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require being mounted through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
-> Note: This package only works with the React 18. If you are using React 16 or 17, use version 1.0.
+> Note: The latest version of this package only works with the React 18. If you are using React 16 or 17, please use version 1.
 
 `@r2wc/react-to-web-component`:
 
 - Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
 - Is `1.26KB` minified and gzipped.
+
+## Setup
+
+To install from npm:
+
+```
+npm install @r2wc/react-to-web-component
+```
 
 ## Need help or have questions?
 
@@ -80,14 +88,6 @@ as follows:
 For projects needing more advanced usage of the web components, see our [programatic usage and declarative demos](docs/programatic-usage.md).
 
 We also have a [complete example using a third party library](docs/complete-example.md).
-
-## Setup
-
-To install from npm:
-
-```
-npm install @r2wc/react-to-web-component
-```
 
 ## Examples
 
