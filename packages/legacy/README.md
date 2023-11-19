@@ -1,13 +1,21 @@
 # React to Web Component
 
-`react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require mounted being through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
+`react-to-webcomponent` converts [React](https://reactjs.org/) components to [custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)! It lets you share React components as native elements that **don't** require being mounted through React. The custom element acts as a wrapper for the underlying React component. Use these custom elements with any project that uses HTML even in any framework (vue, svelte, angular, ember, canjs) the same way you would use standard HTML elements.
 
-> Note: This is a compatibility wrapper around our new, simpler API. We highly reccomend using the new [@r2wc/react-to-web-component](https://github.com/bitovi/react-to-web-component) package.
+> Note: This is a compatibility wrapper around our new, simpler API. We highly reccomend using the new [@r2wc/react-to-web-component](https://www.npmjs.com/package/@r2wc/react-to-web-component) package.
 
 `react-to-webcomponent`:
 
 - Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
 - Is `1.37KB` minified and gzipped.
+
+## Setup
+
+To install from npm:
+
+```
+npm install react-to-webcomponent
+```
 
 ## Need help or have questions?
 
@@ -85,18 +93,11 @@ For projects needing more advanced usage of the web components, see our [program
 
 We also have a [complete example using a third party library](docs/complete-example.md).
 
-## Setup
-
-To install from npm:
-
-```
-npm install react-to-webcomponent
-```
 
 ## Examples
 
-* [Greeting](https://codesandbox.io/s/greeting-legacy-8oopz3)
-* [All the Props](https://codesandbox.io/s/all-the-props-legacy-0zh6iv)
+* [Hello World](https://codesandbox.io/s/hello-world-legacy-8oopz3) - The quintessential software demo!
+* [All the Props](https://codesandbox.io/s/all-the-props-legacy-0zh6iv) - A demo of all the prop transform types that R2WC supports.
 
 ## Blog Posts
 

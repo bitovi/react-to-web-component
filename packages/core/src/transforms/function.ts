@@ -1,8 +1,8 @@
 import type { Transform } from "./index"
 
-const string: Transform<(...args: unknown[]) => unknown> = {
+const function_: Transform<(...args: unknown[]) => unknown> = {
   stringify: (value) => value.name,
-  parse: (value, element) => {
+  parse: (value, attribute, element) => {
     const fn = (() => {
       if (typeof window !== "undefined" && value in window) {
         // @ts-expect-error
@@ -19,4 +19,4 @@ const string: Transform<(...args: unknown[]) => unknown> = {
   },
 }
 
-export default string
+export default function_

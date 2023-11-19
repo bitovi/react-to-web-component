@@ -1,8 +1,8 @@
 import type { Transform } from "./index"
 
-const string: Transform<string> = {
+const json: Transform<string> = {
   stringify: (value) => JSON.stringify(value),
   parse: (value) => JSON.parse(value),
 }
 
-export default string
+export default json
