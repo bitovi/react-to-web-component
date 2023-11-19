@@ -212,7 +212,7 @@ describe("@r2wc/core", () => {
 
     await wait()
 
-    expect(element).toHaveStyle("background-color: red;")
+    expect(element).toHaveStyle("background-color: rgb(255, 0, 0);")
     expect(element).not.toBeVisible()
     expect(body.querySelector("#test-button-id")).toBe(element)
   })
