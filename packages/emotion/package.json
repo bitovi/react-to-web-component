@@ -36,9 +36,6 @@
     "prettier": "prettier --check vite.config.ts src",
     "depcheck": "depcheck .",
     "dev": "vite",
-    "test": "vitest",
-    "test:ci": "vitest run",
-    "test:coverage": "vitest run --coverage",
     "clean": "rm -rf tsconfig.tsbuildinfo dist",
     "build": "vite build"
   },
@@ -46,13 +43,12 @@
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "prop-types": "^15.8.1"
+    "@types/react-dom": "^18.0.0"
   },
   "peerDependencies": {
     "@emotion/cache": "^11.0.0",
     "@emotion/react": "^11.0.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "^16.0.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.0.0 || ^17.0.0 || ^18.0.0"
   }
 }

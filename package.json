@@ -17,7 +17,7 @@
     "trailingComma": "all"
   },
   "devDependencies": {
-    "@bitovi/eslint-config": "^1.5.0",
+    "@bitovi/eslint-config": "^1.6.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@vitejs/plugin-react": "^4.2.0",
     "depcheck": "^1.4.3",
@@ -27,8 +27,8 @@
     "prettier": "^2.7.1",
     "semver": "^7.5.0",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.5",
-    "vite": "^4.3.9",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0",
     "vite-plugin-dts": "^2.3.0",
     "vitest": "^0.30.1"
   }

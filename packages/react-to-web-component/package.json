@@ -42,12 +42,11 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@r2wc/core": "^1.0.0"
+    "@r2wc/core": "^1.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "prop-types": "^15.8.1"
+    "@types/react-dom": "^18.0.0"
   },
   "peerDependencies": {
     "react": "^18.0.0",

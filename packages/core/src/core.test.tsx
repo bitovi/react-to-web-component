@@ -77,7 +77,7 @@ describe("@r2wc/core", () => {
   })
 
   test("updated attribute updates the component prop and the HTMLElement property", async () => {
-    function Button({ text }: { text: string }) {
+    const Button: React.FC<{ text: string }> = ({ text }) => {
       return <button>{text}</button>
     }
 
@@ -114,14 +114,14 @@ describe("@r2wc/core", () => {
       funcProp: () => void
     }
 
-    function ButtonWithDifferentPropTypes({
+    const ButtonWithDifferentPropTypes: React.FC<Props> = ({
       text,
       numProp,
       boolProp,
       arrProp,
       objProp,
       funcProp,
-    }: Props) {
+    }) => {
       return <button>{text}</button>
     }
 
@@ -186,7 +186,9 @@ describe("@r2wc/core", () => {
   })
 
   test("sets HTML property not defined in props but found on HTML object", async () => {
-    function Button({ text = "Hello, button" }: { text: string }) {
+    const Button: React.FC<{ text?: string }> = ({
+      text = "Hello, button",
+    }) => {
       return <button>{text}</button>
     }
 
