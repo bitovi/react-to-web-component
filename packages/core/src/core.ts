@@ -24,7 +24,6 @@ export interface R2WCRenderer<Props, Context> {
 }
 
 export interface R2WCBaseProps {
-  children?: React.ReactNode
   container?: HTMLElement
 }
 
