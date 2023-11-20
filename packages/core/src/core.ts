@@ -11,7 +11,7 @@ export interface R2WCOptions<Props> {
   props?: PropNames<Props> | Partial<Record<PropName<Props>, R2WCType>>
 }
 
-export interface R2WCRenderer<Props, Context> {
+export interface R2WCRenderer<Props extends R2WCBaseProps, Context> {
   mount: (
     container: HTMLElement,
     ReactComponent: React.ComponentType<Props>,

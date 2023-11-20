@@ -41,9 +41,10 @@ function unmount<Props extends R2WCBaseProps>({ root }: Context<Props>): void {
   root.unmount()
 }
 
-export default function r2wc<Props extends R2WCBaseProps>(
+export default function r2wc<Props extends object>(
   ReactComponent: React.ComponentType<Props>,
   options: R2WCOptions<Props> = {},
 ): CustomElementConstructor {
+  //@ts-ignore core uses R2WCBaseProps, but we don't want to impose that on all components
   return r2wcCore(ReactComponent, options, { mount, update, unmount })
 }

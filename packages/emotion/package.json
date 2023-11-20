@@ -42,6 +42,9 @@
     "clean": "rm -rf tsconfig.tsbuildinfo dist",
     "build": "vite build"
   },
+  "dependencies": {
+    "@r2wc/core": "^1.0.1"
+  },
   "devDependencies": {
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.1",
