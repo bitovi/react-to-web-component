@@ -11,10 +11,15 @@ export default defineConfig({
       formats: ["es", "cjs"],
     },
     rollupOptions: {
-      external: ["react", "@emotion/cache", "@emotion/react"],
+      external: [
+        "react",
+        "@emotion/cache",
+        "@emotion/react",
+        "react/jsx-runtime",
+      ],
     },
   },
-  plugins: [dts(), react({ jsxRuntime: "classic" })],
+  plugins: [dts(), react()],
   test: {
     environment: "jsdom",
     restoreMocks: true,

@@ -1,3 +1,5 @@
+import type { R2WCBaseProps } from "@r2wc/core"
+
 import createCache from "@emotion/cache"
 import { CacheProvider } from "@emotion/react"
 import { useMemo } from "react"
@@ -5,10 +7,11 @@ import { useMemo } from "react"
 export function withCacheProvider<Props>(
   Component: React.ComponentType<Props>,
   key: string = "rtwc",
-): React.FC<Props & { container: HTMLElement }> {
-  const ComponentWithStyleProvider: React.FC<
-    Props & { container: HTMLElement }
-  > = ({ container, ...props }) => {
+): React.FC<Props & R2WCBaseProps> {
+  const ComponentWithStyleProvider: React.FC<Props & R2WCBaseProps> = ({
+    container,
+    ...props
+  }) => {
     const cache = useMemo(() => createCache({ key, container }), [container])
 
     return (

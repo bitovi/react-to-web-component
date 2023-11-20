@@ -22,7 +22,7 @@ export interface R2WCRenderer<Props, Context> {
 }
 
 export interface R2WCBaseProps {
-  container?: HTMLElement
+  container: HTMLElement
 }
 
 const renderSymbol = Symbol.for("r2wc.render")
