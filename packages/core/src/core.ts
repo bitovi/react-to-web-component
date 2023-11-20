@@ -179,3 +179,15 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
 
   return ReactWebComponent
 }
+
+export function useImperativeMethods<Methods extends string>(
+  container: HTMLElement | ShadowRoot,
+  methods: Record<Methods, () => unknown>,
+): void {
+  const element = "host" in container ? container.host : container
+
+  for (const method in methods) {
+    //@ts-ignore
+    element[method] = methods[method]
+  }
+}

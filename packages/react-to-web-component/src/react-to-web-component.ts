@@ -6,6 +6,8 @@ import { createRoot } from "react-dom/client"
 
 import r2wcCore from "@r2wc/core"
 
+export { useImperativeMethods } from "@r2wc/core"
+
 interface Context<Props extends R2WCBaseProps> {
   root: Root
   ReactComponent: React.ComponentType<Props>
