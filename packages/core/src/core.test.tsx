@@ -13,7 +13,7 @@ function wait() {
   return new Promise((resolve) => setImmediate(resolve))
 }
 
-describe("core", () => {
+describe("@r2wc/core", () => {
   afterEach(() => {
     document.body.innerHTML = ""
   })
@@ -77,7 +77,7 @@ describe("core", () => {
   })
 
   test("updated attribute updates the component prop and the HTMLElement property", async () => {
-    function Button({ text }: { text: string }) {
+    const Button: React.FC<{ text: string }> = ({ text }) => {
       return <button>{text}</button>
     }
 
@@ -114,14 +114,14 @@ describe("core", () => {
       funcProp: () => void
     }
 
-    function ButtonWithDifferentPropTypes({
+    const ButtonWithDifferentPropTypes: React.FC<Props> = ({
       text,
       numProp,
       boolProp,
       arrProp,
       objProp,
       funcProp,
-    }: Props) {
+    }) => {
       return <button>{text}</button>
     }
 
@@ -186,7 +186,9 @@ describe("core", () => {
   })
 
   test("sets HTML property not defined in props but found on HTML object", async () => {
-    function Button({ text = "Hello, button" }: { text: string }) {
+    const Button: React.FC<{ text?: string }> = ({
+      text = "Hello, button",
+    }) => {
       return <button>{text}</button>
     }
 
@@ -210,7 +212,7 @@ describe("core", () => {
 
     await wait()
 
-    expect(element).toHaveStyle("background-color: red;")
+    expect(element).toHaveStyle("background-color: rgb(255, 0, 0);")
     expect(element).not.toBeVisible()
     expect(body.querySelector("#test-button-id")).toBe(element)
   })

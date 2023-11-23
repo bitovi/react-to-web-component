@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "Node",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
 
@@ -19,7 +19,6 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "resolveJsonModule": true,
     "skipLibCheck": true,
     "useDefineForClassFields": true
   },
