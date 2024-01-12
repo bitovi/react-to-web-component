@@ -10,7 +10,7 @@
   - `options.props` - Array of camelCasedProps to watch as String values or { [camelCasedProps]: "string" | "number" | "boolean" | "function" | "json" }
 
     - When specifying Array or Object as the type, the string passed into the attribute must pass `JSON.parse()` requirements.
-    - When specifying Boolean as the type, "true", "1", "yes", "TRUE", and "t" are mapped to `true`. All strings NOT begining with t, T, 1, y, or Y will be `false`.
+    - When specifying Boolean as the type, "true", "1"…"9", "yes", "TRUE", and "t", as well as absence of a value, the empty string, and value equal to the name of attribute are mapped to `true`. All strings NOT begining with t, T, 1…9, y, or Y but for the name of attribute will be `false`.
     - When specifying Function as the type, the string passed into the attribute must be the name of a function on `window` (or `global`). The `this` context of the function will be the instance of the WebComponent / HTMLElement when called.
     - If PropTypes are defined on the React component, the `options.props` will be ignored and the PropTypes will be used instead.
       However, we strongly recommend using `options.props` instead of PropTypes as it is usually not a good idea to use PropTypes in production.
@@ -127,7 +127,11 @@ customElements.define(
       numProp: "number",
       floatProp: "number",
       trueProp: "boolean",
+      htmlTruePropPresent: "boolean",
+      htmlTruePropEmpty: "boolean",
+      htmlTruePropSame: "boolean",
       falseProp: "boolean",
+      htmlFalsePropAbsent: "boolean",
       arrayProp: "json",
       objProp: "json",
     },
@@ -140,10 +144,14 @@ document.body.innerHTML = `
     num-prop="360"
     float-prop="0.5"
     true-prop="true"
+    html-true-prop-present
+    html-true-prop-empty=""
+    html-true-prop-same="html-true-prop-same"
     false-prop="false"
     array-prop='[true, 100.25, "👽", { "aliens": "welcome" }]'
     obj-prop='{ "very": "object", "such": "wow!" }'
   ></attr-prop-type-casting>
+  <!-- note the lack of html-false-prop-absent -->
 `
 
 /*
@@ -153,7 +161,11 @@ document.body.innerHTML = `
     numProp: 360,
     floatProp: 0.5,
     trueProp: true,
+    htmlTruePropPresent: true,
+    htmlTruePropEmpty: true,
+    htmlTruePropSame: true,
     falseProp: false,
+    htmlFalsePropAbsent: false,
     arrayProp: [true, 100.25, "👽", { aliens: "welcome" }],
     objProp: { very: "object", such: "wow!" },
   }
