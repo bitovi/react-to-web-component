@@ -182,14 +182,14 @@ describe("react-to-web-component 1", () => {
       stringProp: string
       numProp: number
       floatProp: number
-      truePropWithValueTrue: boolean,
-      truePropWithValueYes: boolean,
-      truePropWithValueOne: boolean,
-      truePropWithValueFive: boolean,
-      truePropWithValueNine: boolean,
-      falsePropWithValueFalse: boolean,
-      falsePropWithValueNo: boolean,
-      falsePropWithValueZero: boolean,
+      truePropWithValueTrue: boolean
+      truePropWithValueYes: boolean
+      truePropWithValueOne: boolean
+      truePropWithValueFive: boolean
+      truePropWithValueNine: boolean
+      falsePropWithValueFalse: boolean
+      falsePropWithValueNo: boolean
+      falsePropWithValueZero: boolean
       arrayProp: any[]
       objProp: object
     }
@@ -315,10 +315,10 @@ describe("react-to-web-component 1", () => {
     expect.assertions(11)
 
     type CastinProps = {
-      truePropPresent: boolean,
-      truePropEmptyString: boolean,
-      truePropWithValueEqualToName: boolean,
-      falsePropAbsent: boolean,
+      truePropPresent: boolean
+      truePropEmptyString: boolean
+      truePropWithValueEqualToName: boolean
+      falsePropAbsent: boolean
     }
 
     const global = window as any
@@ -348,7 +348,10 @@ describe("react-to-web-component 1", () => {
       },
     })
 
-    customElements.define("html-boolean-attr-type-casting", WebOptionsPropsTypeCasting)
+    customElements.define(
+      "html-boolean-attr-type-casting",
+      WebOptionsPropsTypeCasting,
+    )
 
     const body = document.body
 
@@ -367,45 +370,64 @@ describe("react-to-web-component 1", () => {
 
     await flushPromises()
 
-    expect(global.castedValues.truePropPresent,
-      'Prop without value is cast to true on mount').toEqual(true)
-    expect(global.castedValues.truePropEmptyString,
-      'Prop with value equal to empty string is cast to true on mount').toEqual(true)
-    expect(global.castedValues.truePropWithValueEqualToName,
-      'Prop with value equal to attribute name is considered true on mount').toEqual(true)
-    expect(global.castedValues.falsePropAbsent,
-      'Lack of prop is cast to false on mount').toEqual(false)
+    expect(
+      global.castedValues.truePropPresent,
+      "Prop without value is cast to true on mount",
+    ).toEqual(true)
+    expect(
+      global.castedValues.truePropEmptyString,
+      "Prop with value equal to empty string is cast to true on mount",
+    ).toEqual(true)
+    expect(
+      global.castedValues.truePropWithValueEqualToName,
+      "Prop with value equal to attribute name is considered true on mount",
+    ).toEqual(true)
+    expect(
+      global.castedValues.falsePropAbsent,
+      "Lack of prop is cast to false on mount",
+    ).toEqual(false)
 
-    const element = body.querySelector('html-boolean-attr-type-casting')!
-    expect(element).toBeVisible();
+    const element = body.querySelector("html-boolean-attr-type-casting")!
+    expect(element).toBeVisible()
 
-    element.removeAttribute('true-prop-present');
-    element.removeAttribute('true-prop-empty-string');
-    element.removeAttribute('true-prop-with-value-equal-to-name');
-    element.setAttribute('false-prop-absent', '');
+    element.removeAttribute("true-prop-present")
+    element.removeAttribute("true-prop-empty-string")
+    element.removeAttribute("true-prop-with-value-equal-to-name")
+    element.setAttribute("false-prop-absent", "")
 
-    await flushPromises();
+    await flushPromises()
 
-    expect(global.castedValues.truePropPresent,
-      'Prop without value is cast to false when attribute is removed').toEqual(false)
-    expect(global.castedValues.truePropEmptyString,
-      'Prop with value equal to empty string is cast to false when attribute is removed').toEqual(false)
-    expect(global.castedValues.truePropWithValueEqualToName,
-      'Prop with value equal to attribute name is cast to false when attribute is removed').toEqual(false)
-    expect(global.castedValues.falsePropAbsent,
-      'Prop which attribute was absent on mount is cast to true when it appears').toEqual(true)
+    expect(
+      global.castedValues.truePropPresent,
+      "Prop without value is cast to false when attribute is removed",
+    ).toEqual(false)
+    expect(
+      global.castedValues.truePropEmptyString,
+      "Prop with value equal to empty string is cast to false when attribute is removed",
+    ).toEqual(false)
+    expect(
+      global.castedValues.truePropWithValueEqualToName,
+      "Prop with value equal to attribute name is cast to false when attribute is removed",
+    ).toEqual(false)
+    expect(
+      global.castedValues.falsePropAbsent,
+      "Prop which attribute was absent on mount is cast to true when it appears",
+    ).toEqual(true)
 
     // @ts-ignore
-    element.falsePropAbsent = false;
+    element.falsePropAbsent = false
 
-    await flushPromises();
+    await flushPromises()
 
-    expect(element,
-      'Attribute of custom element is removed when property of custom element was set to false from outside').not.toHaveAttribute('false-prop-absent')
-    expect(global.castedValues.falsePropAbsent,
-      'Prop of React component is set to false when property of custom element was set to false from outside').toEqual(false)
+    expect(
+      element,
+      "Attribute of custom element is removed when property of custom element was set to false from outside",
+    ).not.toHaveAttribute("false-prop-absent")
+    expect(
+      global.castedValues.falsePropAbsent,
+      "Prop of React component is set to false when property of custom element was set to false from outside",
+    ).toEqual(false)
   })
-
 
   it("Props typed as Function convert the string value of attribute into global fn calls bound to the webcomponent instance", async () => {
     expect.assertions(2)
