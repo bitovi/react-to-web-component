@@ -95,7 +95,10 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
         const type = propTypes[prop]
         const transform = type ? transforms[type] : null
 
-        if (transform?.parse && value) {
+        if (!value && type === "boolean") {
+          //@ts-ignore
+          this[propsSymbol][prop] = this.hasAttribute(attribute);
+        } else if (transform?.parse && value) {
           //@ts-ignore
           this[propsSymbol][prop] = transform.parse(value, attribute, this)
         }
@@ -125,7 +128,12 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
       const type = propTypes[prop]
       const transform = type ? transforms[type] : null
 
-      if (prop in propTypes && transform?.parse && value) {
+      if (!value && type === "boolean") {
+        //@ts-ignore
+        this[propsSymbol][prop] = this.hasAttribute(attribute)
+
+        this[renderSymbol]()
+      } else if (prop in propTypes && transform?.parse && value) {
         //@ts-ignore
         this[propsSymbol][prop] = transform.parse(value, attribute, this)
 
@@ -159,10 +167,14 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
         return this[propsSymbol][prop]
       },
       set(value) {
+        const oldValue = this[propsSymbol][prop]
+        const transform = type ? transforms[type] : null
+
         this[propsSymbol][prop] = value
 
-        const transform = type ? transforms[type] : null
-        if (transform?.stringify) {
+        if (type === "boolean" && !value && oldValue) {
+          this.removeAttribute(attribute);
+        } else if (transform?.stringify) {
           //@ts-ignore
           const attributeValue = transform.stringify(value, attribute, this)
           const oldAttributeValue = this.getAttribute(attribute)

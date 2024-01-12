@@ -176,14 +176,20 @@ describe("react-to-web-component 1", () => {
   })
 
   it("options.props can specify and will convert the String attribute value into Number, Boolean, Array, and/or Object", async () => {
-    expect.assertions(12)
+    expect.assertions(18)
 
     type CastinProps = {
       stringProp: string
       numProp: number
       floatProp: number
-      trueProp: boolean
-      falseProp: boolean
+      truePropWithValueTrue: boolean,
+      truePropWithValueYes: boolean,
+      truePropWithValueOne: boolean,
+      truePropWithValueFive: boolean,
+      truePropWithValueNine: boolean,
+      falsePropWithValueFalse: boolean,
+      falsePropWithValueNo: boolean,
+      falsePropWithValueZero: boolean,
       arrayProp: any[]
       objProp: object
     }
@@ -194,8 +200,14 @@ describe("react-to-web-component 1", () => {
       stringProp,
       numProp,
       floatProp,
-      trueProp,
-      falseProp,
+      truePropWithValueTrue,
+      truePropWithValueYes,
+      truePropWithValueOne,
+      truePropWithValueFive,
+      truePropWithValueNine,
+      falsePropWithValueFalse,
+      falsePropWithValueNo,
+      falsePropWithValueZero,
       arrayProp,
       objProp,
     }: CastinProps) {
@@ -203,8 +215,14 @@ describe("react-to-web-component 1", () => {
         stringProp,
         numProp,
         floatProp,
-        trueProp,
-        falseProp,
+        truePropWithValueTrue,
+        truePropWithValueYes,
+        truePropWithValueOne,
+        truePropWithValueFive,
+        truePropWithValueNine,
+        falsePropWithValueFalse,
+        falsePropWithValueNo,
+        falsePropWithValueZero,
         arrayProp,
         objProp,
       }
@@ -217,8 +235,14 @@ describe("react-to-web-component 1", () => {
         stringProp: "string",
         numProp: "number",
         floatProp: "number",
-        trueProp: "boolean",
-        falseProp: "boolean",
+        truePropWithValueTrue: "boolean",
+        truePropWithValueYes: "boolean",
+        truePropWithValueOne: "boolean",
+        truePropWithValueFive: "boolean",
+        truePropWithValueNine: "boolean",
+        falsePropWithValueFalse: "boolean",
+        falsePropWithValueNo: "boolean",
+        falsePropWithValueZero: "boolean",
         arrayProp: "json",
         objProp: "json",
       },
@@ -238,8 +262,14 @@ describe("react-to-web-component 1", () => {
         string-prop="iloveyou"
         num-prop="360"
         float-prop="0.5"
-        true-prop="true"
-        false-prop="false"
+        true-prop-with-value-true="true"
+        true-prop-with-value-yes="yes"
+        true-prop-with-value-one="1"
+        true-prop-with-value-five="5"
+        true-prop-with-value-nine="9"
+        false-prop-with-value-false="false"
+        false-prop-with-value-no="no"
+        false-prop-with-value-zero="0"
         array-prop='[true, 100.25, "👽", { "aliens": "welcome" }]'
         obj-prop='{ "very": "object", "such": "wow!" }'
       ></attr-type-casting>
@@ -250,16 +280,28 @@ describe("react-to-web-component 1", () => {
       stringProp,
       numProp,
       floatProp,
-      trueProp,
-      falseProp,
+      truePropWithValueTrue,
+      truePropWithValueYes,
+      truePropWithValueOne,
+      truePropWithValueFive,
+      truePropWithValueNine,
+      falsePropWithValueFalse,
+      falsePropWithValueNo,
+      falsePropWithValueZero,
       arrayProp,
       objProp,
     } = global.castedValues
     expect(stringProp).toEqual("iloveyou")
     expect(numProp).toEqual(360)
     expect(floatProp).toEqual(0.5)
-    expect(trueProp).toEqual(true)
-    expect(falseProp).toEqual(false)
+    expect(truePropWithValueTrue).toEqual(true)
+    expect(truePropWithValueYes).toEqual(true)
+    expect(truePropWithValueOne).toEqual(true)
+    expect(truePropWithValueFive).toEqual(true)
+    expect(truePropWithValueNine).toEqual(true)
+    expect(falsePropWithValueFalse).toEqual(false)
+    expect(falsePropWithValueNo).toEqual(false)
+    expect(falsePropWithValueZero).toEqual(false)
     expect(arrayProp.length).toEqual(4)
     expect(arrayProp[0]).toEqual(true)
     expect(arrayProp[1]).toEqual(100.25)
@@ -268,6 +310,102 @@ describe("react-to-web-component 1", () => {
     expect(objProp.very).toEqual("object")
     expect(objProp.such).toEqual("wow!")
   })
+
+  it("options.props handles HTML Boolean", async () => {
+    expect.assertions(11)
+
+    type CastinProps = {
+      truePropPresent: boolean,
+      truePropEmptyString: boolean,
+      truePropWithValueEqualToName: boolean,
+      falsePropAbsent: boolean,
+    }
+
+    const global = window as any
+
+    function OptionsPropsTypeCasting({
+      truePropPresent,
+      truePropEmptyString,
+      truePropWithValueEqualToName,
+      falsePropAbsent,
+    }: CastinProps) {
+      global.castedValues = {
+        truePropPresent,
+        truePropEmptyString,
+        truePropWithValueEqualToName,
+        falsePropAbsent,
+      }
+
+      return <></>
+    }
+
+    const WebOptionsPropsTypeCasting = r2wc(OptionsPropsTypeCasting, {
+      props: {
+        truePropPresent: "boolean",
+        truePropEmptyString: "boolean",
+        truePropWithValueEqualToName: "boolean",
+        falsePropAbsent: "boolean",
+      },
+    })
+
+    customElements.define("html-boolean-attr-type-casting", WebOptionsPropsTypeCasting)
+
+    const body = document.body
+
+    console.error = function (...messages) {
+      // propTypes will throw if any of the types passed into the underlying react component are wrong or missing
+      expect("propTypes should not have thrown").toEqual(messages.join(""))
+    }
+
+    body.innerHTML = `
+      <html-boolean-attr-type-casting
+        true-prop-present
+        true-prop-empty-string=""
+        true-prop-with-value-equal-to-name="true-html-prop-with-value-equal-to-name"
+      ></html-boolean-attr-type-casting>
+    `
+
+    await flushPromises()
+
+    expect(global.castedValues.truePropPresent,
+      'Prop without value is cast to true on mount').toEqual(true)
+    expect(global.castedValues.truePropEmptyString,
+      'Prop with value equal to empty string is cast to true on mount').toEqual(true)
+    expect(global.castedValues.truePropWithValueEqualToName,
+      'Prop with value equal to attribute name is considered true on mount').toEqual(true)
+    expect(global.castedValues.falsePropAbsent,
+      'Lack of prop is cast to false on mount').toEqual(false)
+
+    const element = body.querySelector('html-boolean-attr-type-casting')!
+    expect(element).toBeVisible();
+
+    element.removeAttribute('true-prop-present');
+    element.removeAttribute('true-prop-empty-string');
+    element.removeAttribute('true-prop-with-value-equal-to-name');
+    element.setAttribute('false-prop-absent', '');
+
+    await flushPromises();
+
+    expect(global.castedValues.truePropPresent,
+      'Prop without value is cast to false when attribute is removed').toEqual(false)
+    expect(global.castedValues.truePropEmptyString,
+      'Prop with value equal to empty string is cast to false when attribute is removed').toEqual(false)
+    expect(global.castedValues.truePropWithValueEqualToName,
+      'Prop with value equal to attribute name is cast to false when attribute is removed').toEqual(false)
+    expect(global.castedValues.falsePropAbsent,
+      'Prop which attribute was absent on mount is cast to true when it appears').toEqual(true)
+
+    // @ts-ignore
+    element.falsePropAbsent = false;
+
+    await flushPromises();
+
+    expect(element,
+      'Attribute of custom element is removed when property of custom element was set to false from outside').not.toHaveAttribute('false-prop-absent')
+    expect(global.castedValues.falsePropAbsent,
+      'Prop of React component is set to false when property of custom element was set to false from outside').toEqual(false)
+  })
+
 
   it("Props typed as Function convert the string value of attribute into global fn calls bound to the webcomponent instance", async () => {
     expect.assertions(2)
