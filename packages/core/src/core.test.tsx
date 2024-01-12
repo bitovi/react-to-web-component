@@ -186,8 +186,8 @@ describe("core", () => {
 
     expect(element.getAttribute("text")).toBe("world")
     expect(element.getAttribute("num-prop")).toBe("100")
-    expect(element).not.toHaveAttribute("bool-prop");
-    expect(element).not.toHaveAttribute("html-bool-prop");
+    expect(element).not.toHaveAttribute("bool-prop")
+    expect(element).not.toHaveAttribute("html-bool-prop")
     expect(element.getAttribute("func-prop")).toBe("newFunc")
   })
 

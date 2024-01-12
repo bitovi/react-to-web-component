@@ -97,7 +97,7 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
 
         if (!value && type === "boolean") {
           //@ts-ignore
-          this[propsSymbol][prop] = this.hasAttribute(attribute);
+          this[propsSymbol][prop] = this.hasAttribute(attribute)
         } else if (transform?.parse && value) {
           //@ts-ignore
           this[propsSymbol][prop] = transform.parse(value, attribute, this)
@@ -173,7 +173,7 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
         this[propsSymbol][prop] = value
 
         if (type === "boolean" && !value && oldValue) {
-          this.removeAttribute(attribute);
+          this.removeAttribute(attribute)
         } else if (transform?.stringify) {
           //@ts-ignore
           const attributeValue = transform.stringify(value, attribute, this)
