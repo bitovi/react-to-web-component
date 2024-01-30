@@ -46,6 +46,24 @@ describe("react-to-web-component 1", () => {
     expect(div?.textContent).toBe("hello, Bavin")
   })
 
+  it("works with props array in strict mode", async () => {
+    function TestComponent({ name }: { name: string }) {
+      return <div>hello, {name}</div>
+    }
+
+    const TestElement = r2wc(TestComponent, { props: ["name"], strictMode: true })
+
+    customElements.define("test-hello-strict", TestElement)
+
+    const body = document.body
+    body.innerHTML = "<test-hello-strict name='Bavin'></test-hello>"
+
+    await flushPromises()
+
+    const div = body.querySelector("div")
+    expect(div?.textContent).toBe("hello, Bavin")
+  })
+
   it("works with proptypes", async () => {
     function WithProptypes({ name }: { name: string }) {
       return <div>hello, {name}</div>
