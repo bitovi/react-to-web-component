@@ -3,6 +3,7 @@ import useObserver from "./lib/use-observer";
 var reactComponentSymbol = Symbol.for("r2wc.reactComponent");
 var renderSymbol = Symbol.for("r2wc.reactRender");
 var shouldRenderSymbol = Symbol.for("r2wc.shouldRender");
+var rootSymbol = Symbol.for("r2wc.root");
 
 var define = {
 	// Creates a getter/setter that re-renders everytime a property is set.
@@ -95,10 +96,23 @@ export default function(ReactComponent, React, ReactDOM) {
 				}
 			}, this);
 			rendering = true;
-			this[reactComponentSymbol] = ReactDOM.render(
-				React.createElement(ObservedComponent, data),
-				this
-			);
+			var element = React.createElement(ObservedComponent, data);
+
+			if ("createRoot" in ReactDOM) {
+				this[reactComponentSymbol] = 
+				(
+					this[rootSymbol] || 
+					(this[rootSymbol] = ReactDOM.createRoot(
+						this
+					))
+				).render(element);
+			}
+			else if ("render" in ReactDOM) {
+				this[reactComponentSymbol] = ReactDOM.render(
+					element,
+					this
+				);
+			}
 			rendering = false;
 		}
 	};

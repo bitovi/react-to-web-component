@@ -22,6 +22,18 @@ stealTools.export({
 			normalize: function(depName, depLoad, curName, curLoad, loader){
 				return baseNormalize.call(this, depName, depLoad, curName, curLoad, loader, true);
 			},
+		},
+		"+bundled-es core": {
+			modules: ["react-to-can-webcomponent"],
+			addProcessShim: true,
+			dest: __dirname + "/dist/react-to-can-webcomponent.mjs",
+			removeDevelopmentCode: false
+		},
+		"+bundled-es core minified": {
+			modules: ["react-to-can-webcomponent"],
+			addProcessShim: true,
+			minify: true,
+			dest: __dirname + "/dist/react-to-can-webcomponent.min.mjs"
 		}
 	}
 }).catch(function(e){
