@@ -62,8 +62,8 @@ If we access those attributes (`colorMode` and `buttonVariant`):
   <web-greeting
     name="Sven"
     description="How do you do?"
-    colorMode="dark"
-    buttonVariant="contained">
+    color-mode="dark"
+    button-variant="contained">
   </web-greeting>
 </body>
 ```
