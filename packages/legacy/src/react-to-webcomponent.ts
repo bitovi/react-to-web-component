@@ -67,6 +67,7 @@ export default function r2wc<Props extends object>(
     }
 
     if ("render" in ReactDOM) {
+      // eslint-disable-next-line react/no-deprecated
       ReactDOM.render(element, container)
 
       return {
@@ -90,6 +91,7 @@ export default function r2wc<Props extends object>(
     }
 
     if ("render" in ReactDOM) {
+      // eslint-disable-next-line react/no-deprecated
       ReactDOM.render(element, container)
       return
     }
@@ -102,10 +104,12 @@ export default function r2wc<Props extends object>(
     }
 
     if ("unmountComponentAtNode" in ReactDOM) {
+      // eslint-disable-next-line react/no-deprecated
       ReactDOM.unmountComponentAtNode(container)
       return
     }
   }
 
+  //@ts-ignore core uses R2WCBaseProps, but we don't want to impose that on all components
   return r2wcCore(ReactComponent, options, { mount, unmount, update })
 }

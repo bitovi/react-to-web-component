@@ -4,5 +4,6 @@ ignores:
   - "@types/*"
   - "@testing-library/jest-dom"
   - vite
-  - vite-plugin-dts
+  - "@vitejs/*"
+  - vite-plugin-*
   - vitest
