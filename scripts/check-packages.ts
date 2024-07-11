@@ -1,9 +1,8 @@
-import type { Package } from "./lib/packages"
-
 import semver from "semver"
 
-import packages from "./lib/packages"
 import { namespace } from "../package.json"
+
+import packages, { Package } from "./lib/packages"
 
 for (const pkg of Object.values(packages)) {
   if ("private" in pkg) {

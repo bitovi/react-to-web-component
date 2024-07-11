@@ -13,7 +13,12 @@ export default defineConfig({
       external: ["react", "react-dom/client", "@r2wc/core"],
     },
   },
-  plugins: [dts()],
+  plugins: [
+    dts({
+      exclude: ["src/**/*.test.*"],
+      rollupTypes: true,
+    }),
+  ],
   test: {
     environment: "jsdom",
     restoreMocks: true,

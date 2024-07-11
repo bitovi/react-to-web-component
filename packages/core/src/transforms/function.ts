@@ -1,4 +1,4 @@
-import type { Transform } from "./index"
+import { Transform } from "./index"
 
 const function_: Transform<(...args: unknown[]) => unknown> = {
   stringify: (value) => value.name,

@@ -1,5 +1,5 @@
-import { describe, test, it, expect, vi, afterEach } from "vitest"
 import matchers from "@testing-library/jest-dom/matchers"
+import { describe, test, it, expect, vi, afterEach } from "vitest"
 
 import r2wc from "./core"
 
@@ -77,17 +77,21 @@ describe("core", () => {
   })
 
   test("updated attribute updates the component prop and the HTMLElement property", async () => {
-    function Button({ text }: { text: string }) {
+    interface TestProps {
+      text: string
+    }
+
+    const Test: React.FC<TestProps> = ({ text }) => {
       return <button>{text}</button>
     }
 
-    const ButtonElement = r2wc(
-      Button,
+    const TestElement = r2wc(
+      Test,
       { props: ["text"] },
       { mount, unmount, update },
     )
 
-    customElements.define("test-button-element-attribute", ButtonElement)
+    customElements.define("test-button-element-attribute", TestElement)
 
     const body = document.body
     body.innerHTML =
@@ -105,7 +109,7 @@ describe("core", () => {
   })
 
   test("updated HTMLElement property updates the component prop and the HTMLElement attribute", async () => {
-    interface Props {
+    interface TestProps {
       text: string
       numProp: number
       boolProp: boolean
@@ -114,19 +118,19 @@ describe("core", () => {
       funcProp: () => void
     }
 
-    function ButtonWithDifferentPropTypes({
+    const Test: React.FC<TestProps> = ({
       text,
       numProp,
       boolProp,
       arrProp,
       objProp,
       funcProp,
-    }: Props) {
+    }) => {
       return <button>{text}</button>
     }
 
-    const ButtonElement = r2wc(
-      ButtonWithDifferentPropTypes,
+    const TestElement = r2wc(
+      Test,
       {
         props: {
           text: "string",
@@ -151,7 +155,7 @@ describe("core", () => {
       expect(this).toBe(document.querySelector("test-button-element-property"))
     }
 
-    customElements.define("test-button-element-property", ButtonElement)
+    customElements.define("test-button-element-property", TestElement)
 
     const body = document.body
     body.innerHTML = `<test-button-element-property text='hello' obj-prop='{"greeting": "hello, world"}' arr-prop='["hello", "world"]' num-prop='240' bool-prop='true' func-prop='globalFn'>
@@ -159,7 +163,7 @@ describe("core", () => {
 
     const element = body.querySelector(
       "test-button-element-property",
-    ) as HTMLElement & Props
+    ) as HTMLElement & TestProps
 
     await wait()
 
@@ -186,17 +190,21 @@ describe("core", () => {
   })
 
   test("sets HTML property not defined in props but found on HTML object", async () => {
-    function Button({ text = "Hello, button" }: { text: string }) {
+    interface TestProps {
+      text: string
+    }
+
+    const Test: React.FC<TestProps> = ({ text = "Hello, button" }) => {
       return <button>{text}</button>
     }
 
-    const ButtonElement = r2wc(
-      Button,
+    const TestElement = r2wc(
+      Test,
       { props: ["text"] },
       { mount, unmount, update },
     )
 
-    customElements.define("test-button-element-non-prop", ButtonElement)
+    customElements.define("test-button-element-non-prop", TestElement)
 
     const body = document.body
     body.innerHTML = `<test-button-element-non-prop></test-button-element-non-prop>`
@@ -210,7 +218,7 @@ describe("core", () => {
 
     await wait()
 
-    expect(element).toHaveStyle("background-color: red;")
+    expect(element).toHaveStyle("background-color: rgb(255, 0, 0);")
     expect(element).not.toBeVisible()
     expect(body.querySelector("#test-button-id")).toBe(element)
   })

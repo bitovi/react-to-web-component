@@ -91,11 +91,11 @@ We also have a [complete example using a third party library](docs/complete-exam
 
 ## Examples
 
-* [Hello World](https://codesandbox.io/s/hello-world-md5oih) - The quintessential software demo!
-* [All the Props](https://codesandbox.io/s/all-the-props-n8z5hv) - A demo of all the prop transform types that R2WC supports.
-* [Header Example](https://codesandbox.io/s/example-header-blog-7k313l) - An example reusable Header component.
-* [MUI Button](https://codesandbox.io/s/example-mui-button-qwidh9) - An example application using an MUI button with theme customization.
-* [Checklist Demo](https://codesandbox.io/s/example-checklist-blog-y3nqwx) - An example Checklist application.
+- [Hello World](https://codesandbox.io/s/hello-world-md5oih) - The quintessential software demo!
+- [All the Props](https://codesandbox.io/s/all-the-props-n8z5hv) - A demo of all the prop transform types that R2WC supports.
+- [Header Example](https://codesandbox.io/s/example-header-blog-7k313l) - An example reusable Header component.
+- [MUI Button](https://codesandbox.io/s/example-mui-button-qwidh9) - An example application using an MUI button with theme customization.
+- [Checklist Demo](https://codesandbox.io/s/example-checklist-blog-y3nqwx) - An example Checklist application.
 
 ## Blog Posts
 
