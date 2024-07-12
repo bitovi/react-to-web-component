@@ -13,7 +13,12 @@ interface GreetingProps {
   buttonVariant?: "contained" | "text" | "outlined" | undefined
 }
 
-export const Greeting = ({ name, description, colorMode = "light", buttonVariant = "text" }: GreetingProps) => {
+export const Greeting = ({
+  name,
+  description,
+  colorMode = "light",
+  buttonVariant = "text",
+}: GreetingProps) => {
   const themeMode = createTheme({
     palette: {
       mode: colorMode,
@@ -37,7 +42,7 @@ const WebGreeting = reactToWebComponent(Greeting, {
     description: "string",
     colorMode: "string",
     buttonVariant: "string",
-  }
+  },
 })
 
 customElements.define("web-greeting", WebGreeting)
@@ -62,8 +67,9 @@ If we access those attributes (`colorMode` and `buttonVariant`):
   <web-greeting
     name="Sven"
     description="How do you do?"
-    colorMode="dark"
-    buttonVariant="contained">
+    color-mode="dark"
+    button-variant="contained"
+  >
   </web-greeting>
 </body>
 ```

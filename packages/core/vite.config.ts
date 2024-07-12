@@ -10,7 +10,12 @@ export default defineConfig({
       formats: ["es", "cjs"],
     },
   },
-  plugins: [dts()],
+  plugins: [
+    dts({
+      exclude: ["src/**/*.test.*"],
+      rollupTypes: true,
+    }),
+  ],
   test: {
     environment: "jsdom",
     restoreMocks: true,

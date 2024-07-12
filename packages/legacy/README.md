@@ -93,11 +93,10 @@ For projects needing more advanced usage of the web components, see our [program
 
 We also have a [complete example using a third party library](docs/complete-example.md).
 
-
 ## Examples
 
-* [Hello World](https://codesandbox.io/s/hello-world-legacy-8oopz3) - The quintessential software demo!
-* [All the Props](https://codesandbox.io/s/all-the-props-legacy-0zh6iv) - A demo of all the prop transform types that R2WC supports.
+- [Hello World](https://codesandbox.io/s/hello-world-legacy-8oopz3) - The quintessential software demo!
+- [All the Props](https://codesandbox.io/s/all-the-props-legacy-0zh6iv) - A demo of all the prop transform types that R2WC supports.
 
 ## Blog Posts
 

@@ -3,6 +3,8 @@
 .env.*
 
 # artifacts
+.nx/cache
+.nx/workspace-data
 node_modules
 /packages/*/dist
 /packages/*/coverage

@@ -4,4 +4,3 @@ import App from "./App"
 const AppWC = r2wc(App, { props: ["text"] })
 
 export default AppWC
-

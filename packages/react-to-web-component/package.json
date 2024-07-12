@@ -31,8 +31,8 @@
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "eslint": "eslint vite.config.ts src",
-    "prettier": "prettier --check vite.config.ts src",
+    "eslint": "eslint .",
+    "prettier": "prettier --check .",
     "depcheck": "depcheck .",
     "dev": "vite",
     "test": "vitest",

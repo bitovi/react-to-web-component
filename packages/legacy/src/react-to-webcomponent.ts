@@ -1,8 +1,7 @@
-import type { R2WCOptions } from "@r2wc/core"
-
-import r2wcCore from "@r2wc/core"
+import r2wcCore, { R2WCOptions } from "@r2wc/core"
 
 interface ReactType {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createElement: (type: any, data: any, children?: any) => React.ReactElement
 }
 
@@ -14,6 +13,7 @@ interface ReactDOMRootRootType {
 interface ReactDOMRootType {
   createRoot: (
     container: Element | DocumentFragment,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     options?: any,
   ) => ReactDOMRootRootType
 }
@@ -67,6 +67,7 @@ export default function r2wc<Props extends object>(
     }
 
     if ("render" in ReactDOM) {
+      // eslint-disable-next-line react/no-deprecated
       ReactDOM.render(element, container)
 
       return {
@@ -90,6 +91,7 @@ export default function r2wc<Props extends object>(
     }
 
     if ("render" in ReactDOM) {
+      // eslint-disable-next-line react/no-deprecated
       ReactDOM.render(element, container)
       return
     }
@@ -102,6 +104,7 @@ export default function r2wc<Props extends object>(
     }
 
     if ("unmountComponentAtNode" in ReactDOM) {
+      // eslint-disable-next-line react/no-deprecated
       ReactDOM.unmountComponentAtNode(container)
       return
     }

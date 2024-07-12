@@ -1,0 +1,20 @@
+{
+  "name": "scripts",
+  "private": "true",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "script": "NODE_OPTIONS=\"--no-warnings --import ./register.js\" node",
+    "check-packages": "npm run script -- ./src/check-packages.ts",
+    "typecheck": "tsc --noEmit",
+    "eslint": "eslint .",
+    "prettier": "prettier --check .",
+    "depcheck": "depcheck .",
+    "clean": "rm -rf tsconfig.tsbuildinfo dist"
+  },
+  "dependencies": {
+    "glob": "^11.0.0",
+    "semver": "^7.6.2",
+    "ts-node": "^10.9.2"
+  }
+}

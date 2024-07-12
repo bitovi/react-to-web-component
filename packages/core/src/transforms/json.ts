@@ -1,4 +1,4 @@
-import type { Transform } from "./index"
+import { Transform } from "./index"
 
 const json: Transform<string> = {
   stringify: (value) => JSON.stringify(value),

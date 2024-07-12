@@ -10,6 +10,6 @@ await build({
       fileName: "index",
       formats: ["es", "cjs"],
     },
-    outDir: "dist-swc"
+    outDir: "dist-swc",
   },
 })
