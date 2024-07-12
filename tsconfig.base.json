@@ -14,6 +14,7 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "useDefineForClassFields": true
   },
