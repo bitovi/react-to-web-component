@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, it, expect, assert } from "vitest"
 import matchers from "@testing-library/jest-dom/matchers"
-import React from "react"
 import PropTypes from "prop-types"
+import React from "react"
+import { describe, it, expect, assert } from "vitest"
 
 import r2wc from "./react-to-web-component"
 

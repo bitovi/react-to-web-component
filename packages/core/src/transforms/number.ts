@@ -1,4 +1,4 @@
-import type { Transform } from "./index"
+import { Transform } from "./index"
 
 const number: Transform<number> = {
   stringify: (value) => `${value}`,

@@ -3,6 +3,8 @@ ignore-dirs:
 ignores:
   - "@types/*"
   - "@testing-library/jest-dom"
+  - jsdom
+  - typescript
   - vite
   - "@vitejs/*"
   - vite-plugin-*

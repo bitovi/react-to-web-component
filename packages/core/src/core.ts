@@ -1,6 +1,4 @@
-import type { R2WCType } from "./transforms"
-
-import transforms from "./transforms"
+import transforms, { R2WCType } from "./transforms"
 import { toDashedCase } from "./utils"
 
 type PropName<Props> = Exclude<Extract<keyof Props, string>, "container">

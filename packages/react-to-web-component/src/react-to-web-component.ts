@@ -1,10 +1,7 @@
-import type { R2WCBaseProps, R2WCOptions } from "@r2wc/core"
-import type { Root } from "react-dom/client"
-
 import React from "react"
-import { createRoot } from "react-dom/client"
+import { Root, createRoot } from "react-dom/client"
 
-import r2wcCore from "@r2wc/core"
+import r2wcCore, { R2WCBaseProps, R2WCOptions } from "@r2wc/core"
 
 export { useImperativeMethods } from "@r2wc/core"
 

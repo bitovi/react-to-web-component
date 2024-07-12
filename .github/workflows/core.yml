@@ -8,7 +8,7 @@ on:
         description: "The version segment to increment: major, minor, patch, or prerelease."
         required: true
       preId:
-        description: "Appended to the prerelease segment. (default: \"\")"
+        description: 'Appended to the prerelease segment. (default: "")'
 
 jobs:
   verify:

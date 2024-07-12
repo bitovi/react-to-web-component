@@ -13,7 +13,6 @@ This project is supported by [Bitovi, a React consultancy](https://www.bitovi.co
 
 Or, you can hire us for training, consulting, or development. [Set up a free consultation.](https://www.bitovi.com/frontend-javascript-consulting/react-consulting)
 
-
 ## How it works
 
 Under the hood, `r2wc` creates a `CustomElementConstructor` with custom getters/setters and life cycle methods that keep track of the props that you have defined. When a property is set, its custom setter:
