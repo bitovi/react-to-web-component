@@ -1,4 +1,4 @@
-import type { Transform } from "./index"
+import { Transform } from "./index"
 
 const boolean: Transform<boolean> = {
   stringify: (value) => (value ? "true" : "false"),

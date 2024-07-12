@@ -1,32 +1,26 @@
 {
   "extends": "nx/presets/npm.json",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": [
-          "typecheck",
-          "eslint",
-          "prettier",
-          "depcheck",
-          "test",
-          "test:ci",
-          "test:coverage",
-          "clean",
-          "build"
-        ]
-      }
-    }
-  },
   "targetDefaults": {
     "typecheck": {
+      "cache": true,
       "dependsOn": ["^build"]
     },
+    "eslint": {
+      "cache": true
+    },
+    "prettier": {
+      "cache": true
+    },
+    "depcheck": {
+      "cache": true
+    },
     "test": {
+      "cache": true,
       "dependsOn": ["^build"]
     },
     "build": {
+      "cache": true,
       "dependsOn": ["^build", "clean"]
     },
     "dev": {

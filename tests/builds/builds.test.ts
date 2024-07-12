@@ -18,10 +18,7 @@ describe("vite build tests", () => {
   for (const [name, constructor] of Object.entries(elementConstructors)) {
     const tagName = name.replace(/\s/g, "-")
     test(`vite build works for ${name}`, async () => {
-      customElements.define(
-        tagName,
-        constructor,
-      )
+      customElements.define(tagName, constructor)
 
       const body = document.body
       body.innerHTML = `<${tagName}></${tagName}>`

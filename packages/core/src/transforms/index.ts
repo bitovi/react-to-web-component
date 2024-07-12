@@ -1,8 +1,8 @@
-import string from "./string"
-import number from "./number"
 import boolean from "./boolean"
 import function_ from "./function"
 import json from "./json"
+import number from "./number"
+import string from "./string"
 
 export interface Transform<Type> {
   stringify?: (value: Type, attribute: string, element: HTMLElement) => string

@@ -1,10 +1,5 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "Node",
-    "target": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-
     "declaration": true,
     "composite": true,
     "incremental": true,
