@@ -12,10 +12,14 @@ function mount<Props extends object>(
   container: HTMLElement,
   ReactComponent: React.ComponentType<Props>,
   props: Props,
+  strictMode: boolean
 ): Context<Props> {
   const root = createRoot(container)
 
-  const element = React.createElement(ReactComponent, props)
+  let element: React.ReactElement = React.createElement(ReactComponent, props)
+  if (strictMode) {
+    element = React.createElement(React.StrictMode, null, element)
+  }
   root.render(element)
 
   return {
@@ -27,8 +31,12 @@ function mount<Props extends object>(
 function update<Props extends object>(
   { root, ReactComponent }: Context<Props>,
   props: Props,
+  strictMode: boolean
 ): void {
-  const element = React.createElement(ReactComponent, props)
+  let element: React.ReactElement = React.createElement(ReactComponent, props)
+  if (strictMode) {
+    element = React.createElement(React.StrictMode, null, element)
+  }
   root.render(element)
 }
 

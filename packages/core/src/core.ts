@@ -6,7 +6,8 @@ type PropNames<Props> = Array<PropName<Props>>
 
 export interface R2WCOptions<Props> {
   shadow?: "open" | "closed"
-  props?: PropNames<Props> | Partial<Record<PropName<Props>, R2WCType>>
+  props?: PropNames<Props> | Partial<Record<PropName<Props>, R2WCType>>,
+  strictMode?: boolean
 }
 
 export interface R2WCRenderer<Props, Context> {
@@ -14,8 +15,9 @@ export interface R2WCRenderer<Props, Context> {
     container: HTMLElement,
     ReactComponent: React.ComponentType<Props>,
     props: Props,
+    strictMode: boolean
   ) => Context
-  update: (context: Context, props: Props) => void
+  update: (context: Context, props: Props, strictMode: boolean) => void
   unmount: (context: Context) => void
 }
 
@@ -134,14 +136,17 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
     [renderSymbol]() {
       if (!this[connectedSymbol]) return
 
+      const strictMode = options.strictMode || false;
+      
       if (!this[contextSymbol]) {
         this[contextSymbol] = renderer.mount(
           this.container,
           ReactComponent,
           this[propsSymbol],
+          strictMode
         )
       } else {
-        renderer.update(this[contextSymbol], this[propsSymbol])
+        renderer.update(this[contextSymbol], this[propsSymbol], strictMode)
       }
     }
   }
