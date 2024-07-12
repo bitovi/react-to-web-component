@@ -1,16 +1,10 @@
 var C = Object.defineProperty;
 var x = (t, e, s) => e in t ? C(t, e, { enumerable: !0, configurable: !0, writable: !0, value: s }) : t[e] = s;
-var b = (t, e, s) => (x(t, typeof e != "symbol" ? e + "" : e, s), s);
+var b = (t, e, s) => x(t, typeof e != "symbol" ? e + "" : e, s);
 const T = {
-  stringify: (t) => t,
-  parse: (t) => t
-}, V = {
-  stringify: (t) => `${t}`,
-  parse: (t) => parseFloat(t)
-}, N = {
   stringify: (t) => t ? "true" : "false",
   parse: (t) => /^[ty1-9]/i.test(t)
-}, P = {
+}, V = {
   stringify: (t) => t.name,
   parse: (t, e, s) => {
     const o = (() => {
@@ -21,15 +15,21 @@ const T = {
     })();
     return typeof o == "function" ? o.bind(s) : void 0;
   }
-}, $ = {
+}, N = {
   stringify: (t) => JSON.stringify(t),
   parse: (t) => JSON.parse(t)
+}, P = {
+  stringify: (t) => `${t}`,
+  parse: (t) => parseFloat(t)
+}, $ = {
+  stringify: (t) => t,
+  parse: (t) => t
 }, A = {
-  string: T,
-  number: V,
-  boolean: N,
-  function: P,
-  json: $
+  string: $,
+  number: P,
+  boolean: T,
+  function: V,
+  json: N
 };
 function J(t) {
   return t.replace(
@@ -50,9 +50,9 @@ function M(t, e, s) {
   class S extends HTMLElement {
     constructor() {
       super();
-      b(this, k, !0);
+      b(this, j, !0);
       b(this, O);
-      b(this, j, {});
+      b(this, k, {});
       b(this, "container");
       e.shadow ? this.container = this.attachShadow({
         mode: e.shadow
@@ -75,7 +75,7 @@ function M(t, e, s) {
       const c = w[i], a = h[c], y = a ? A[a] : null;
       c in h && (y != null && y.parse) && n && (this[p][c] = y.parse(n, i, this), this[d]());
     }
-    [(k = g, O = f, j = p, d)]() {
+    [(j = g, O = f, k = p, d)]() {
       this[g] && (this[f] ? s.update(this[f], this[p]) : this[f] = s.mount(
         this.container,
         t,
