@@ -55,10 +55,11 @@ function parseChild(
           )
 
         const styles = {}
-        for (let [key, value] of input) {
-          key = toCamelCase(key)
+        for (const [key, value] of input) {
+          const camelKey = toCamelCase(key)
 
-          styles[key] = value
+          // @ts-ignore
+          styles[camelKey] = value
         }
 
         // @ts-ignore
