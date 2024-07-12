@@ -1,0 +1,53 @@
+{
+  "name": "@r2wc/pubsub",
+  "version": "0.1.0",
+  "description": "Easily integrate Emotion with R2WC.",
+  "homepage": "https://www.bitovi.com/open-source/react-to-web-component",
+  "author": "Bitovi",
+  "license": "MIT",
+  "keywords": [
+    "React",
+    "Web Component",
+    "Emotion"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitovi/react-to-web-component.git"
+  },
+  "type": "module",
+  "main": "./dist/pubsub.cjs",
+  "module": "./dist/pubsub.js",
+  "types": "./dist/pubsub.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/pubsub.cjs",
+      "import": "./dist/pubsub.js",
+      "types": "./dist/pubsub.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "eslint": "eslint .",
+    "prettier": "prettier --check .",
+    "depcheck": "depcheck .",
+    "dev": "vite",
+    "test": "vitest",
+    "test:ci": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf tsconfig.tsbuildinfo dist",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  }
+}
