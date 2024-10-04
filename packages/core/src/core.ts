@@ -6,6 +6,7 @@ type PropNames<Props> = Array<PropName<Props>>
 
 export interface R2WCOptions<Props> {
   shadow?: "open" | "closed"
+  dispatchEvents?: EventInit
   props?: PropNames<Props> | Partial<Record<PropName<Props>, R2WCType>>
 }
 
@@ -96,6 +97,14 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
         if (transform?.parse && value) {
           //@ts-ignore
           this[propsSymbol][prop] = transform.parse(value, attribute, this)
+        } else if (options.dispatchEvents && type === "function") {
+          //@ts-ignore
+          this[propsSymbol][prop] = (detail) => {
+            const name = prop.replace(/^on/, "").toLowerCase()
+            this.dispatchEvent(
+              new CustomEvent(name, { detail, ...options.dispatchEvents }),
+            )
+          }
         }
       }
     }

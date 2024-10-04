@@ -325,4 +325,43 @@ describe("react-to-web-component 1", () => {
       }, 0)
     })
   })
+
+  it("Props typed as Function are dispatching events when events are enables via options", async () => {
+    expect.assertions(2)
+
+    function ThemeSelect({ onSelect }: { onSelect: (arg: string) => void }) {
+      return (
+        <div>
+          <button onClick={() => onSelect("V")}>V</button>
+          <button onClick={() => onSelect("Johnny")}>Johnny</button>
+          <button onClick={() => onSelect("Jane")}>Jane</button>
+        </div>
+      )
+    }
+
+    const WebThemeSelect = r2wc(ThemeSelect, {
+      props: { onSelect: "function" },
+      dispatchEvents: { bubbles: true },
+    })
+    customElements.define("theme-select-events", WebThemeSelect)
+    document.body.innerHTML = "<theme-select-events></theme-select-events>"
+
+    await new Promise((resolve, reject) => {
+      const failUnlessCleared = setTimeout(() => {
+        reject("event listener was not called to clear the failure timeout")
+      }, 1000)
+
+      const element = document.querySelector("theme-select-events")
+      element?.addEventListener("select", (event) => {
+        clearTimeout(failUnlessCleared)
+        expect((event as CustomEvent).detail).toEqual("Jane")
+        expect(event.target).toEqual(element)
+        resolve(true)
+      })
+      const button = element?.querySelector(
+        "button:last-child",
+      ) as HTMLButtonElement
+      button.click()
+    })
+  })
 })

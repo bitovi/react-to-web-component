@@ -7,6 +7,7 @@
 - `options` - An set of parameters.
 
   - `options.shadow` - Use shadow DOM rather than light DOM.
+  - `options.dispatchEvents` - Will cause dispatchEvent to be called for functions when attribute is not passed (this object should be same type as passed to [Event constructor options](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event#options))
   - `options.props` - Array of camelCasedProps to watch as String values or { [camelCasedProps]: "string" | "number" | "boolean" | "function" | "json" }
 
     - When specifying Array or Object as the type, the string passed into the attribute must pass `JSON.parse()` requirements.
@@ -164,6 +165,8 @@ document.body.innerHTML = `
 
 When `Function` is specified as the type, attribute values on the web component will be converted into function references when passed into the underlying React component. The string value of the attribute must be a valid reference to a function on `window` (or on `global`).
 
+Note: If you want to avoid global functions, instead of passing attribute you can pass `dispatchEvents` object in options and simply listen on events using `addEventListener` on the custom element. See below.
+
 ```js
 function ThemeSelect({ handleClick }) {
   return (
@@ -197,4 +200,40 @@ setTimeout(
   0,
 )
 // ^ calls globalFn, logs: true, "Jane"
+```
+
+### Event dispatching
+
+When `Function` is specified as the type, instead of passing attribute values referencing global methods, you can simply listen on the DOM event.
+
+```js
+function ThemeSelect({ onSelect }) {
+  return (
+    <div>
+      <button onClick={() => onSelect("V")}>V</button>
+      <button onClick={() => onSelect("Johnny")}>Johnny</button>
+      <button onClick={() => onSelect("Jane")}>Jane</button>
+    </div>
+  )
+}
+
+const WebThemeSelect = reactToWebComponent(ThemeSelect, {
+  props: { onSelect: "function" },
+  dispatchEvents: { bubbles: true }
+})
+
+customElements.define("theme-select", WebThemeSelect)
+
+document.body.innerHTML = "<theme-select></theme-select>"
+
+setTimeout(() => {
+  const element = document.querySelector("theme-select")
+  element.addEventListener("select", (event) => {
+    // "event.target" is the instance of the WebComponent / HTMLElement
+    const thisIsEl = event.target === element
+    console.log(thisIsEl, event.detail)
+  })
+  document.querySelector("theme-select button:last-child").click()
+}, 0)
+// ^ calls event listener, logs: true, "Jane"
 ```
