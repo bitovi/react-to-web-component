@@ -340,8 +340,7 @@ describe("react-to-web-component 1", () => {
     }
 
     const WebThemeSelect = r2wc(ThemeSelect, {
-      props: { onSelect: "function" },
-      dispatchEvents: { bubbles: true },
+      events: { onSelect: { bubbles: true } },
     })
     customElements.define("theme-select-events", WebThemeSelect)
     document.body.innerHTML = "<theme-select-events></theme-select-events>"
