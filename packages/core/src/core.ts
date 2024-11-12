@@ -7,6 +7,7 @@ type PropNames<Props> = Array<PropName<Props>>
 export interface R2WCOptions<Props> {
   shadow?: "open" | "closed"
   props?: PropNames<Props> | Partial<Record<PropName<Props>, R2WCType>>
+  events?: PropNames<Props> | Partial<Record<PropName<Props>, EventInit>>
 }
 
 export interface R2WCRenderer<Props, Context> {
@@ -45,12 +46,19 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
       ? (Object.keys(ReactComponent.propTypes) as PropNames<Props>)
       : []
   }
+  if (!options.events) {
+    options.events = []
+  }
 
   const propNames = Array.isArray(options.props)
     ? options.props.slice()
     : (Object.keys(options.props) as PropNames<Props>)
+  const eventNames = Array.isArray(options.events)
+    ? options.events.slice()
+    : (Object.keys(options.events) as PropNames<Props>)
 
   const propTypes = {} as Partial<Record<PropName<Props>, R2WCType>>
+  const eventParams = {} as Partial<Record<PropName<Props>, EventInit>>
   const mapPropAttribute = {} as Record<PropName<Props>, string>
   const mapAttributeProp = {} as Record<string, PropName<Props>>
   for (const prop of propNames) {
@@ -62,6 +70,11 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
 
     mapPropAttribute[prop] = attribute
     mapAttributeProp[attribute] = prop
+  }
+  for (const event of eventNames) {
+    eventParams[event] = Array.isArray(options.events)
+      ? {}
+      : options.events[event]
   }
 
   class ReactWebComponent extends HTMLElement {
@@ -96,6 +109,15 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
         if (transform?.parse && value) {
           //@ts-ignore
           this[propsSymbol][prop] = transform.parse(value, attribute, this)
+        }
+      }
+      for (const event of eventNames) {
+        //@ts-ignore
+        this[propsSymbol][event] = (detail) => {
+          const name = event.replace(/^on/, "").toLowerCase()
+          this.dispatchEvent(
+            new CustomEvent(name, { detail, ...eventParams[event] }),
+          )
         }
       }
     }
