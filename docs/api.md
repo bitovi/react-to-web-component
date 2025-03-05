@@ -6,7 +6,7 @@
   convert to a Web Component.
 - `options` - An set of parameters.
 
-  - `options.shadow` - ("open", "closed", undefind) Use the specified shadow DOM mode rather than light DOM.
+  - `options.shadow` - ("open", "closed", or undefined) Use the specified shadow DOM mode rather than light DOM.
   - `options.events` - Array of camelCasedProps to dispatch as custom events or a Record of event names to their associated [Event constructor options](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event#options).
     - When dispatching events from named properties, "on" is stripped from the beginning of the property name if present, and the result is lowercased: the property `onMyCustomEvent` dispatches as "mycustomevent".
   - `options.props` - Array of camelCasedProps to watch as String values or { [camelCasedProps]: "string" | "number" | "boolean" | "function" | "json" }
