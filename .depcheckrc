@@ -6,5 +6,6 @@ ignores:
   - jsdom
   - typescript
   - vite
-  - vite-plugin-dts
+  - "@vitejs/*"
+  - vite-plugin-*
   - vitest

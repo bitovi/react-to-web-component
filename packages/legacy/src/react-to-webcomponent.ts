@@ -110,5 +110,6 @@ export default function r2wc<Props extends object>(
     }
   }
 
+  //@ts-ignore core uses R2WCBaseProps, but we don't want to impose that on all components
   return r2wcCore(ReactComponent, options, { mount, unmount, update })
 }
