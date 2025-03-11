@@ -10,7 +10,7 @@ export interface R2WCOptions<Props> {
   events?: PropNames<Props> | Partial<Record<PropName<Props>, EventInit>>
 }
 
-export interface R2WCRenderer<Props, Context> {
+export interface R2WCRenderer<Props extends R2WCBaseProps, Context> {
   mount: (
     container: HTMLElement,
     ReactComponent: React.ComponentType<Props>,
@@ -21,7 +21,7 @@ export interface R2WCRenderer<Props, Context> {
 }
 
 export interface R2WCBaseProps {
-  container?: HTMLElement
+  container: HTMLElement
 }
 
 const renderSymbol = Symbol.for("r2wc.render")
@@ -198,4 +198,16 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
   }
 
   return ReactWebComponent
+}
+
+export function useImperativeMethods<Methods extends string>(
+  container: HTMLElement | ShadowRoot,
+  methods: Record<Methods, () => unknown>,
+): void {
+  const element = "host" in container ? container.host : container
+
+  for (const method in methods) {
+    //@ts-ignore
+    element[method] = methods[method]
+  }
 }

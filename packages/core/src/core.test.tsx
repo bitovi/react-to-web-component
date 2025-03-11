@@ -13,7 +13,7 @@ function wait() {
   return new Promise((resolve) => setImmediate(resolve))
 }
 
-describe("core", () => {
+describe("@r2wc/core", () => {
   afterEach(() => {
     document.body.innerHTML = ""
   })

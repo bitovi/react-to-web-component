@@ -1,14 +1,16 @@
 import React from "react"
 import { Root, createRoot } from "react-dom/client"
 
-import r2wcCore, { R2WCOptions } from "@r2wc/core"
+import r2wcCore, { R2WCBaseProps, R2WCOptions } from "@r2wc/core"
 
-interface Context<Props extends object> {
+export { useImperativeMethods } from "@r2wc/core"
+
+interface Context<Props extends R2WCBaseProps> {
   root: Root
   ReactComponent: React.ComponentType<Props>
 }
 
-function mount<Props extends object>(
+function mount<Props extends R2WCBaseProps>(
   container: HTMLElement,
   ReactComponent: React.ComponentType<Props>,
   props: Props,
@@ -24,7 +26,7 @@ function mount<Props extends object>(
   }
 }
 
-function update<Props extends object>(
+function update<Props extends R2WCBaseProps>(
   { root, ReactComponent }: Context<Props>,
   props: Props,
 ): void {
@@ -32,7 +34,7 @@ function update<Props extends object>(
   root.render(element)
 }
 
-function unmount<Props extends object>({ root }: Context<Props>): void {
+function unmount<Props extends R2WCBaseProps>({ root }: Context<Props>): void {
   root.unmount()
 }
 
@@ -40,5 +42,6 @@ export default function r2wc<Props extends object>(
   ReactComponent: React.ComponentType<Props>,
   options: R2WCOptions<Props> = {},
 ): CustomElementConstructor {
+  //@ts-ignore core uses R2WCBaseProps, but we don't want to impose that on all components
   return r2wcCore(ReactComponent, options, { mount, update, unmount })
 }
