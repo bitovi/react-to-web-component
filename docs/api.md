@@ -84,7 +84,7 @@ document.body.innerHTML =
 console.log(document.body.firstElementChild.innerHTML) // "<h1>Hello, Christopher</h1>"
 ```
 
-If `options.props` is specified, R2WC will use those props instead of the keys from propTypes. If it's an array, all corresponding kebob-cased attr values will be passed as strings to the underlying React component.
+If `options.props` is specified, R2WC will use those props instead of the keys from propTypes. If it's an array, all corresponding kebab-case attr values will be passed as strings to the underlying React component.
 
 ```js
 function Greeting({ camelCaseName }) {
