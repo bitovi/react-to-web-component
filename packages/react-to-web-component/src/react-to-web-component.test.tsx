@@ -363,4 +363,56 @@ describe("react-to-web-component 1", () => {
       button.click()
     })
   })
+
+  it("Supports class function to react props", async () => {
+
+    const ClassGreeting: React.FC<{ name: string, sayHello: () => void }> = ({ name, sayHello }) => (
+      <div>
+        <h1 id="class-greeting-text">Hello, {name}</h1>
+        <button id="click-class-greeting" onClick={() => sayHello()}>Click me</button>
+      </div>
+    )
+    
+    const WebClassGreeting = r2wc(ClassGreeting, {
+      props: {
+        name: "string",
+        sayHello: "function",
+      },
+    })
+
+    customElements.define("class-greeting", WebClassGreeting)
+
+    document.body.innerHTML = `<class-greeting name='Christopher'></class-greeting>`
+    
+    const el = document.querySelector("class-greeting") as HTMLElement & { sayHello?: () => void };
+    
+    el.sayHello = function () {
+      const nameElement = el.querySelector("h1") as HTMLElement;
+      nameElement.textContent = "Hello, again";
+    }
+    
+    el.setAttribute("say-hello", "sayHello");
+    
+    await new Promise((resolve, reject) => {
+      const failIfNotClicked = setTimeout(() => {
+        reject()
+      }, 1000)
+
+      setTimeout(() => {
+        const button = document.body?.querySelector(
+          "#click-class-greeting",
+        ) as HTMLButtonElement;
+  
+        button.click()
+
+        setTimeout(() => {
+          const element = document.body.querySelector("h1")
+          expect(element?.textContent).toEqual("Hello, again")
+          clearTimeout(failIfNotClicked)
+          resolve(true)
+        }, 0)
+      }, 0)
+    })
+  })
+
 })

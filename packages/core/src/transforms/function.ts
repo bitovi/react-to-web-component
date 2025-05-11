@@ -15,8 +15,9 @@ const function_: Transform<(...args: unknown[]) => unknown> = {
         // @ts-expect-error
         return global[value]
       }
-      
-      const functionName = toCamelCase(attribute);
+
+      const functionName = toCamelCase(attribute)
+
       //@ts-expect-error
       if (typeof element !== "undefined" && functionName in element.container) {
         // @ts-expect-error
