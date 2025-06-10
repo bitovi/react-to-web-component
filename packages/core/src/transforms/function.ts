@@ -1,5 +1,3 @@
-import { toCamelCase } from "../utils"
-
 import { Transform } from "./index"
 
 const function_: Transform<(...args: unknown[]) => unknown> = {
@@ -14,14 +12,6 @@ const function_: Transform<(...args: unknown[]) => unknown> = {
       if (typeof global !== "undefined" && value in global) {
         // @ts-expect-error
         return global[value]
-      }
-
-      const functionName = toCamelCase(attribute)
-
-      //@ts-expect-error
-      if (typeof element !== "undefined" && functionName in element.container) {
-        // @ts-expect-error
-        return element.container[functionName]
       }
     })()
 

@@ -1,5 +1,5 @@
 import transforms, { R2WCType } from "./transforms"
-import { toDashedCase } from "./utils"
+import { toDashedCase, toCamelCase } from "./utils"
 
 type PropName<Props> = Exclude<Extract<keyof Props, string>, "container">
 type PropNames<Props> = Array<PropName<Props>>
@@ -34,7 +34,7 @@ const propsSymbol = Symbol.for("r2wc.props")
  * @param {ReactComponent}
  * @param {Object} options - Optional parameters
  * @param {String?} options.shadow - Shadow DOM mode as either open or closed.
- * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: "string" | "number" | "boolean" | "function" | "json" }
+ * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: "string" | "number" | "boolean" | "function" | "method" | "json" }
  */
 export default function r2wc<Props extends R2WCBaseProps, Context>(
   ReactComponent: React.ComponentType<Props>,
@@ -105,6 +105,25 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
         const value = this.getAttribute(attribute)
         const type = propTypes[prop]
         const transform = type ? transforms[type] : null
+
+        if (type === "method") {
+          const methodName = toCamelCase(attribute)
+
+          Object.defineProperty(this[propsSymbol].container, methodName, {
+            enumerable: true,
+            configurable: true,
+            get() {
+              return this[propsSymbol][methodName]
+            },
+            set(value) {
+              this[propsSymbol][methodName] = value
+              this[renderSymbol]()
+            },
+          })
+
+          //@ts-ignore
+          this[propsSymbol][prop] = transform.parse(value, attribute, this)
+        }
 
         if (transform?.parse && value) {
           //@ts-ignore
