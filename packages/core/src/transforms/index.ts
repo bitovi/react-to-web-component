@@ -1,6 +1,7 @@
 import boolean from "./boolean"
 import function_ from "./function"
 import json from "./json"
+import method_ from "./method"
 import number from "./number"
 import string from "./string"
 
@@ -14,6 +15,7 @@ const transforms = {
   number,
   boolean,
   function: function_,
+  method: method_,
   json,
 }
 
