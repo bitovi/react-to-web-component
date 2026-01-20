@@ -3,6 +3,8 @@ import { Root, createRoot } from "react-dom/client"
 
 import r2wcCore, { R2WCOptions } from "@r2wc/core"
 
+const ContainerContext = React.createContext<HTMLElement | null>(null)
+
 interface Context<Props extends object> {
   root: Root
   ReactComponent: React.ComponentType<Props>
@@ -15,7 +17,11 @@ function mount<Props extends object>(
 ): Context<Props> {
   const root = createRoot(container)
 
-  const element = React.createElement(ReactComponent, props)
+  const element = React.createElement(
+    ContainerContext.Provider,
+    { value: container },
+    React.createElement(ReactComponent, props),
+  )
   root.render(element)
 
   return {
@@ -34,6 +40,15 @@ function update<Props extends object>(
 
 function unmount<Props extends object>({ root }: Context<Props>): void {
   root.unmount()
+}
+
+export function useContainer() {
+  const container = React.useContext(ContainerContext)
+
+  if (!container)
+    throw new Error("useContainer used outside of ContainerContext.Provider")
+
+  return container
 }
 
 export default function r2wc<Props extends object>(
