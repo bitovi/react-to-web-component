@@ -364,7 +364,11 @@ describe("react-to-web-component 1", () => {
     })
   })
 
-  it("Supports class function to react props using method transform", async () => {
+  it.each(
+    [[undefined], ["open"], ["closed"]]
+  )(
+    `Supports class function to react props using method transform: (shadow: %s)`,
+    async (shadow) => {
     const ClassGreeting: React.FC<{ name: string; sayHello: () => void }> = ({
       name,
       sayHello,
@@ -380,14 +384,17 @@ describe("react-to-web-component 1", () => {
         name: "string",
         sayHello: "method",
       },
+      shadow: shadow as unknown as Exclude<Parameters<typeof r2wc>[1], undefined>['shadow'],
     })
 
-    customElements.define("class-greeting", WebClassGreeting)
+    const tagName = `class-greeting${shadow ? `-${shadow}`: ''}`
 
-    document.body.innerHTML = `<class-greeting name='Christopher'></class-greeting>`
+    customElements.define(tagName, WebClassGreeting)
+
+    document.body.innerHTML = `<${tagName} name='Christopher'></class-greeting>`
 
     const el = document.querySelector<HTMLElement & { sayHello?: () => void }>(
-      "class-greeting",
+      tagName,
     )
 
     if (!el) {
@@ -395,13 +402,15 @@ describe("react-to-web-component 1", () => {
     }
 
     const sayHello = function (this: HTMLElement) {
-      const nameElement = this.querySelector("h1")
+      const nameElement = this.container.querySelector("h1")
       if (nameElement) {
         nameElement.textContent = "Hello, again"
       }
     }
 
-    el.sayHello = sayHello.bind(el)
+    el.sayHello = sayHello//.bind(el)
+
+    const docRoot = el.container.getRootNode()
 
     await new Promise((resolve, reject) => {
       const failIfNotClicked = setTimeout(() => {
@@ -409,12 +418,12 @@ describe("react-to-web-component 1", () => {
       }, 1000)
 
       setTimeout(() => {
-        document
-          .querySelector<HTMLButtonElement>("class-greeting button")
+        docRoot
+          .querySelector<HTMLButtonElement>(`button`)
           ?.click()
 
         setTimeout(() => {
-          const element = document.querySelector("h1")
+          const element = docRoot.querySelector("h1")
           expect(element?.textContent).toEqual("Hello, again")
           clearTimeout(failIfNotClicked)
           resolve(true)
@@ -423,13 +432,13 @@ describe("react-to-web-component 1", () => {
     })
 
     const sayHelloRerendered = function (this: HTMLElement) {
-      const nameElement = this.querySelector("h1")
+      const nameElement = this.container.querySelector("h1")
       if (nameElement) {
         nameElement.textContent = "Hello, again rerendered"
       }
     }
 
-    el.sayHello = sayHelloRerendered.bind(el)
+    el.sayHello = sayHelloRerendered//.bind(el)
 
     await new Promise((resolve, reject) => {
       const failIfNotClicked = setTimeout(() => {
@@ -437,12 +446,12 @@ describe("react-to-web-component 1", () => {
       }, 1000)
 
       setTimeout(() => {
-        document
-          .querySelector<HTMLButtonElement>("class-greeting button")
+        docRoot
+          .querySelector<HTMLButtonElement>(`button`)
           ?.click()
 
         setTimeout(() => {
-          const element = document.querySelector<HTMLHeadingElement>("h1")
+          const element = docRoot.querySelector<HTMLHeadingElement>("h1")
           expect(element?.textContent).toEqual("Hello, again rerendered")
           clearTimeout(failIfNotClicked)
           resolve(true)
