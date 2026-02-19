@@ -4,7 +4,7 @@ import PropTypes from "prop-types"
 import React from "react"
 import { describe, it, expect, assert } from "vitest"
 
-import type { R2WCElement } from '@r2wc/core'
+import { R2WCElement } from '@r2wc/core'
 
 import r2wc from "./react-to-web-component"
 
