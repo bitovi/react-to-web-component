@@ -15,9 +15,9 @@ const method_: Transform<(...args: unknown[]) => unknown> = {
     }
 
     if (
-      typeof r2wcElement !== "undefined"
-      && functionName in r2wcElement
-      && typeof r2wcElement[functionName] !== "undefined"
+      typeof r2wcElement !== "undefined" &&
+      functionName in r2wcElement &&
+      typeof r2wcElement[functionName] !== "undefined"
     ) {
       let fn = r2wcElement[functionName]
       if (!(boundSymbol in r2wcElement[functionName])) {

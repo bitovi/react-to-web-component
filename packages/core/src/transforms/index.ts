@@ -11,7 +11,11 @@ export type R2WCElement = HTMLElement & {
 
 export interface Transform<Type> {
   stringify?: (value: Type, attribute: string, element: R2WCElement) => string
-  parse: (value: string, attribute: string, element: R2WCElement) => Type | undefined
+  parse: (
+    value: string,
+    attribute: string,
+    element: R2WCElement,
+  ) => Type | undefined
 }
 
 const transforms = {

@@ -147,7 +147,11 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
       const type = propTypes[prop]
       const transform = type ? transforms[type] : null
 
-      if (prop in propTypes && transform?.parse && (value || type === "method")) {
+      if (
+        prop in propTypes &&
+        transform?.parse &&
+        (value || type === "method")
+      ) {
         //@ts-ignore
         this[propsSymbol][prop] = transform.parse(value, attribute, this)
 
@@ -197,7 +201,11 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
             }
           }
         } else {
-          if (prop in propTypes && transform?.parse && (value || type === "method")) {
+          if (
+            prop in propTypes &&
+            transform?.parse &&
+            (value || type === "method")
+          ) {
             //@ts-ignore
             this[propsSymbol][prop] = transform.parse(value, attribute, this)
           }
