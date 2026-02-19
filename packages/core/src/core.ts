@@ -1,6 +1,8 @@
 import transforms, { R2WCType } from "./transforms"
 import { toDashedCase } from "./utils"
 
+export type { R2WCElement } from "./transforms"
+
 type PropName<Props> = Exclude<Extract<keyof Props, string>, "container">
 type PropNames<Props> = Array<PropName<Props>>
 

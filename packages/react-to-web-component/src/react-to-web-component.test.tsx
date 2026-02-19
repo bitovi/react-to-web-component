@@ -4,6 +4,8 @@ import PropTypes from "prop-types"
 import React from "react"
 import { describe, it, expect, assert } from "vitest"
 
+import type { R2WCElement } from '@r2wc/core'
+
 import r2wc from "./react-to-web-component"
 
 expect.extend(matchers)
@@ -393,7 +395,7 @@ describe("react-to-web-component 1", () => {
 
     document.body.innerHTML = `<${tagName} name='Christopher'></class-greeting>`
 
-    const el = document.querySelector<HTMLElement & { sayHello?: () => void }>(
+    const el = document.querySelector<R2WCElement & { sayHello?: () => void }>(
       tagName,
     )
 
@@ -401,16 +403,16 @@ describe("react-to-web-component 1", () => {
       throw new Error("Element not found")
     }
 
-    const sayHello = function (this: HTMLElement) {
+    const sayHello = function (this: R2WCElement) {
       const nameElement = this.container.querySelector("h1")
       if (nameElement) {
         nameElement.textContent = "Hello, again"
       }
     }
 
-    el.sayHello = sayHello//.bind(el)
+    el.sayHello = sayHello
 
-    const docRoot = el.container.getRootNode()
+    const docRoot = el.container.getRootNode() as Document | DocumentFragment
 
     await new Promise((resolve, reject) => {
       const failIfNotClicked = setTimeout(() => {
@@ -431,14 +433,14 @@ describe("react-to-web-component 1", () => {
       }, 0)
     })
 
-    const sayHelloRerendered = function (this: HTMLElement) {
+    const sayHelloRerendered = function (this: R2WCElement) {
       const nameElement = this.container.querySelector("h1")
       if (nameElement) {
         nameElement.textContent = "Hello, again rerendered"
       }
     }
 
-    el.sayHello = sayHelloRerendered//.bind(el)
+    el.sayHello = sayHelloRerendered
 
     await new Promise((resolve, reject) => {
       const failIfNotClicked = setTimeout(() => {
