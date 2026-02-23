@@ -2,20 +2,32 @@ import { toCamelCase } from "../utils"
 
 import { Transform } from "./index"
 
+const boundSymbol = Symbol.for("r2wc.bound")
+
 const method_: Transform<(...args: unknown[]) => unknown> = {
-  stringify: (value) => value.name,
   parse: (value, attribute, element) => {
-    const fn = (() => {
-      const functionName = toCamelCase(attribute)
+    const functionName = toCamelCase(attribute)
 
-      //@ts-expect-error
-      if (typeof element !== "undefined" && functionName in element.container) {
-        // @ts-expect-error
-        return element.container[functionName]
+    const r2wcElement = element as typeof element & {
+      container: typeof r2wcElement
+    } & {
+      [k in typeof functionName]: (...args: unknown[]) => unknown
+    }
+
+    if (
+      typeof r2wcElement !== "undefined" &&
+      functionName in r2wcElement &&
+      typeof r2wcElement[functionName] !== "undefined"
+    ) {
+      let fn = r2wcElement[functionName]
+      if (!(boundSymbol in r2wcElement[functionName])) {
+        fn = fn.bind(r2wcElement)
+        Object.defineProperty(fn, boundSymbol, { value: true })
       }
-    })()
-
-    return typeof fn === "function" ? fn.bind(element) : undefined
+      return fn
+    } else {
+      return undefined
+    }
   },
 }
 

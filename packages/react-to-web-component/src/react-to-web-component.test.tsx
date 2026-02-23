@@ -4,6 +4,8 @@ import PropTypes from "prop-types"
 import React from "react"
 import { describe, it, expect, assert } from "vitest"
 
+import { R2WCElement } from "@r2wc/core"
+
 import r2wc from "./react-to-web-component"
 
 expect.extend(matchers)
@@ -364,90 +366,97 @@ describe("react-to-web-component 1", () => {
     })
   })
 
-  it("Supports class function to react props using method transform", async () => {
-    const ClassGreeting: React.FC<{ name: string; sayHello: () => void }> = ({
-      name,
-      sayHello,
-    }) => (
-      <div>
-        <h1>Hello, {name}</h1>
-        <button onClick={sayHello}>Click me</button>
-      </div>
-    )
+  it.each([[undefined], ["open"], ["closed"]])(
+    `Supports class function to react props using method transform: (shadow: %s)`,
+    async (shadow) => {
+      const ClassGreeting: React.FC<{ name: string; sayHello: () => void }> = ({
+        name,
+        sayHello,
+      }) => (
+        <div>
+          <h1>Hello, {name}</h1>
+          <button onClick={sayHello}>Click me</button>
+        </div>
+      )
 
-    const WebClassGreeting = r2wc(ClassGreeting, {
-      props: {
-        name: "string",
-        sayHello: "method",
-      },
-    })
+      const WebClassGreeting = r2wc(ClassGreeting, {
+        props: {
+          name: "string",
+          sayHello: "method",
+        },
+        shadow: shadow as unknown as Exclude<
+          Parameters<typeof r2wc>[1],
+          undefined
+        >["shadow"],
+      })
 
-    customElements.define("class-greeting", WebClassGreeting)
+      const tagName = `class-greeting${shadow ? `-${shadow}` : ""}`
 
-    document.body.innerHTML = `<class-greeting name='Christopher'></class-greeting>`
+      customElements.define(tagName, WebClassGreeting)
 
-    const el = document.querySelector<HTMLElement & { sayHello?: () => void }>(
-      "class-greeting",
-    )
+      document.body.innerHTML = `<${tagName} name='Christopher'></class-greeting>`
 
-    if (!el) {
-      throw new Error("Element not found")
-    }
+      const el = document.querySelector<
+        R2WCElement & { sayHello?: () => void }
+      >(tagName)
 
-    const sayHello = function (this: HTMLElement) {
-      const nameElement = this.querySelector("h1")
-      if (nameElement) {
-        nameElement.textContent = "Hello, again"
+      if (!el) {
+        throw new Error("Element not found")
       }
-    }
 
-    el.sayHello = sayHello.bind(el)
+      const sayHello = function (this: R2WCElement) {
+        const nameElement = this.container.querySelector("h1")
+        if (nameElement) {
+          nameElement.textContent = "Hello, again"
+        }
+      }
 
-    await new Promise((resolve, reject) => {
-      const failIfNotClicked = setTimeout(() => {
-        reject()
-      }, 1000)
+      el.sayHello = sayHello
 
-      setTimeout(() => {
-        document
-          .querySelector<HTMLButtonElement>("class-greeting button")
-          ?.click()
+      const docRoot = el.container.getRootNode() as Document | DocumentFragment
+
+      await new Promise((resolve, reject) => {
+        const failIfNotClicked = setTimeout(() => {
+          reject()
+        }, 1000)
 
         setTimeout(() => {
-          const element = document.querySelector("h1")
-          expect(element?.textContent).toEqual("Hello, again")
-          clearTimeout(failIfNotClicked)
-          resolve(true)
+          docRoot.querySelector<HTMLButtonElement>(`button`)?.click()
+
+          setTimeout(() => {
+            const element = docRoot.querySelector("h1")
+            expect(element?.textContent).toEqual("Hello, again")
+            clearTimeout(failIfNotClicked)
+            resolve(true)
+          }, 0)
         }, 0)
-      }, 0)
-    })
+      })
 
-    const sayHelloRerendered = function (this: HTMLElement) {
-      const nameElement = this.querySelector("h1")
-      if (nameElement) {
-        nameElement.textContent = "Hello, again rerendered"
+      const sayHelloRerendered = function (this: R2WCElement) {
+        const nameElement = this.container.querySelector("h1")
+        if (nameElement) {
+          nameElement.textContent = "Hello, again rerendered"
+        }
       }
-    }
 
-    el.sayHello = sayHelloRerendered.bind(el)
+      el.sayHello = sayHelloRerendered
 
-    await new Promise((resolve, reject) => {
-      const failIfNotClicked = setTimeout(() => {
-        reject()
-      }, 1000)
-
-      setTimeout(() => {
-        document
-          .querySelector<HTMLButtonElement>("class-greeting button")
-          ?.click()
+      await new Promise((resolve, reject) => {
+        const failIfNotClicked = setTimeout(() => {
+          reject()
+        }, 1000)
 
         setTimeout(() => {
-          const element = document.querySelector<HTMLHeadingElement>("h1")
-          expect(element?.textContent).toEqual("Hello, again rerendered")
-          clearTimeout(failIfNotClicked)
-          resolve(true)
+          docRoot.querySelector<HTMLButtonElement>(`button`)?.click()
+
+          setTimeout(() => {
+            const element = docRoot.querySelector<HTMLHeadingElement>("h1")
+            expect(element?.textContent).toEqual("Hello, again rerendered")
+            clearTimeout(failIfNotClicked)
+            resolve(true)
+          }, 0)
         }, 0)
-      }, 0)
-    })
-  })
+      })
+    },
+  )
 })
