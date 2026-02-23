@@ -4,6 +4,8 @@ import PropTypes from "prop-types"
 import React from "react"
 import { describe, it, expect, assert } from "vitest"
 
+import { R2WCElement } from "@r2wc/core"
+
 import r2wc from "./react-to-web-component"
 
 expect.extend(matchers)
@@ -325,4 +327,136 @@ describe("react-to-web-component 1", () => {
       }, 0)
     })
   })
+
+  it("Props typed as Function are dispatching events when events are enables via options", async () => {
+    expect.assertions(2)
+
+    function ThemeSelect({ onSelect }: { onSelect: (arg: string) => void }) {
+      return (
+        <div>
+          <button onClick={() => onSelect("V")}>V</button>
+          <button onClick={() => onSelect("Johnny")}>Johnny</button>
+          <button onClick={() => onSelect("Jane")}>Jane</button>
+        </div>
+      )
+    }
+
+    const WebThemeSelect = r2wc(ThemeSelect, {
+      events: { onSelect: { bubbles: true } },
+    })
+    customElements.define("theme-select-events", WebThemeSelect)
+    document.body.innerHTML = "<theme-select-events></theme-select-events>"
+
+    await new Promise((resolve, reject) => {
+      const failUnlessCleared = setTimeout(() => {
+        reject("event listener was not called to clear the failure timeout")
+      }, 1000)
+
+      const element = document.querySelector("theme-select-events")
+      element?.addEventListener("select", (event) => {
+        clearTimeout(failUnlessCleared)
+        expect((event as CustomEvent).detail).toEqual("Jane")
+        expect(event.target).toEqual(element)
+        resolve(true)
+      })
+      const button = element?.querySelector(
+        "button:last-child",
+      ) as HTMLButtonElement
+      button.click()
+    })
+  })
+
+  it.each([[undefined], ["open"], ["closed"]])(
+    `Supports class function to react props using method transform: (shadow: %s)`,
+    async (shadow) => {
+      const ClassGreeting: React.FC<{ name: string; sayHello: () => void }> = ({
+        name,
+        sayHello,
+      }) => (
+        <div>
+          <h1>Hello, {name}</h1>
+          <button onClick={sayHello}>Click me</button>
+        </div>
+      )
+
+      const WebClassGreeting = r2wc(ClassGreeting, {
+        props: {
+          name: "string",
+          sayHello: "method",
+        },
+        shadow: shadow as unknown as Exclude<
+          Parameters<typeof r2wc>[1],
+          undefined
+        >["shadow"],
+      })
+
+      const tagName = `class-greeting${shadow ? `-${shadow}` : ""}`
+
+      customElements.define(tagName, WebClassGreeting)
+
+      document.body.innerHTML = `<${tagName} name='Christopher'></class-greeting>`
+
+      const el = document.querySelector<
+        R2WCElement & { sayHello?: () => void }
+      >(tagName)
+
+      if (!el) {
+        throw new Error("Element not found")
+      }
+
+      const sayHello = function (this: R2WCElement) {
+        const nameElement = this.container.querySelector("h1")
+        if (nameElement) {
+          nameElement.textContent = "Hello, again"
+        }
+      }
+
+      el.sayHello = sayHello
+
+      const docRoot = el.container.getRootNode() as Document | DocumentFragment
+
+      await new Promise((resolve, reject) => {
+        const failIfNotClicked = setTimeout(() => {
+          reject()
+        }, 1000)
+
+        setTimeout(() => {
+          docRoot.querySelector<HTMLButtonElement>(`button`)?.click()
+
+          setTimeout(() => {
+            const element = docRoot.querySelector("h1")
+            expect(element?.textContent).toEqual("Hello, again")
+            clearTimeout(failIfNotClicked)
+            resolve(true)
+          }, 0)
+        }, 0)
+      })
+
+      const sayHelloRerendered = function (this: R2WCElement) {
+        const nameElement = this.container.querySelector("h1")
+        if (nameElement) {
+          nameElement.textContent = "Hello, again rerendered"
+        }
+      }
+
+      el.sayHello = sayHelloRerendered
+
+      await new Promise((resolve, reject) => {
+        const failIfNotClicked = setTimeout(() => {
+          reject()
+        }, 1000)
+
+        setTimeout(() => {
+          docRoot.querySelector<HTMLButtonElement>(`button`)?.click()
+
+          setTimeout(() => {
+            const element = docRoot.querySelector<HTMLHeadingElement>("h1")
+            expect(element?.textContent).toEqual("Hello, again rerendered")
+            clearTimeout(failIfNotClicked)
+            resolve(true)
+          }, 0)
+        }, 0)
+      })
+    },
+  )
 })

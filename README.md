@@ -7,7 +7,7 @@
 `@r2wc/react-to-web-component`:
 
 - Works in all modern browsers. (Edge needs a [customElements polyfill](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)).
-- Is `1.26KB` minified and gzipped.
+- Is `1.36KB` minified and gzipped.
 
 ## Setup
 
