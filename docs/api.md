@@ -6,8 +6,10 @@
   convert to a Web Component.
 - `options` - An set of parameters.
 
-  - `options.shadow` - Use shadow DOM rather than light DOM.
-  - `options.props` - Array of camelCasedProps to watch as String values or { [camelCasedProps]: "string" | "number" | "boolean" | "function" | "json" }
+  - `options.shadow` - ("open", "closed", or undefined) Use the specified shadow DOM mode rather than light DOM.
+  - `options.events` - Array of camelCasedProps to dispatch as custom events or a Record of event names to their associated [Event constructor options](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event#options).
+    - When dispatching events from named properties, "on" is stripped from the beginning of the property name if present, and the result is lowercased: the property `onMyCustomEvent` dispatches as "mycustomevent".
+  - `options.props` - Array of camelCasedProps to watch as String values or { [camelCasedProps]: "string" | "number" | "boolean" | "function" | "method" | "json" }
 
     - When specifying Array or Object as the type, the string passed into the attribute must pass `JSON.parse()` requirements.
     - When specifying Boolean as the type, "true", "1", "yes", "TRUE", and "t" are mapped to `true`. All strings NOT begining with t, T, 1, y, or Y will be `false`.
@@ -82,7 +84,7 @@ document.body.innerHTML =
 console.log(document.body.firstElementChild.innerHTML) // "<h1>Hello, Christopher</h1>"
 ```
 
-If `options.props` is specified, R2WC will use those props instead of the keys from propTypes. If it's an array, all corresponding kebob-cased attr values will be passed as strings to the underlying React component.
+If `options.props` is specified, R2WC will use those props instead of the keys from propTypes. If it's an array, all corresponding kebab-case attr values will be passed as strings to the underlying React component.
 
 ```js
 function Greeting({ camelCaseName }) {
@@ -107,11 +109,11 @@ console.log(document.body.firstElementChild.innerHTML) // "<h1>Hello, Jane</h1>"
 If `options.props` is an object, the keys are the camelCased React props and the values are any one of the following built in javascript types.
 This is the recommended way of passing props to r2wc.
 
-`"string" | "number" | "boolean" | "function" | "json"`
+`"string" | "number" | "boolean" | "function" | "method" | "json"`
 
 "json" can be an array or object. The string passed into the attribute must pass `JSON.parse()` requirements.
 
-### "string" | "number" | "boolean" | "function" | "json" props
+### "string" | "number" | "boolean" | "function" | "method" | "json" props
 
 ```js
 function AttrPropTypeCasting(props) {
@@ -164,6 +166,8 @@ document.body.innerHTML = `
 
 When `Function` is specified as the type, attribute values on the web component will be converted into function references when passed into the underlying React component. The string value of the attribute must be a valid reference to a function on `window` (or on `global`).
 
+Note: If you want to avoid global functions, instead of passing an attribute you can pass an `events` object in options, and listen on events using `addEventListener` on the custom element. See below.
+
 ```js
 function ThemeSelect({ handleClick }) {
   return (
@@ -198,3 +202,83 @@ setTimeout(
 )
 // ^ calls globalFn, logs: true, "Jane"
 ```
+
+
+### Method props
+
+When `method` is specified as the type, the prop will be bound to a method that can be defined directly on the custom element instance. Unlike `function` props that reference global functions, `method` props allow you to define class methods directly on the web component element, providing better encapsulation and avoiding global namespace pollution.
+
+This is particularly useful when you want to pass functions from parent components or when you need to define behavior specific to each web component instance.
+
+```js
+function ClassGreeting({ name, sayHello }) {
+  return (
+    <div>
+      <h1>Hello, {name}</h1>
+      <button onClick={sayHello}>Click me</button>
+    </div>
+  )
+}
+
+const WebClassGreeting = reactToWebComponent(ClassGreeting, {
+  props: {
+    name: "string",
+    sayHello: "method",
+  },
+})
+
+customElements.define("class-greeting", WebClassGreeting)
+
+
+document.body.innerHTML = '<class-greeting name="Christopher"></class-greeting>'
+
+const element = document.querySelector("class-greeting")
+
+const myMethod = function(this: HTMLElement) {
+  const nameElement = this.querySelector("h1") as HTMLElement;
+  nameElement.textContent = "Hello, again rerendered";
+}
+
+element.sayHello = myMethod.bind(element)
+
+setTimeout(() => {
+  document.querySelector("class-greeting button").click()
+}, 0)
+```
+
+### Event dispatching
+
+As an alternative to using function props, the `events` object insructs r2wc to dispatch a corresponding DOM event that can be listened to on the custom element itself, on ancestor elements using `bubbles`, and outside of any containing shadow DOM using `composed`.
+
+```js
+function ThemeSelect({ onSelect }) {
+  return (
+    <div>
+      <button onClick={() => onSelect("V")}>V</button>
+      <button onClick={() => onSelect("Johnny")}>Johnny</button>
+      <button onClick={() => onSelect("Jane")}>Jane</button>
+    </div>
+  )
+}
+
+const WebThemeSelect = reactToWebComponent(ThemeSelect, {
+  events: { onSelect: { bubbles: true } } // dispatches as "select", will bubble to ancestor elements but not escape a shadow DOM
+})
+
+customElements.define("theme-select", WebThemeSelect)
+
+document.body.innerHTML = "<theme-select></theme-select>"
+
+setTimeout(() => {
+  const element = document.querySelector("theme-select")
+  element.addEventListener("select", (event) => {
+    // "event.target" is the instance of the WebComponent / HTMLElement
+    const thisIsEl = event.target === element
+    console.log(thisIsEl, event.detail)
+  })
+  document.querySelector("theme-select button:last-child").click()
+}, 0)
+// ^ calls event listener, logs: true, "Jane"
+```
+
+> Note: `events` and `props` entries should not be used for the same named property.  During initial setup, the event handler will overwrite the function property handler, and if the attribute changes after construction, the new function property handler will overwrite the event handler.
