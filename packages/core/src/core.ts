@@ -1,6 +1,8 @@
 import transforms, { R2WCType } from "./transforms"
 import { toDashedCase } from "./utils"
 
+export type { R2WCElement } from "./transforms"
+
 type PropName<Props> = Exclude<Extract<keyof Props, string>, "container">
 type PropNames<Props> = Array<PropName<Props>>
 
@@ -34,7 +36,7 @@ const propsSymbol = Symbol.for("r2wc.props")
  * @param {ReactComponent}
  * @param {Object} options - Optional parameters
  * @param {String?} options.shadow - Shadow DOM mode as either open or closed.
- * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: "string" | "number" | "boolean" | "function" | "json" }
+ * @param {Object|Array?} options.props - Array of camelCasedProps to watch as Strings or { [camelCasedProp]: "string" | "number" | "boolean" | "function" | "method" | "json" }
  */
 export default function r2wc<Props extends R2WCBaseProps, Context>(
   ReactComponent: React.ComponentType<Props>,
@@ -106,7 +108,7 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
         const type = propTypes[prop]
         const transform = type ? transforms[type] : null
 
-        if (transform?.parse && value) {
+        if (transform?.parse && (value || type === "method")) {
           //@ts-ignore
           this[propsSymbol][prop] = transform.parse(value, attribute, this)
         }
@@ -145,7 +147,11 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
       const type = propTypes[prop]
       const transform = type ? transforms[type] : null
 
-      if (prop in propTypes && transform?.parse && value) {
+      if (
+        prop in propTypes &&
+        transform?.parse &&
+        (value || type === "method")
+      ) {
         //@ts-ignore
         this[propsSymbol][prop] = transform.parse(value, attribute, this)
 
@@ -188,9 +194,21 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
           const oldAttributeValue = this.getAttribute(attribute)
 
           if (oldAttributeValue !== attributeValue) {
-            this.setAttribute(attribute, attributeValue)
+            if (attributeValue == null) {
+              this.removeAttribute(attribute)
+            } else {
+              this.setAttribute(attribute, attributeValue)
+            }
           }
         } else {
+          if (
+            prop in propTypes &&
+            transform?.parse &&
+            (value || type === "method")
+          ) {
+            //@ts-ignore
+            this[propsSymbol][prop] = transform.parse(value, attribute, this)
+          }
           this[renderSymbol]()
         }
       },
