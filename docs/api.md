@@ -5,12 +5,10 @@
 - `ReactComponent` - A React component that you want to
   convert to a Web Component.
 - `options` - An set of parameters.
-
   - `options.shadow` - ("open", "closed", or undefined) Use the specified shadow DOM mode rather than light DOM.
   - `options.events` - Array of camelCasedProps to dispatch as custom events or a Record of event names to their associated [Event constructor options](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event#options).
     - When dispatching events from named properties, "on" is stripped from the beginning of the property name if present, and the result is lowercased: the property `onMyCustomEvent` dispatches as "mycustomevent".
   - `options.props` - Array of camelCasedProps to watch as String values or { [camelCasedProps]: "string" | "number" | "boolean" | "function" | "method" | "json" }
-
     - When specifying Array or Object as the type, the string passed into the attribute must pass `JSON.parse()` requirements.
     - When specifying Boolean as the type, "true", "1", "yes", "TRUE", and "t" are mapped to `true`. All strings NOT begining with t, T, 1, y, or Y will be `false`.
     - When specifying Function as the type, the string passed into the attribute must be the name of a function on `window` (or `global`). The `this` context of the function will be the instance of the WebComponent / HTMLElement when called.
@@ -62,6 +60,36 @@ document.body.appendChild(myGreeting)
 
 var shadowContent = myGreeting.shadowRoot.children[0]
 ```
+
+### Styling components that use shadow DOM
+
+When `shadow` is set to `"open"` or `"closed"`, the React component renders inside a shadow root. The shadow root has its own CSS scope, so page-level styles and CSS imported by the host page do not automatically apply to elements inside the component.
+
+One common pattern is to extend the generated custom element and add a stylesheet to the shadow root after the element connects:
+
+```js
+const BaseGreeting = reactToWebComponent(Greeting, {
+  shadow: "open",
+})
+
+class WebGreeting extends BaseGreeting {
+  connectedCallback() {
+    super.connectedCallback()
+
+    if (!this.shadowRoot.querySelector("link[data-r2wc-styles]")) {
+      const link = document.createElement("link")
+      link.rel = "stylesheet"
+      link.href = "/assets/greeting.css"
+      link.dataset.r2wcStyles = ""
+      this.shadowRoot.appendChild(link)
+    }
+  }
+}
+
+customElements.define("web-greeting", WebGreeting)
+```
+
+For Vite, Tailwind, or other bundler-based builds, emit the component styles as a CSS file and point `link.href` at that built asset. If you use a closed shadow root, keep a reference to the root created by the custom element because `element.shadowRoot` will not be available outside the class.
 
 If propTypes are defined on the underlying React component, dashed-attributes on the webcomponent are converted into the corresponding camelCase React props and the string attribute value is passed in.
 
@@ -203,7 +231,6 @@ setTimeout(
 // ^ calls globalFn, logs: true, "Jane"
 ```
 
-
 ### Method props
 
 When `method` is specified as the type, the prop will be bound to a method that can be defined directly on the custom element instance. Unlike `function` props that reference global functions, `method` props allow you to define class methods directly on the web component element, providing better encapsulation and avoiding global namespace pollution.
@@ -262,7 +289,7 @@ function ThemeSelect({ onSelect }) {
 }
 
 const WebThemeSelect = reactToWebComponent(ThemeSelect, {
-  events: { onSelect: { bubbles: true } } // dispatches as "select", will bubble to ancestor elements but not escape a shadow DOM
+  events: { onSelect: { bubbles: true } }, // dispatches as "select", will bubble to ancestor elements but not escape a shadow DOM
 })
 
 customElements.define("theme-select", WebThemeSelect)
@@ -281,4 +308,4 @@ setTimeout(() => {
 // ^ calls event listener, logs: true, "Jane"
 ```
 
-> Note: `events` and `props` entries should not be used for the same named property.  During initial setup, the event handler will overwrite the function property handler, and if the attribute changes after construction, the new function property handler will overwrite the event handler.
+> Note: `events` and `props` entries should not be used for the same named property. During initial setup, the event handler will overwrite the function property handler, and if the attribute changes after construction, the new function property handler will overwrite the event handler.
