@@ -222,4 +222,195 @@ describe("core", () => {
     expect(element).not.toBeVisible()
     expect(body.querySelector("#test-button-id")).toBe(element)
   })
+
+  test("removed attribute resets the prop instead of keeping the stale value", async () => {
+    interface TestProps {
+      text?: string
+    }
+
+    const Test: React.FC<TestProps> = ({ text }) => {
+      return <button>{text}</button>
+    }
+
+    const TestElement = r2wc(
+      Test,
+      { props: { text: "string" } },
+      { mount, unmount, update },
+    )
+
+    customElements.define("test-attribute-removal", TestElement)
+
+    const body = document.body
+    body.innerHTML =
+      "<test-attribute-removal text='hello'></test-attribute-removal>"
+
+    const element = body.querySelector(
+      "test-attribute-removal",
+    ) as HTMLElement & TestProps
+
+    expect(element.text).toBe("hello")
+
+    const updatesBefore = update.mock.calls.length
+
+    element.removeAttribute("text")
+
+    await wait()
+
+    expect(element.text).toBe(undefined)
+    expect(update.mock.calls.length).toBe(updatesBefore + 1)
+    expect(update.mock.lastCall?.[1]).toMatchObject({ text: undefined })
+  })
+
+  test("empty attribute value is parsed instead of being ignored", async () => {
+    interface TestProps {
+      text?: string
+    }
+
+    const Test: React.FC<TestProps> = ({ text }) => {
+      return <button>{text}</button>
+    }
+
+    const TestElement = r2wc(
+      Test,
+      { props: { text: "string" } },
+      { mount, unmount, update },
+    )
+
+    customElements.define("test-attribute-empty", TestElement)
+
+    const body = document.body
+    body.innerHTML =
+      "<test-attribute-empty text='hello'></test-attribute-empty>"
+
+    const element = body.querySelector("test-attribute-empty") as HTMLElement &
+      TestProps
+
+    const updatesBefore = update.mock.calls.length
+
+    element.setAttribute("text", "")
+
+    await wait()
+
+    expect(element.text).toBe("")
+    expect(update.mock.calls.length).toBe(updatesBefore + 1)
+  })
+
+  test("invalid json attribute value resets the prop instead of keeping the stale value", async () => {
+    interface TestProps {
+      objProp?: { greeting: string }
+    }
+
+    const Test: React.FC<TestProps> = ({ objProp }) => {
+      return <button>{objProp?.greeting}</button>
+    }
+
+    const TestElement = r2wc(
+      Test,
+      { props: { objProp: "json" } },
+      { mount, unmount, update },
+    )
+
+    customElements.define("test-invalid-json", TestElement)
+
+    const body = document.body
+    body.innerHTML = `<test-invalid-json obj-prop='{"greeting": "hello"}'></test-invalid-json>`
+
+    const element = body.querySelector("test-invalid-json") as HTMLElement &
+      TestProps
+
+    expect(element.objProp).toEqual({ greeting: "hello" })
+
+    const updatesBefore = update.mock.calls.length
+
+    element.setAttribute("obj-prop", "{not valid json")
+
+    await wait()
+
+    expect(element.objProp).toBe(undefined)
+    expect(update.mock.calls.length).toBe(updatesBefore + 1)
+  })
+
+  test("transformer parse returning undefined resets the prop", async () => {
+    interface TestProps {
+      funcProp?: () => unknown
+    }
+
+    const Test: React.FC<TestProps> = () => {
+      return <button>fn</button>
+    }
+
+    const TestElement = r2wc(
+      Test,
+      { props: { funcProp: "function" } },
+      { mount, unmount, update },
+    )
+
+    //@ts-ignore
+    global.existingGlobalFn = function () {
+      return true
+    }
+
+    customElements.define("test-transform-undefined", TestElement)
+
+    const body = document.body
+    body.innerHTML = `<test-transform-undefined func-prop='existingGlobalFn'></test-transform-undefined>`
+
+    const element = body.querySelector(
+      "test-transform-undefined",
+    ) as HTMLElement & TestProps
+
+    expect(element.funcProp).toBeInstanceOf(Function)
+
+    const updatesBefore = update.mock.calls.length
+
+    // The function transformer's parse returns undefined when the global
+    // lookup fails: the prop must reset rather than keep the stale function.
+    element.setAttribute("func-prop", "doesNotExistAnywhere")
+
+    await wait()
+
+    expect(element.funcProp).toBe(undefined)
+    expect(update.mock.calls.length).toBe(updatesBefore + 1)
+  })
+
+  test("setting and updating an attribute still updates the prop normally", async () => {
+    interface TestProps {
+      text?: string
+    }
+
+    const Test: React.FC<TestProps> = ({ text }) => {
+      return <button>{text}</button>
+    }
+
+    const TestElement = r2wc(
+      Test,
+      { props: { text: "string" } },
+      { mount, unmount, update },
+    )
+
+    customElements.define("test-attribute-normal-update", TestElement)
+
+    const body = document.body
+    body.innerHTML =
+      "<test-attribute-normal-update text='hello'></test-attribute-normal-update>"
+
+    const element = body.querySelector(
+      "test-attribute-normal-update",
+    ) as HTMLElement & TestProps
+
+    expect(element.text).toBe("hello")
+
+    element.setAttribute("text", "world")
+
+    await wait()
+
+    expect(element.text).toBe("world")
+
+    element.removeAttribute("text")
+    element.setAttribute("text", "back again")
+
+    await wait()
+
+    expect(element.text).toBe("back again")
+  })
 })

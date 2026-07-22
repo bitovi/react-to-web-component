@@ -108,7 +108,7 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
         const type = propTypes[prop]
         const transform = type ? transforms[type] : null
 
-        if (transform?.parse && (value || type === "method")) {
+        if (transform?.parse && (value !== null || type === "method")) {
           //@ts-ignore
           this[propsSymbol][prop] = transform.parse(value, attribute, this)
         }
@@ -140,20 +140,23 @@ export default function r2wc<Props extends R2WCBaseProps, Context>(
 
     attributeChangedCallback(
       attribute: string,
-      oldValue: string,
-      value: string,
+      oldValue: string | null,
+      value: string | null,
     ) {
       const prop = mapAttributeProp[attribute]
       const type = propTypes[prop]
       const transform = type ? transforms[type] : null
 
-      if (
-        prop in propTypes &&
-        transform?.parse &&
-        (value || type === "method")
-      ) {
-        //@ts-ignore
-        this[propsSymbol][prop] = transform.parse(value, attribute, this)
+      if (prop in propTypes && transform?.parse) {
+        if (value === null && type !== "method") {
+          // The attribute was removed: reset the prop instead of
+          // keeping the stale value. (#230)
+          //@ts-ignore
+          this[propsSymbol][prop] = undefined
+        } else {
+          //@ts-ignore
+          this[propsSymbol][prop] = transform.parse(value, attribute, this)
+        }
 
         this[renderSymbol]()
       }
